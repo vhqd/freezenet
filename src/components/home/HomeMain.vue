@@ -92,7 +92,7 @@
               <div style="position: absolute;right: 0;bottom: 0;" v-show="isbind">
                 <div class="saoma">
                   <span class="minus mpsytl" @click="minus(item)" v-if="item.num != 0">-</span>
-                  <span>{{item.num}}</span>
+                  <span v-show="item.num != 0">{{item.num}}</span>
                   <span class="plus mpsytl" @click="plus(item)">+</span>
                 </div>
               </div>
@@ -171,66 +171,6 @@ export default {
       		id:1,
       		name:'海鲜',
       		isCheck:true
-      	},
-      	{
-      		id:1,
-      		name:'海鲜',
-      		isCheck:false
-      	},
-      	{
-      		id:1,
-      		name:'海鲜',
-      		isCheck:false
-      	},
-      	{
-      		id:1,
-      		name:'海鲜',
-      		isCheck:false
-      	},
-      	{
-      		id:1,
-      		name:'海鲜',
-      		isCheck:false
-      	},
-      	{
-      		id:1,
-      		name:'海鲜',
-      		isCheck:false
-      	},
-      	{
-      		id:1,
-      		name:'海鲜',
-      		isCheck:false
-      	},
-      	{
-      		id:1,
-      		name:'海鲜',
-      		isCheck:false
-      	},
-      	{
-      		id:1,
-      		name:'海鲜',
-      		isCheck:false
-      	},
-      	{
-      		id:1,
-      		name:'海鲜',
-      		isCheck:false
-      	},
-      	{
-      		id:1,
-      		name:'海鲜',
-      		isCheck:false
-      	},
-      	{
-      		id:1,
-      		name:'海鲜',
-      		isCheck:false
-      	},
-      	{
-      		id:1,
-      		name:'海鲜11',
-      		isCheck:false
       	}*/
       ],
    /*    menu: [
@@ -244,60 +184,6 @@ export default {
               title: "算哈哈是111", //标题
               num: 0, //数量
               price: 20, //单价
-              oldPrice: "50", //旧的价格
-              inventory: "5" //库存
-            },
-            {
-              id: 2,
-              img: require("../../../static/img/1-0_03.png"), //图片
-              title: "算哈哈是", //标题
-              num: 0, //数量
-              price: 20, //单价
-              oldPrice: "50", //旧的价格
-              inventory: "5" //库存
-            }
-          ]
-        },
-        {
-          id: 2,
-          name: "热卖",
-          list: [
-            {
-              id: 1,
-              img: require("../../../static/img/1-0_03.png"), //图片
-              title: "算哈哈是1", //标题
-              num: 1, //数量
-              price: 20, //单价
-              oldPrice: "50", //旧的价格
-              inventory: "5" //库存
-            }
-          ]
-        },
-        {
-          id: 3,
-          name: "热卖",
-          list: [
-            {
-              id: 1,
-              img: require("../../../static/img/1-0_03.png"), //图片
-              title: "算哈哈是2", //标题
-              num: 0, //数量
-              price: 20, //单价
-              oldPrice: "50", //旧的价格
-              inventory: "5" //库存
-            }
-          ]
-        },
-        {
-          id: 4,
-          name: "热卖",
-          list: [
-            {
-              id: 1,
-              img: require("../../../static/img/1-0_03.png"), //图片
-              title: "算哈哈是3", //标题
-              num: 0, //数量
-              price: "20", //单价
               oldPrice: "50", //旧的价格
               inventory: "5" //库存
             }
@@ -357,6 +243,7 @@ export default {
         }
         for(let item in data){
           data[item].goods_photo = this.host + data[item].goods_photo;
+          data[item].num = 0;
         }
         this.caiDetailList = data;
         
@@ -396,19 +283,19 @@ export default {
     },
     /*减少数量值*/
     minus(item) {
-      let amount = item.goods_count;
+      let amount = item.num;
       if (amount > 0) {
-        item.goods_count = amount - 1;
+        item.num = amount - 1;
         this.carnum = this.carnum - 1;
         this.allPrice = this.allPrice - item.price;
       } else {
-        item.goods_count = 0;
+        item.num = 0;
       }
     },
     /*增加数量值*/
     plus(item) {
-      let amount = item.goods_count;
-      item.goods_count = amount + 1;
+      let amount = item.num;
+      item.num = amount + 1;
       this.carnum = this.carnum + 1;
       this.allPrice = this.allPrice + item.price;
     },
@@ -506,6 +393,7 @@ export default {
 
 <style scoped>
 .mu-item-title{font-size: 12px;font-weight: bold;color: #333;}
+.li-active .mu-item-title{color: #f24c4c}
 .home_main {
   padding-top: 0.9rem;
 }
@@ -522,9 +410,9 @@ export default {
   overflow: visible;
   position: relative;
 }
-.li-active {
+/* .li-active {
   background: #ededed;
-}
+} */
 .mu-raised-button {
   width: 0.65rem;
   margin: 0 auto;
@@ -563,7 +451,7 @@ export default {
   background: #c3c3c3;
 }
 .plus {
-  background: #ffe152;
+  background: #f24c4c;
 }
 .mpsytl {
   border-radius: 50%;

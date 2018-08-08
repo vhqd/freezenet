@@ -3,7 +3,7 @@
 	<div class="home_h">
 		<header class="m_header">
             <div class="inputitem pm">
-		    	<mu-text-field v-model="value1" class="widthstyle midm" id="searchIn" placeholder="您想要111..." icon="search"></mu-text-field>
+		    	<mu-text-field v-model="value1" @focus="goSearch" class="widthstyle midm" id="searchIn" placeholder="您想要111..." icon="search"></mu-text-field>
 		    	<div class="guanbi" @click="clearinput"><img src="../../../static/img/ic_remove.png"/></div>
 		    	<div class="cancel" @click="cancelClick">取消</div>
 	    	</div>
@@ -11,6 +11,8 @@
 	</div>
 </template>
 <script>
+
+
     export default{
     	data(){
     		return{
@@ -34,12 +36,13 @@
            		if(parm === 'true'){
            			
            		}else{
-           			this.$router.push('/')
+           			this.$router.go('-1')
            		}
            }
         },
         props:['ishome'],
         mounted(){
+			
         	/*处理到搜索页面自动获取焦点*/
         	/*let parm = this.ishome;
        		if(parm === 'false'){

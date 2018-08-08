@@ -3,7 +3,7 @@
 		<BackBar :dTitle='dTitle'></BackBar>
 				
 				<!--运输中-->
-			<mu-paper :z-depth="1" class="demo-list-wrap">
+			<mu-paper :z-depth="1" class="demo-list-wrap" style="padding-top:1rem;">
 				  <mu-list textline="three-line">
 				  	<div class="li-box">
 					    <mu-list-item avatar :ripple="false" button>

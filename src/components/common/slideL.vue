@@ -10,9 +10,9 @@
 				</mu-grid-list>
 			</div>-->
       <div class="carlistbox">
-        <mu-load-more :loading="loading" @load="load">
+        <mu-load-more :loading="loading" @load="load" v-if="list!==[]">
           <ul style="padding-bottom: 2rem;">
-            <li class="list-item " v-for="(item,index) in list" :key="index" data-type="0">
+            <li class="list-item " v-for="(item,index) in list" :key="index">
               <!--<div class="list-box" @touchstart.capture="touchStart" @touchend.capture="touchEnd" @click="skip">-->
               <div class="list-box" @touchstart.capture="touchStart" @touchend.capture="touchEnd">
                 <div class="list-content">
@@ -24,18 +24,18 @@
                           <img :src="　item.checks ? radioF : radioT " class="radioimg" @click="checkRadio(item)" />
                           <mu-list-item-action>
                             <mu-avatar style="width: 1.4rem;height: 1.4rem;">
-                              <img :src="item.img">
+                              <img :src="item.goods_photo">
                             </mu-avatar>
                           </mu-list-item-action>
                           <mu-list-item-content>
-                            <mu-list-item-title>{{item.single_price}}</mu-list-item-title>
+                            <mu-list-item-title>{{item.goods_title}}</mu-list-item-title>
                             <mu-list-item-sub-title>
-                              <span style="color: #a9a9a9;font-size: 0.2rem;">库存{{item.single_price}}件</span>
+                              <span style="color: #a9a9a9;font-size: 0.2rem;">{{item.goods_count}}斤</span>
                               <div>
                                 <span v-show="!isbind" style="color: #a9a9a9;">绑定手机号才能查看价格</span>
                                 <div v-show="isbind" style="color: red;">
                                   ￥
-                                  <span style="font-size: 0.5rem;">{{item.single_price}}</span>
+                                  <span style="font-size: 0.5rem;">{{item.goods_price}}</span>
                                   <!-- <span style="color: #ccc;text-decoration: line-through;">￥{{item.single_price}}</span> -->
                                 </div>
                               </div>
@@ -44,8 +44,8 @@
                         </mu-list-item>
                         <div style="position: absolute;right: 0.2rem;bottom: 0.34rem;" v-show="isbind">
                           <div class="saoma">
-                            <span class="minus mpsytl" @click="minus(item)" v-if="item.count != 0">-</span>
-                            <span class="mpnum">{{item.count}}</span>
+                            <span class="minus mpsytl" @click="minus(item)" v-if="item.num != 0">-</span>
+                            <span class="mpnum">{{item.num}}</span>
                             <span class="plus mpsytl" @click="plus(item)">+</span>
                           </div>
                         </div>
@@ -97,8 +97,7 @@
 
 <script>
 import { mapState } from "vuex";
-import { getCarList , getProductInfo } from "../../http/http.js";
-
+import { getCarList, getProductInfos } from "../../http/http.js";
 
 export default {
   name: "index",
@@ -114,18 +113,7 @@ export default {
       checkAll: false, //全选（默认不选）
       allPrice: 0, //总价
       checkNum: 0, //选中的条数
-      list: [
-        /*  {
-          id: 1,
-          img: require("../../../static/img/1-0_03.png"), //图片
-          title: "算哈哈是111", //标题
-          num: 1, //数量
-          price: 20, //单价
-          oldPrice: 50, //旧的价格
-          inventory: 5, //库存
-          checks: false
-        }, */
-      ], //默认显示的数据
+      list: [], //默认显示的数据
       startX: 0,
       endX: 0
     };
@@ -137,34 +125,96 @@ export default {
     })
   },
   mounted() {
-    //this.getCarList();
-    //this.getMenuListOne();
-    this.getCarList(1);
+    let value = async () => {
+      const lists = await getCarList(this.limit, this.page).then(res => {
+        this.page = this.page + 1;
+        let data = res.data.data.data;
+        if (data.length > 0) {
+          return this.sliceData(data);
+        }
+      });
+      let listval = [];
+      let ids = [];
+      if (lists.length > 0) {
+        for (let item in lists) {
+          let id = lists[item].goods_id;
+          ids.push(id);
+        }
+        await getProductInfos(JSON.stringify({"id":ids})).then(res => {
+            listval = res.data.data;
+            for (const item in listval) {
+              listval[item].goods_photo = this.host + listval[item].goods_photo;
+              listval[item].checks = false;
+              listval[item].num = 0;
+            }
+            
+           /*  listval.push({
+              goods_count: product[0].goods_count,
+              goods_desc: product[0].goods_desc,
+              goods_is_publish: product[0].goods_is_publish,
+              goods_original_price: product[0].goods_original_price,
+              goods_photo: this.host + product[0].goods_photo,
+              goods_price: product[0].goods_price,
+              goods_supplier_id: product[0].goods_supplier_id,
+              goods_title: product[0].goods_title,
+              goods_type_id: product[0].goods_type_id,
+              checks: false,
+              num: 0
+            });
+            if (listval.length == lists.length) {
+              return listval;
+            } */
+          });
+      }
+      return listval;
+    };
+    value().then(res => {
+      this.list = [...this.list, ...res];
+      console.log(this.list);
+    });
   },
   methods: {
-    /*获取购物车列表*/
-    getCarList(page) {
-       getCarList(this.limit,page).then(res => {
-          this.page = page + 1;
-          let data = res.data.data.data;
-          let list = [];
-          if (data.length > 0) {
-            //this.sliceData(data);
-            let newData = this.sliceData(data);
-            this.list = this.list.concat(newData);
-          }
-      })
-    },
-
     /*滚动到底部加载更多*/
     load() {
       this.loading = true;
       setTimeout(() => {
         this.loading = false;
         this.getCarList(this.page);
-        console.log("成功数据");
+        // console.log("成功数据");
         //this.num += 10;
       }, 1000);
+    },
+
+    /*拆分购物车双条数据*/
+    sliceData(objJson) {
+      let newArrays = [];
+      for (let items in objJson) {
+        let obj = objJson[items];
+        let lenth = 0;
+        let keyArray = [];
+        for (let item in obj) {
+          keyArray.push(item);
+          if (obj[item] instanceof Array) {
+            lenth = obj[item].length;
+          }
+        }
+        for (let i = 0; i < lenth; i++) {
+          let valueArray = [];
+          for (let j in obj) {
+            obj[j] instanceof Array
+              ? valueArray.push(obj[j][i])
+              : valueArray.push(obj[j]);
+          }
+          let newjson = {};
+          for (let item in keyArray) {
+            newjson[keyArray[item]] = valueArray[item];
+          }
+          newArrays.push(newjson);
+        }
+      }
+      // console.log(newArrays.length);
+      // this.getProductInfo(newArrays);
+      return newArrays;
     },
 
     /*单选按钮*/
@@ -176,7 +226,10 @@ export default {
     /*全选*/
     checkAllMeth() {
       let checkAll = this.checkAll;
-      this.checkAll = !checkAll;
+
+      this.checkAll = !this.checkAll;
+      console.log(this.checkAll);
+      
       let list = this.list;
       /*let allprice = 0;*/
       for (let i = 0; i < list.length; i++) {
@@ -195,8 +248,8 @@ export default {
       let checkNum = 0;
       for (let i = 0; i < data.length; i++) {
         if (data[i].checks) {
-          allprice += data[i].price * data[i].num;
-          checkNum += data[i].num;
+          allprice += data[i].goods_price * parseInt(data[i].num);
+          checkNum += parseInt(data[i].num);
         }
       }
 
@@ -204,27 +257,28 @@ export default {
         //如果点击单条全部记录取消选中后将全选修改未选中状态
         this.checkAll = false;
       }
+      //console.log(allprice)
       this.checkNum = checkNum;
       this.allPrice = allprice;
     },
 
     /*减少数量值*/
     minus(item) {
-      let amount =parseInt(item.count);
+      let amount = parseInt(item.num);
       let list = this.list;
       if (amount > 0) {
-        item.count = amount - 1;
+        item.num = amount - 1;
       } else {
-        item.count = 0;
+        item.num = 0;
       }
       this.getAllPrice(list);
     },
 
     /*增加数量值*/
     plus(item) {
-      let amount =parseInt(item.count);
+      let amount = parseInt(item.num);
       let list = this.list;
-      item.count = amount + 1;
+      item.num = amount + 1;
       this.getAllPrice(list);
     },
 
@@ -303,64 +357,7 @@ export default {
       let index = e.currentTarget.dataset.index;
       this.restSlide();
       this.list.splice(index, 1);
-    },
-
-     /*拆分购物车双条数据*/
-    sliceData(objJson) {
-      let newArrays = [];
-      for (let items in objJson) {
-        let obj = objJson[items];
-        let lenth = 0;
-        let keyArray = [];
-        for (let item in obj) {
-          keyArray.push(item);
-          if (obj[item] instanceof Array) {
-            lenth = obj[item].length;
-          }
-        }
-        for (let i = 0; i < lenth; i++) {
-          let valueArray = [];
-          for (let j in obj) {
-            obj[j] instanceof Array
-              ? valueArray.push(obj[j][i])
-              : valueArray.push(obj[j]);
-          }
-          let newjson = {};
-          for (let item in keyArray) {
-            newjson[keyArray[item]] = valueArray[item];
-          }
-          newArrays.push(newjson);
-        }
-      }
-      this.getProductInfo(newArrays);
-      //return newArrays;
-    },
-
-    /*通过商品id获取商品详细信息*/
-    getProductInfo(newArrays){
-      console.log("处理前的数据");
-      console.log(newArrays)
-      for(let item in newArrays){
-        let id = newArrays[item].goods_id;
-        getProductInfo(id).then(res => {
-          let product = res.data.data;
-          newArrays[item].goods_count = product[0].goods_count;
-          newArrays[item].goods_desc = product[0].goods_desc;
-          newArrays[item].goods_is_publish = product[0].goods_is_publish;
-          newArrays[item].goods_original_price = product[0].goods_original_price;
-          newArrays[item].goods_photo = this.host + product[0].goods_photo;
-          newArrays[item].goods_price = product[0].goods_price;
-          newArrays[item].goods_supplier_id = product[0].goods_supplier_id;
-          newArrays[item].goods_title = product[0].goods_title;
-          newArrays[item].goods_type_id = product[0].goods_type_id;
-        })
-      }
-      console.log("处理后的数据");
-      console.log(newArrays)
-      return newArrays;
-      console.log(newArrays);
     }
-
   }
 };
 </script>

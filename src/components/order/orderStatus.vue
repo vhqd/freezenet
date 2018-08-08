@@ -168,9 +168,9 @@
 			
 		</div>
 		
-		
-		<mu-paper :z-depth="1" class="demo-list-wrap" style='margin-top:0.15rem ;'>
-		  <mu-list textline="two-line">
+		<div class="paddingbox">
+		<mu-paper :z-depth="1" class="demo-list-wrap" style='margin-top:0.15rem;border-radius:15px;'>
+		  <mu-list textline="two-line" style="background:#fff;">
 	    <mu-list-item avatar :ripple="false" button>
 	      <mu-list-item-content>
 	        <mu-list-item-title>收货人：liuliu 	1388465848</mu-list-item-title>
@@ -319,6 +319,7 @@
 			    </mu-list-item>
 		    </mu-list>
 	  </div>
+		</div>
 		 
 	</div>
 </template>
@@ -392,6 +393,8 @@
 </script>
 
 <style scoped>
+.paddingbox{padding: 0 14px 0 14px;padding-top: -30px;position: relative;z-index: 9;}
+	.status{padding-top: 1rem;}
 	.status .mu-paper{background: url(../../../static/img/order/img_zhuangtai_bj.png) no-repeat center;background-size: 100%;}
 	.orderstatusbox{margin-bottom: 1rem;}
 	.orderstatusbox .title{height: 1.03rem;line-height: 1.03rem;font-size: 0.28rem;font-weight: bold;color: #f95151;padding-left: 10px;}

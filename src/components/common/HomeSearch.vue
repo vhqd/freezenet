@@ -25,7 +25,7 @@
            		if(parm === 'true'){
            			
            		}else{
-           			this.$router.push('/')
+           			this.$router.go('-1')
            		}
            }
         },

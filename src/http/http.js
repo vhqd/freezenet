@@ -28,8 +28,12 @@ export const getCaiClassChildDetail = ( typeid , limit , page ) =>{ return axios
 /**
  * 获取商品详情
  */
-export const getProductInfo = id =>{ return axios.get(host + "/api/goods/" + id).then((res) => {return res;}).catch((error) => {return error.response})};
+export const getProductInfos = objid=>{ return axios.get(host + "/api/goods/" + objid).then((res) => {return res;}).catch((error) => {return error.response})};
 
+/**
+ * 获取搜索历史关键词
+ */
+export const getSearchWords = () => { return axios.get(host + "/api/get-history").then((res) => {return res}).catch((error) => {return error.response})};
 
 
 /**
