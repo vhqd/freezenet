@@ -1,0 +1,160 @@
+body,html,#app{height:100%;width: 100%;background: #f5f5f5;}
+.mu-grid-tile-titlebar{background: none !important;}
+.mu-grid-tile.multiline .mu-grid-tile-titlebar{height: initial !important;}
+.topul .mu-grid-tile-subtitle{text-align: left !important;}
+
+.leftright{overflow: hidden;}
+.left{float: left;}
+.right{float: right;}
+
+.mu-switch-checked{color: #F24C4C;}
+.distpicker-address-wrapper .address-header ul li,.distpicker-address-wrapper .address-container ul li{color: #333;}
+.distpicker-address-wrapper .address-header ul li.active{
+	border-bottom: #F24C4C solid 3px !important;
+	color: #F24C4C !important;
+}
+/* #homelistbox .mu-circular-progress{margin-left: 5% !important;} */
+.mu-circle-spinner{border-color: #f24c4c !important}
+.pricecolor{color: red;}
+.pricecolor span{font-size: 0.5rem;}
+
+.demo-text{max-height: 4.2rem !important;overflow-y: scroll;}
+
+.type2list .mu-item{height:1.2rem !important;}
+
+.orderstatusbox .infoboxbut .mu-item{height: auto !important;}
+.orderstatusbox .infoboxbut .mu-item-title{font-size: 0.26rem;}
+
+.dreesMannage .adddress .mu-item{height: 1rem !important;}
+.dreesMannage .dresslist .mu-item{padding: 0.3rem !important;}
+.editdress .mu-item{padding: 0.15rem !important;}
+.dreesMannage .mu-list-two-line .mu-item{height: auto;}
+
+/*顶部导航开始*/
+.topbox{height: 0.9rem;border-bottom: 1px solid #e0e0e0;background: #fff;}
+.topbox span{float: left;padding: 0.2rem;}
+.topbox img{width: 0.32rem;height: 0.5rem;}
+.topbox p{line-height: 0.9rem;font-size: 0.32rem;color: #333;}
+/*顶部导航开始*/
+
+/*弹窗样式修改开始*/
+.mu-dialog{border-radius: 0.3rem !important;}
+.mu-dialog {position: relative !important;}
+.mu-dialog-title{text-align: center !important;display: block !important;font-size: 0.32rem !important;font-weight: bold !important;}
+.mu-dialog-body{color:#999;text-align: center !important;padding-top: 0.35rem !important;font-size: 0.28rem !important;}
+.mu-flat-button{
+    padding: 0 10px !important;
+    border-radius: 0.3rem !important;
+    color: #333 !important;
+    font-weight: bold !important;
+    margin: auto !important;
+    font-size: 0.32rem !important;
+}
+.mu-dialog-actions .mu-primary-text-color{background: #ffe253 !important;}
+.mu-dialog-actions{padding: 8px 8px 15px !important;}
+.mu-dialog-actions .mu-secondary-text-color{background: #c3c3c3 !important;}
+.mu-dialog-title{padding: 8px 24px 8px !important;border-bottom: 1px solid #e0e0e0 !important;font-weight: bold !important;}
+.cancelbox{position: absolute;right: 0.3rem;top: 0.3rem;}
+.cancelbox img{width: 65%;}
+/*弹窗样式修改结束*/
+
+.pm input{padding-left: 0.8rem;border-radius: 0.15rem !important;color: #333;}
+.pm .material-icons{left:0.2rem !important;top: 0.1rem;color: #c3c3c3;}
+.minus{background: #c3c3c3;line-height: 0.3rem;box-shadow: 1px 2px 1px rgba(199, 199, 199, 0.5);}
+.plus{background: #f24c4c;line-height: 0.44rem;box-shadow: 1px 2px 1px rgba(199, 49, 49, 0.5);}
+.mpsytl{border-radius: 50%;color: #fff;width: 0.44rem;height: 0.44rem;display: inline-block;font-size: 0.6rem;}
+.saoma{display: flex;}
+.saoma span{margin-left: 0.15rem;}
+.inputitem{width: 100%;overflow: hidden;border-bottom: 1px solid #e0e0e0;}
+.mu-input{padding: 0 !important;margin:0 !important;min-height: 0.66rem !important;background: #fff;}
+.pm{border-bottom: none !important;}
+.mu-popover{max-width: 60%;box-shadow: none;border:1px solid #999;}
+.mu-select-input{font-weight: 100;font-size: 0.14rem;padding-left: 0.1rem;}
+.mu-input-focus-line{height: 0 !important;}
+.mu-input{padding-top: 0;margin-bottom: 0;}
+.mu-input.full-width{
+	width: 65%;
+    margin-left: 6px;
+    float: left;
+}
+.mu-input-line{height: 0 !important;}
+.mu-input.has-icon{padding-left: 0 !important;}
+.mu-text-field-input{padding-left: 0.15rem;}
+.widthstyle{float:left;padding-left: 0.1rem;font-size: 0.14rem;}
+.midw{width: 75%;}
+.mids{width: 55%;}
+.mu-raised-button{min-width: 0.65rem !important;}
+.mu-raised-button .mu-button-wrapper{padding: 0;color: #000;}
+
+.mu-carousel-indicators{margin: 0.2rem auto;height: 0.3rem !important;width:max-content;background: rgba(175, 175, 175, 0.6) !important;border-radius: 0.5rem;}
+.mu-carousel-indicator-button{margin: 0 0.06rem!important;height: 0.3rem !important;width: 0.3rem !important;}
+.mu-carousel-indicator-icon{height: 8px !important;width: 8px !important;}
+
+
+.mu-drawer{max-height: 86% !important;width: 1.85rem !important;;}
+
+
+
+input::-webkit-input-placeholder, textarea::-webkit-input-placeholder { 
+ /* WebKit browsers */ 
+color: #c3c3c3; 
+} 
+input:-moz-placeholder, textarea:-moz-placeholder { 
+/* Mozilla Firefox 4 to 18 */ 
+color: #c3c3c3; 
+} 
+input::-moz-placeholder, textarea::-moz-placeholder { 
+ /* Mozilla Firefox 19+ */ 
+color: #c3c3c3; 
+} 
+input:-ms-input-placeholder, textarea:-ms-input-placeholder { 
+ /* Internet Explorer 10+ */ 
+color: #c3c3c3; 
+}
+
+#search-content .mu-item{height:43px !important;}
+/*detail页面样式修改*/
+.mu-appbar-left{position: absolute !important;height: auto;}
+.mu-appbar-title{color: #333;font-size: 0.32rem;font-weight: bold;}
+/*.mu-primary-color{background:#ffd947 !important;}*/
+.mu-button-wrapper img{width: 60%;}
+.mu-elevation-4{box-shadow: none;}
+.home_ban{padding-top: 0 !important;}
+.mu-appbar{height: 0.88rem;}
+
+
+.carbut .mu-item{height: 0.9rem !important;}
+
+.carMbox .list-item:after{border-bottom: 0 !important;}
+.carMbox .mu-item{padding: 0 16px 0 6px !important;}
+
+.orderlistbox .mu-tab-wrapper{font-size: 0.26rem !important;}
+.orderlistbox .mu-tab-link-highlight{height: 0 !important;}
+
+.homebanner .mu-carousel-indicators{margin: 0.2rem auto 1.2rem auto !important;}
+
+.indexbox .mu-item{height: initial !important;}
+
+.searchhomebox .pm input{background: #f0f0f0;border-radius: 0.3rem;height: 0.65rem;}
+
+.searchhomebox input::-webkit-input-placeholder, textarea::-webkit-input-placeholder { 
+ /* WebKit browsers */ 
+color: #999; 
+} 
+.searchhomebox input:-moz-placeholder, textarea:-moz-placeholder { 
+/* Mozilla Firefox 4 to 18 */ 
+color: #999; 
+} 
+.searchhomebox input::-moz-placeholder, textarea::-moz-placeholder { 
+ /* Mozilla Firefox 19+ */ 
+color: #999; 
+} 
+.searchhomebox input:-ms-input-placeholder, textarea:-ms-input-placeholder { 
+ /* Internet Explorer 10+ */ 
+color: #999; 
+}
+
+.qiandan .pm input{background: #f0f0f0;border-radius: 0.5rem !important;}
+.mu-elevation-1{box-shadow: initial !important;}
+
+.distpicker-address-wrapper .address-container ul{height: 4rem !important;overflow-y: scroll !important;}
