@@ -1,110 +1,110 @@
 <template>
-	<div class="indexbox">
-		<!-- 搜索区 -->
-		<HomeSearch :ishome='true'></HomeSearch>
-		<!-- 轮播图-->
-		<HomeBanner :imgs='bannerImg' class='homebanner'></HomeBanner>
+  <div class="indexbox">
+    <!-- 搜索区 -->
+    <HomeSearch :ishome='true'></HomeSearch>
+    <!-- 轮播图-->
+    <HomeBanner :imgs='bannerImg' class='homebanner'></HomeBanner>
 
-		<!--首页覆盖Banner的tab-->
-		<div class="topboxinfo">
-			<ul>
-				<li v-for="(item,index) in orderlist" @click="toplistgo(index)" :key='index'>
-					<!--<router-link :to="{path:'/hot', query:{id:item.id}}">-->
-					<img :src="item.img" />
-					<p>{{item.title}}</p>
-					<!--</router-link>-->
-				</li>
-			</ul>
-		</div>
+    <!--首页覆盖Banner的tab-->
+    <div class="topboxinfo">
+      <ul>
+        <li v-for="(item,index) in orderlist" @click="toplistgo(index)" :key='index'>
+          <!--<router-link :to="{path:'/hot', query:{id:item.id}}">-->
+          <img :src="item.img" />
+          <p>{{item.title}}</p>
+          <!--</router-link>-->
+        </li>
+      </ul>
+    </div>
 
-		<div class="iddexcontent">
-			<div class="adimg">
-				<img src="../../../static/img/1.0_02.png" />
-			</div>
-			<!--商品列表专区-->
-			<div>
-				<div class="inc-scroll-landscape-container">
-					<div class="inc-scroll-landscape-content">
-						<ul>
-							<li class="toptab" v-for="(item , index) in classlist" :key='index' @click="goDetail(item)">
-								<p>{{item.goods_type_name}}</p>
-								<p class="stip">{{item.goods_type_desc}}</p>
-								<img src="../../../static/img/1.6_03.png" />
-							</li>
-						</ul>
-					</div>
-				</div>
-			</div>
+    <div class="iddexcontent">
+      <div class="adimg">
+        <img src="../../../static/img/1.0_02.png" />
+      </div>
+      <!--商品列表专区-->
+      <div>
+        <div class="inc-scroll-landscape-container">
+          <div class="inc-scroll-landscape-content">
+            <ul>
+              <li class="toptab" v-for="(item , index) in classlist" :key='index' @click="goDetail(item)">
+                <p>{{item.goods_type_name}}</p>
+                <p class="stip">{{item.goods_type_desc}}</p>
+                <img src="../../../static/img/1.6_03.png" />
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
 
-			<div class="indexlist">
-				<div class="oftenby">
-					<img src="../../../static/img/car/ic_tianjia.png" />
-					<span class="oftenbytitle">
-						常购清单
-					</span>
-					<span class="oftenme">我的专属购物清单</span>
-				</div>
-			</div>
+      <div class="indexlist">
+        <div class="oftenby">
+          <img src="../../../static/img/car/ic_tianjia.png" />
+          <span class="oftenbytitle">
+            常购清单
+          </span>
+          <span class="oftenme">我的专属购物清单</span>
+        </div>
+      </div>
 
-			<div style="position: relative;min-height: 4rem;">
-				<mu-paper :z-depth="1" class="demo-list-wrap" v-if="showlist.length > 0">
-					<mu-list textline="three-line">
+      <div style="position: relative;min-height: 4rem;">
+        <mu-paper :z-depth="1" class="demo-list-wrap" v-if="showlist.length > 0">
+          <mu-list textline="three-line">
 
-						<div v-for="(item,index) in showlist" :key="index" class="li-box">
-							<router-link to="/detail">
-								<mu-list-item avatar :ripple="false" button>
-									<mu-list-item-action>
-										<mu-avatar style="min-width: 1.4rem;height: 1.4rem;">
-											<img :src="item.img">
-										</mu-avatar>
-									</mu-list-item-action>
-									<mu-list-item-content>
-										<mu-list-item-title>{{item.title}}</mu-list-item-title>
-										<mu-list-item-sub-title>
-											<span style="color: #a9a9a9;font-size: 0.2rem;">库存{{item.inventory}}件</span>
-											<div style="color: red;">
-												<span v-show="!isbind" style="color: #a9a9a9;">绑定手机号才能查看价格</span>
-												<div v-show="isbind" class="pricecolor">￥
-													<span>{{item.price}}</span>
-												</div>
-												<!--<span style="color: #ccc;text-decoration: line-through;">￥{{item.oldPrice}}</span>-->
-											</div>
-										</mu-list-item-sub-title>
-									</mu-list-item-content>
-								</mu-list-item>
-							</router-link>
-							<mu-divider></mu-divider>
-							<div style="position: absolute;right: 0.3rem;bottom: 0.12rem;">
-								<div class="saoma">
-									<span class="minus mpsytl" @click="minus(item)" v-if="item.num != 0">-</span>
-									<span>{{item.num}}</span>
-									<span class="plus mpsytl" @click="plus(item)">+</span>
-								</div>
-							</div>
-							<div class="dele" @click="deleList(index)">
-								<img src="../../../static/img/ic-del.png" />
-							</div>
-						</div>
-					</mu-list>
-				</mu-paper>
-				<div v-else style="position: absolute;left: 50%;top: 50%;margin-top: -1.8rem;margin-left: -1rem;">
-					<img src="../../../static/img/car/img_konggouwuche.png" style="width: 2rem;height: 2rem;" />
-					<p style="color: #999;">你还没有清单哦</p>
-				</div>
-			</div>
+            <div v-for="(item,index) in showlist" :key="index" class="li-box">
+              <router-link to="/detail">
+                <mu-list-item avatar :ripple="false" button>
+                  <mu-list-item-action>
+                    <mu-avatar style="min-width: 1.4rem;height: 1.4rem;">
+                      <img :src="item.img">
+                    </mu-avatar>
+                  </mu-list-item-action>
+                  <mu-list-item-content>
+                    <mu-list-item-title>{{item.title}}</mu-list-item-title>
+                    <mu-list-item-sub-title>
+                      <span style="color: #a9a9a9;font-size: 0.2rem;">库存{{item.inventory}}件</span>
+                      <div style="color: red;">
+                        <span v-show="!isbind" style="color: #a9a9a9;">绑定手机号才能查看价格</span>
+                        <div v-show="isbind" class="pricecolor">￥
+                          <span>{{item.price}}</span>
+                        </div>
+                        <!--<span style="color: #ccc;text-decoration: line-through;">￥{{item.oldPrice}}</span>-->
+                      </div>
+                    </mu-list-item-sub-title>
+                  </mu-list-item-content>
+                </mu-list-item>
+              </router-link>
+              <mu-divider></mu-divider>
+              <div style="position: absolute;right: 0.3rem;bottom: 0.12rem;">
+                <div class="saoma">
+                  <span class="minus mpsytl" @click="minus(item)" v-if="item.num != 0">-</span>
+                  <span>{{item.num}}</span>
+                  <span class="plus mpsytl" @click="plus(item)">+</span>
+                </div>
+              </div>
+              <div class="dele" @click="deleList(index)">
+                <img src="../../../static/img/ic-del.png" />
+              </div>
+            </div>
+          </mu-list>
+        </mu-paper>
+        <div v-else style="position: absolute;left: 50%;top: 50%;margin-top: -1.8rem;margin-left: -1rem;">
+          <img src="../../../static/img/car/img_konggouwuche.png" style="width: 2rem;height: 2rem;" />
+          <p style="color: #999;">你还没有清单哦</p>
+        </div>
+      </div>
 
-		</div>
+    </div>
 
-		<!--底部导航-->
-		<Footer tagNum='0'></Footer>
-	</div>
+    <!--底部导航-->
+    <Footer tagNum='0'></Footer>
+  </div>
 </template>
 <script>
 import HomeSearch from "../common/HomeSearch.vue";
 import HomeBanner from "../home/HomeBanner.vue";
 import Footer from "../common/Footer.vue";
 import { mapState } from "vuex";
-import { getIndexClass , getIndexBanner } from "../../http/http.js";
+import { getIndexClass, getIndexBanner } from "../../http/http.js";
 
 export default {
   components: {
@@ -118,7 +118,7 @@ export default {
       limit: 10,
       page: 1,
       bannerImg: [
-       /*  require("../../../static/img/1-0_02.png"),
+        /*  require("../../../static/img/1-0_02.png"),
         require("../../../static/img/1-0_02.png"),
         require("../../../static/img/1-0_02.png"),
         require("../../../static/img/1-0_02.png") */
@@ -183,7 +183,7 @@ export default {
         }
       ],
       orderlist: [
-         {
+        {
           id: 1,
           title: "热销榜",
           img: require("../../../static/img/home/ic_rexiaobang.png")
@@ -202,7 +202,7 @@ export default {
           id: 4,
           title: "我的订单",
           img: require("../../../static/img/home/ic_dingdan.png")
-        } 
+        }
       ]
     };
   },
@@ -272,7 +272,6 @@ export default {
     })
   },
   mounted() {
-	 
     //alert(host);
     /*if(!window.localStorage.getItem('token')){
   		
@@ -280,18 +279,21 @@ export default {
   		console.log(this.$store.state.isbind)
 	  }*/
 
-	/**
+    /**
      * 获取首页banner
      */
-	getIndexBanner(4,1).then(res => {
-		let data = res.data.data.data;
-		for(let item in data){
-			data[item].banner_image_address = this.host + data[item].banner_image_address;
-		}
-		this.bannerImg = data
-		console.log("banner");
-		console.log(res);
-	});
+    getIndexBanner(4, 1).then(res => {
+      if (res) {
+        let data = res.data.data.data;
+        for (let item in data) {
+          data[item].banner_image_address =
+            this.host + data[item].banner_image_address;
+        }
+        this.bannerImg = data;
+        console.log("banner");
+        console.log(data);
+      }
+    });
 
     /**
      * 获取首页分类专区

@@ -12,6 +12,7 @@ import '../static/js/auto-size.js'
 import '../static/css/base.css'
 import 'muse-ui/dist/muse-ui.css';
 import '../static/css/appbase.css'
+import { stringify } from 'querystring';
 
 
 Vue.use(MuseUI)
@@ -47,6 +48,48 @@ axios.interceptors.request.use(
     err => {
         return Promise.reject(err);
 });
+
+
+
+axios.interceptors.response.use(function (response) {
+    console.log('');
+    console.log('');
+    console.log('/* ****************************************** */');
+    console.log('请求接口地址=>'+response.config.url);
+    console.log('请求响应');
+    console.log(response);
+     
+// token 已过期，重定向到登录页面
+/* if (response.data.code == 4){
+    //localStorage.clear()
+    console.log(1111)
+    router.replace({
+                    path: '/login'
+                })
+}  */
+return response
+}, function (error) {
+    let status = error.response.status;
+    let msg = error.response.data.errors;
+    let allmsg = ''
+    for(let item in msg){
+        let itemmsg = status +":" + item +"=>"+msg[item];
+        allmsg += itemmsg;
+    }
+    console.log('-------------------------------------------------');
+    console.log(allmsg);
+    console.log('-------------------------------------------------');
+    
+// Do something with response error
+return Promise.reject(error)
+})
+
+
+
+
+
+
+
 
 /* eslint-disable no-new */
 new Vue({

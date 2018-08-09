@@ -4,6 +4,7 @@ const host = store.state.host;
 
 /**
  * 获取首页轮播图
+ * @param limit分页条数
  */
 export const getIndexBanner = (limit,page) =>{ return axios.get(host + "/api/banner?limit=" + limit + "&page=" + page).then((res) => {return res;}).catch((error) => {return error.response})};
 /**
@@ -23,6 +24,7 @@ export const getCaiClassOne = (limit,page) =>{ return axios.get(host + "/api/goo
 export const getCaiClassChild = id =>{ return axios.get(host + "/api/get-second-type?id=" + id).then((res) => {return res;}).catch((error) => {return error.response})};
 /**
  * 获取分类Tab二级菜单里面的菜品
+ * @param limit分页条数
  */
 export const getCaiClassChildDetail = ( typeid , limit , page ) =>{ return axios.get(host + "/api/goods-list?typeid=" + typeid + "&limit=" + limit+ "&page=" + page).then((res) => {return res;}).catch((error) => {return error.response})};
 /**
@@ -41,10 +43,25 @@ export const getSearchWords = () => { return axios.get(host + "/api/get-history"
  */
 export const getCarList = (limit,page) =>{ return axios.get(host + "/api/shoppingcart?limit=" + limit + "&page=" + page).then((res) => {return res;}).catch((error) => {return error.response})};
 
+/**
+ * 添加购物车
+ */
+export const AddCarShop = upData =>{ return axios.post(host + "/api/shoppingcart", upData).then((res) => {return res;}).catch((error) => {return error.response})};
+
+/**
+ * 删除购物车
+ */
+export const DeleCarShop = id =>{ return axios.delete(host + "/api/shoppingcart/"+id).then((res) => {return res;}).catch((error) => {return error.response})};
+
+/**
+ * 修改购物车
+ */
+export const EditCarShop =( id , upData ) =>{ return axios.put(host + "/api/shoppingcart/"+id , upData).then((res) => {return res;}).catch((error) => {return error.response})};
+
 
 
 /**
- *个人获取个人优惠券
+ *获取个人优惠券
  */
 export const getCenterCoupons = ( limit , page ) =>{ return axios.get(host + "/api/get-self-redpacket?limit=" + limit+ "&page=" + page + "&is_receive=0").then((res) => {return res;}).catch((error) => {return error.response})};
 

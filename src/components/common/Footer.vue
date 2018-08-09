@@ -23,7 +23,7 @@
 				<mu-button>
 					<img :src="tabImg[3].showImg"/>
 					<p>购物车</p>
-					<span class="fanallcar">{{count}}</span>
+					<span class="fanallcar" v-show="count != 0">{{count}}</span>
 				</mu-button>
 			</router-link>
 			<router-link to="/center">

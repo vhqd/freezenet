@@ -26,12 +26,15 @@ import getcoupons from '@/components/center/getcoupons'
 import login from '@/components/phone/phone'
 
 
+import test from '@/components/test/test'
+
 
 Vue.use(Router)
 
 const router =  new Router({
   routes: [
     { path: '/', name: 'index', component: index },//首页
+    { path: '/test', name: 'test', component: test },//测试
     { path: '/classification', name: 'classification', component: classification },//分类
     { path: '/oftenbuy', name: 'oftenbuy', component: oftenbuy },//常购清单
     { path: '/car', name: 'car', component: car },//购物车组件

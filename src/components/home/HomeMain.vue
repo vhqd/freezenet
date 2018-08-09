@@ -62,7 +62,7 @@
       <!--右边菜单详情列表-->
       <div id="homelistbox">
         <mu-paper :z-depth="1" class="demo-list-wrap">
-          <mu-list textline="three-line" v-if="caiDetailList.length != 0" >
+          <mu-list textline="three-line" v-if="caiDetailList.length != 0">
 
             <div v-for="(item,index) in caiDetailList" :key="index" class="li-box">
               <router-link to="/detail">
@@ -101,7 +101,7 @@
           <p v-else class="nodata">暂时没有商品哦</p>
         </mu-paper>
 
-      <!--    <mu-container data-mu-loading-color="secondary" data-mu-loading-overlay-color="rgba(0, 0, 0, .7)" v-loading="loading2" class="demo-loading-wrap">
+        <!--    <mu-container data-mu-loading-color="secondary" data-mu-loading-overlay-color="rgba(0, 0, 0, .7)" v-loading="loading2" class="demo-loading-wrap">
          <mu-button color="teal" @click="fullscreen()">全屏加载</mu-button>
 </mu-container> -->
 
@@ -110,7 +110,7 @@
 
     <!--购物车bar-->
 
-    <!--		<div class="addToCar">
+    		<div class="addToCar">
 		  	<mu-list class="carbut">
 			   <mu-list-item avatar button :ripple="false">
 			      <div class="pricecarbox">
@@ -122,8 +122,8 @@
 				      </div>
 				      <div style="position: relative;">合计：<span style="color: red;">￥{{allPrice}}</span><span class="qigou">100元起购</span></div>
 			      </div>
-			      <div class="settlement" @click="settlement">
-			       	去结算
+			      <div :class="carnum == 0 ? 'huise settlement': 'settlement'" @click="settlement">
+			       	加入购物车
 			      </div>
 			    </mu-list-item>
 		    </mu-list>
@@ -132,14 +132,21 @@
 			    你还没有选中商品<br>还不能去结算
 			    <mu-button slot="actions" flat color="primary" @click="closeJSDialog">确定</mu-button>
 			  </mu-dialog>
-	  </div>-->
+	  </div>
 
   </div>
 </template>
 
 <script>
 import { mapState } from "vuex";
-import { getCaiClassOne ,getCaiClassChild , getCaiClassChildDetail } from "../../http/http.js";
+import { AddCarShop } from "../../http/http.js";
+import QS from "qs";
+
+import {
+  getCaiClassOne,
+  getCaiClassChild,
+  getCaiClassChildDetail
+} from "../../http/http.js";
 
 export default {
   data() {
@@ -149,18 +156,24 @@ export default {
       limit: 15, //当前页面分页条数
       docked: true, //是否显示遮罩
       open: true, //默认菜单栏显示
-      initdata:true,//初始化菜单
-      carnum: 0,
+      initdata: true, //初始化菜单
+      carnum: 0,//分类底部小车数量
+      alldata:[{
+        'goods_id':[],
+        'single_price':[],
+        'count':[],
+        'sum_price':0
+      } ],//分类底部购物车数据
       allPrice: 0,
-       loading1: false,
+      loading1: false,
       loading2: false,
       openJS: false, //结算弹窗
       position: "left", //菜单显示位置
       amount: 0, //数量
       activeInd: 0, //左边菜单选中背景class数组索引
-      leftCaiClass:[],//左边菜单数据
-      caiDetailList:[],//右边菜品数据
-      nodata:false,//没有数据提示
+      leftCaiClass: [], //左边菜单数据
+      caiDetailList: [], //右边菜品数据
+      nodata: false, //没有数据提示
       showList: [], //默认显示的数据
       searchBarFixed: false,
       show: false,
@@ -172,8 +185,8 @@ export default {
       		name:'海鲜',
       		isCheck:true
       	}*/
-      ],
-   /*    menu: [
+      ]
+      /*    menu: [
         {
           id: 1,
           name: "热卖",
@@ -193,17 +206,17 @@ export default {
     };
   },
   methods: {
-    loading () {
+    loading() {
       this.loading2 = true;
       setTimeout(() => {
         this.loading2 = false;
-      }, 2000)
+      }, 2000);
     },
-    fullscreen () {
+    fullscreen() {
       const loading = this.$loading();
       setTimeout(() => {
         loading.close();
-      }, 2000)
+      }, 2000);
     },
     /*点击切换顶部菜单默认第一个的状态,并且获取数据*/
     removeBg(index, item) {
@@ -220,56 +233,56 @@ export default {
       this.getChildList(item);
     },
     getChildList(item) {
-      getCaiClassChild(item.id).then(res => {
-        let data = res.data.data;
-        this.leftCaiClass = data;
-        /*初始化加载数据*/
-        this.switchMenu(0,data[0])
-        console.log(data);
-      })
+      if (item) {
+        getCaiClassChild(item.id).then(res => {
+          let data = res.data.data;
+          this.leftCaiClass = data;
+          /*初始化加载数据*/
+          this.switchMenu(0, data[0]);
+          console.log(data);
+        });
+      }
     },
-       /*菜单切换方法*/
-    switchMenu(index,item) {
-
+    /**菜单切换方法*/
+    switchMenu(index, item) {
+      if(!item)
+        return;
       /*二级菜单背景色class*/
       this.activeInd = index;
       let loading = this.$loading();
-      getCaiClassChildDetail(item.id,this.limit,this.page).then(res => {
+      getCaiClassChildDetail(item.id, this.limit, this.page).then(res => {
         let data = res.data.data;
-        if(data.length == 0){
+        if (data.length == 0) {
           this.nodata = true;
-           this.caiDetailList = [];
+          this.caiDetailList = [];
           return;
         }
-        for(let item in data){
+        for (let item in data) {
           data[item].goods_photo = this.host + data[item].goods_photo;
           data[item].num = 0;
         }
         this.caiDetailList = data;
-        
-        console.log(data)
-      })
+
+        console.log(data);
+      });
       setTimeout(() => {
         loading.close();
-      }, 300)
+      }, 300);
       //showList.push(menu[index]);
     },
     /*结算*/
     settlement() {
-      //用选中商品总价判断是否选择商品
-      if (!this.allPrice > 0) {
-        //打开弹窗
-        this.openJS = true;
-      } else {
-        this.$router.push({ path: "/order" });
-      }
+      AddCarShop(QS.stringify(this.alldata[0])).then(res=>{
+        //设置导航购物车数量
+        this.$store.commit('editCarnum', this.$store.state.count + this.alldata[0].goods_id.length);
+      })
     },
     /*关闭弹窗*/
     closeJSDialog() {
       this.openJS = false;
     },
- 
-    /*获取默认显示的数据*/
+
+    /**获取默认显示的数据*/
     getMenuListOne() {
       let showList = this.showList;
       let data = this.menu[0].list;
@@ -281,24 +294,70 @@ export default {
       //showList.push(this.menu[0]);
       //console.log(showList);
     },
-    /*减少数量值*/
+    /**减少数量值*/
     minus(item) {
       let amount = item.num;
       if (amount > 0) {
         item.num = amount - 1;
         this.carnum = this.carnum - 1;
-        this.allPrice = this.allPrice - item.price;
+        this.allPrice = this.allPrice - item.goods_price;
       } else {
         item.num = 0;
       }
+
+      let alldata = this.alldata;
+      let goods_ids = alldata[0].goods_id;
+      let id = item.id;
+      let indexs = 0 ;
+      for(let ite in goods_ids){
+        if(id == goods_ids[ite]){
+          indexs = ite
+        }
+      }
+      this.alldata[0].count.splice(indexs,1);
+      this.alldata[0].goods_id.splice(indexs,1);
+      this.alldata[0].single_price.splice(indexs,1);
+      console.log('-----------------------------------------');
+      
+      console.log(this.alldata);
+      
     },
-    /*增加数量值*/
+    
+      
+    
+    /**增加数量值*/
     plus(item) {
       let amount = item.num;
       item.num = amount + 1;
       this.carnum = this.carnum + 1;
-      this.allPrice = this.allPrice + item.price;
+      this.allPrice = this.allPrice + item.goods_price;
+
+       
+      let alldata = this.alldata;
+      let sum_price = alldata[0].sum_price;
+      this.alldata[0].goods_id.push(item.id);
+      this.alldata[0].single_price.push(item.goods_price);
+      this.alldata[0].count.push(1);//这里只能push=>1个数量
+      this.alldata[0].sum_price = item.num*item.goods_price + sum_price;
+      console.log('++++++++++++++++++++++++++++++++++++++++++++');
+      
+      console.log(this.alldata);
+      
+     /*  //下面是拆开单条的数据
+      let obj = {
+        'goods_id':[item.id],
+        'single_price':[item.goods_price],
+        'count':[1],
+        'sum_price':item.num*item.goods_price
+      }
+      this.alldata.length = 0;
+      this.alldata.push(obj)  */
+     // console.log('========================');
+     // console.log(this.alldata);
+      
+      
     },
+    
     /*点击分类操作*/
     isopen() {
       this.open = !this.open; //控制菜单显示隐藏
@@ -358,7 +417,6 @@ export default {
           1 - scrollTop / 16 / 10;
       }
     }
-   
   },
   destroyed() {
     //window.removeEventListener('scroll', this.handleScroll)
@@ -373,7 +431,6 @@ export default {
     /*获取顶部菜单*/
     getCaiClassOne(this.limit, this.page).then(res => {
       let data = res.data.data.data;
-      console.log(data)
       for (let item in data) {
         if (item == 0) data[item].isCheck = true;
         else data[item].isCheck = false;
@@ -382,7 +439,6 @@ export default {
       /*初始化二级默认菜单和菜品*/
       this.getChildList(this.classification[0]);
     });
-  
 
     //this.getMenuListOne();
     /*this.scrollTop = window.scrollY;*/
@@ -392,8 +448,14 @@ export default {
 </script>
 
 <style scoped>
-.mu-item-title{font-size: 12px;font-weight: bold;color: #333;}
-.li-active .mu-item-title{color: #f24c4c}
+.mu-item-title {
+  font-size: 12px;
+  font-weight: bold;
+  color: #333;
+}
+.li-active .mu-item-title {
+  color: #f24c4c;
+}
 .home_main {
   padding-top: 0.9rem;
 }
@@ -613,9 +675,14 @@ export default {
   margin: 0.1rem;
 }
 
-.nodata{padding: 20px 0;font-size: 12px}
+.nodata {
+  padding: 20px 0;
+  font-size: 12px;
+}
 
-/*.addToCar{position: fixed;bottom: 1rem;width: 100%;z-index: 2;}
+.huise{background: #bbb !important;}
+
+.addToCar{position: fixed;bottom: 1rem;width: 100%;z-index: 2;}
 	.pricecarbox{width: 67%; background:#fff;left: 0; position: absolute;height: 100%;}
 	.pricecarbox>div{line-height: 32px;text-align: right;padding-right: 0.3rem;font-weight: bold;font-size: 0.32rem;}
 	.carprice{position: absolute;left: 0.8rem;font-size: 0.26rem !important;color: #666;}
@@ -637,7 +704,7 @@ export default {
     padding: 0 5px;
     text-align: center;	}
     .qigou{position: absolute;right: 0.3rem;bottom: -0.36rem;font-size: 0.22rem;color: #999;}
-    .opentab{width: 100%;background: #fff;border-bottom: 1px solid #e0e0e0;padding: 0.1rem;}*/
+    .opentab{width: 100%;background: #fff;border-bottom: 1px solid #e0e0e0;padding: 0.1rem;}
 
 /*.opentab .toptab:not(:first-child){
     	background: #f0f0f0;
