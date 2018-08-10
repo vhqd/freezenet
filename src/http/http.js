@@ -5,6 +5,7 @@ const host = store.state.host;
 /**
  * 获取首页轮播图
  * @param limit分页条数
+ * @param page当前页码
  */
 export const getIndexBanner = (limit,page) =>{ return axios.get(host + "/api/banner?limit=" + limit + "&page=" + page).then((res) => {return res;}).catch((error) => {return error.response})};
 /**
