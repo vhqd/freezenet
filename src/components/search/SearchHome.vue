@@ -1,7 +1,7 @@
 <template>
 	<div style="height: 100%;" class="searchhomebox">
 		<!-- 搜索区 -->
-		<Search :ishome='false'></Search>
+		<Search :ishome='false' v-on:sendword="showword"></Search>
 		<!--搜索历史-->
 		<div id="search-content">
 			<!--搜索列表-->
@@ -9,7 +9,7 @@
 				<li v-for="(item , index) in resData" :key="index">{{item.title}}</li>
 			</ul>
 			<!--暂无历史-->
-			<mu-paper>
+			<mu-paper v-if="history.length == 0 && hothistory.length == 0">
 				<mu-list>
 					<mu-list-item avatar button :ripple="false">
 						<mu-list-item-title>搜索历史</mu-list-item-title>
@@ -22,10 +22,10 @@
 			<p class="noneHis">暂无搜索历史</p>
 
 			<!--历史记录-->
-			<mu-container class="demo-chip-wrapper">
+			<mu-container class="demo-chip-wrapper" v-if="history.length>0">
 				<p class="historybox">历史搜索</p>
 				<mu-chip class="demo-chip" v-for="(item , index) in history" :key="index">
-					{{item.title}}
+					{{item.key_word}}
 				</mu-chip>
 			</mu-container>
 
@@ -33,10 +33,10 @@
 
 		</div>
 		<!--热门搜索-->
-		<mu-container class="demo-chip-wrapper hotsearchbox">
+		<mu-container class="demo-chip-wrapper hotsearchbox" v-if="hothistory.length>0">
 			<p class="historybox">热门搜索</p>
 			<mu-chip class="demo-chip" v-for="(item , index) in hothistory" :key="index">
-				{{item.title}}
+				{{item.key_word}}
 			</mu-chip>
 		</mu-container>
 		<!--搜索结果-->
@@ -141,7 +141,7 @@
 
 <script>
 import Search from "../common/Search.vue";
-import { getSearchWords } from "../../http/http.js";
+import { getSearchWords , GetKeyWord , GetKeyHotWord , SearchWord} from "../../http/http.js";
 
 export default {
   data() {
@@ -150,14 +150,14 @@ export default {
       openJS: false, //结算弹窗
 	  carnum: 0, //购物车数量
 	  history:[
-		  {
+		  /* {
 			  title:'鸭肠'
-		  }
+		  } */
 	  ],
 	  hothistory:[
-		  {
+		 /*  {
 			  title:'鱼鱼鱼'
-		  }
+		  } */
 	  ],
       allPrice: 0, //总价
 	  checkNum: 0, //选中的条数
@@ -263,6 +263,11 @@ export default {
     };
   },
   methods: {
+    showword(data){
+      SearchWord(data).then(res =>{
+
+      })
+    },
     /*获取默认显示的数据*/
     getMenuListOne() {
       let showList = this.showList;
@@ -319,17 +324,29 @@ export default {
   },
   mounted() {
     /*获取搜索历史*/
-    /* getSearchWords().then((res)=>{
-				let data = res.data.data;
+     GetKeyWord().then((res)=>{
+        let data = res.data.data;
+        this.history = data;
 				console.log(data);
 				
 				console.log('--------');
 				
 				console.log(res);
+	
+      })
+       /*获取搜索历史*/
+     GetKeyHotWord().then((res)=>{
+        let data = res.data.data;
+        this.hothistory = data;
+				console.log(data);
 				
-			}) */
-    this.getMenuListOne();
-    this.getCarNum();
+				console.log('--------');
+				
+				console.log(res);
+	
+			})
+    //this.getMenuListOne();
+    //this.getCarNum();
   },
   components: {
     Search

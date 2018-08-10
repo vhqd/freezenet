@@ -6,6 +6,7 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
     state: {
 		host:'http://enet.api.gg',
+		load:false,
 		/* host:'http://SW2018001.trg7.cn', */
     	token:'',
         count:0,//导航栏上面的购物车数量
@@ -13,6 +14,14 @@ const store = new Vuex.Store({
     },
     
 	mutations:{
+		/**
+		 * loading控制
+		 * @param {state} state 
+		 * @param {boolean} value 
+		 */
+		setLoad(state,value){
+			state.load = value;
+		},
 		/**
 		 * 已经绑定手机号
 		 */

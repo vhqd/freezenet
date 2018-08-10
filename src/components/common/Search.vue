@@ -38,8 +38,16 @@
            		}else{
            			this.$router.go('-1')
            		}
-           }
-        },
+		   },
+		   sendKeyWord(){
+			   this.$emit("sendword",this.value1)
+		   }
+		},
+		watch:{
+			value1(){
+				this.sendKeyWord();
+			}
+		},
         props:['ishome'],
         mounted(){
 			

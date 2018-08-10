@@ -37,7 +37,7 @@ const router =  new Router({
     { path: '/test', name: 'test', component: test },//测试
     { path: '/classification', name: 'classification', component: classification },//分类
     { path: '/oftenbuy', name: 'oftenbuy', component: oftenbuy },//常购清单
-    { path: '/car', name: 'car', component: car },//购物车组件
+    { path: '/car', name: 'car', component: car ,meta: { keepAlive: false }},//购物车组件
     { path: '/center', name: 'center', component: center },//个人中心组件
     { path: '/search', name: 'searchhome', component: searchhome },//搜索组件
     { path: '/detail', name: 'detail', component: detail },//商品详情组件
@@ -95,7 +95,15 @@ router.beforeEach((to, from, next) => {
 	    } else { //不然就跳转到登录；
 	        next('/login');
 	    }
-	}
+    }
+    
+   /*  if(to.path=='/car'){ 
+       // 设置下一个路由的 meta
+       alert(111);
+       to.meta.keepAlive = false; 
+       next();
+    } */
+
 })
 
 export default router

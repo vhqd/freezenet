@@ -57,6 +57,7 @@
               </div>
               <div class="delete" @click="deleteItem" :data-index='index'>删除</div>
             </li>
+            <p v-show="nomore">没有数据了</p>
           </ul>
         </mu-load-more>
       </div>
@@ -74,7 +75,7 @@
                 <span class="qigou">满300减20</span>
               </div>
             </div>
-            <div class="settlement" @click="settlement">
+            <div :class="allPrice == 0 ? 'huise settlement': 'settlement'" @click="settlement">
               结算（{{checkNum}}）
             </div>
           </mu-list-item>
@@ -97,7 +98,12 @@
 
 <script>
 import { mapState } from "vuex";
-import { getCarList, getProductInfos , DeleCarShop , EditCarShop} from "../../http/http.js";
+import {
+  getCarList,
+  getProductInfos,
+  DeleCarShop,
+  EditCarShop
+} from "../../http/http.js";
 
 export default {
   name: "index",
@@ -113,8 +119,9 @@ export default {
       checkAll: false, //全选（默认不选）
       allPrice: 0, //总价
       checkNum: 0, //选中的条数
+      nomore: false, //没有更多显示
       list: [
-         /*  {
+        /*  {
           id: 1,
           img: require("../../../static/img/1-0_03.png"), //图片
           title: "算哈哈是111", //标题
@@ -135,62 +142,47 @@ export default {
       isbind: "isbind"
     })
   },
-  mounted() {
-  /*  let value = async (limit,page) => {
-      const lists = await getCarList(limit, page).then(res => {
-        this.page = page + 1;
-        let data = res.data.data.data;
-        if(data){
-          return this.sliceData(data);
-        }
-      });
-      let listval = [];
-      let ids = [];
-      
-      if (lists.length > 0) {
-        for (let item in lists) {
-          let id = lists[item].goods_id;
-          ids.push(id);
-        }
-        
-        await getProductInfos(JSON.stringify({"id":ids})).then(res => {
-            listval = res.data.data;
-            for (const item in listval) {
-              listval[item].goods_photo = this.host + listval[item].goods_photo;
-              listval[item].checks = false;
-              listval[item].num = 0;
-            }
-          });
-      }
-      return listval;
-    };
-    value(this.limit,this.page).then(res => {
-      
-      this.list = [...this.list, ...res];
-      console.log(this.list);
-    }); */
-    this.getCarList(this.limit,this.page).then(res => {
-      this.list = [...this.list, ...res];
-      //console.log(this.list);
+  activated(){
+    this.checkAll =false;
+    this.checkNum = 0;
+    this.allPrice = 0;
+    this.$store.commit("setLoad",true);
+     //let loadings = this.$loading();
+     this.getCarList(this.limit, 1).then(res => {
+      /* this.list = [...this.list, ...res]; */
+      this.list = res;
+      this.getCarNum(this.list);
+      this.$store.commit("setLoad",false);
     });
   },
+  mounted() {
+   /*  this.$store.commit("setLoad",true);
+     //let loadings = this.$loading();
+     this.getCarList(this.limit, this.page).then(res => {
+      this.list = [...this.list, ...res];
+      this.getCarNum(this.list);
+      this.$store.commit("setLoad",false);
+    }); */
+     /* setTimeout(()=>{
+        if(loadings)
+          loadings.close();
+      },300); */
+  },
   methods: {
-
     /**获取购物车数据*/
-     async getCarList(limit,page) {
+    async getCarList(limit, page) {
       const lists = await getCarList(limit, page).then(res => {
         this.page = page + 1;
         let data = res.data.data.data;
-        if(data){
+        if (data) {
           return this.sliceData(data);
         }
       });
       let listval = [];
       let ids = [];
-      let carids = [];//购物车id
-      let counts= [];//购物车商品个数
-      let carnum = 0;//购物车数量
-      
+      let carids = []; //购物车id
+      let counts = []; //购物车商品个数
+      //let carnum = 0; //购物车数量
       //lists购物车订单数组
       if (lists.length > 0) {
         for (let item in lists) {
@@ -200,38 +192,55 @@ export default {
           ids.push(id);
           carids.push(carid);
           counts.push(count);
-          carnum += count;
+          //carnum +=parseInt(count);
         }
-        
         //设置导航购物车数量
-        this.$store.commit('editCarnum',carnum);
-        
-        
-        await getProductInfos(JSON.stringify({"id":ids})).then(res => {
-            //商品详情数组
-            listval = res.data.data;
-            for (const item in listval) {
-              listval[item].goods_photo = this.host + listval[item].goods_photo;
-              listval[item].carid = carids[item];//将购物车id添加到商品信息里面，删除购物车需要
-              listval[item].num = counts[item];//将购物车id添加到商品信息里面，删除购物车需要
-              listval[item].checks = false;
-            }
-          });
+        //this.$store.commit("editCarnum", carnum);
+        await getProductInfos(JSON.stringify({ id: ids })).then(res => {
+          //商品详情数组
+          listval = res.data.data;
+          for (const item in listval) {
+            listval[item].goods_photo = this.host + listval[item].goods_photo;
+            listval[item].carid = carids[item]; //将购物车id添加到商品信息里面，删除购物车需要
+            listval[item].num = counts[item]; //将购物车id添加到商品信息里面，删除购物车需要
+            listval[item].checks = false;
+          }
+        });
       }
       return listval;
     },
 
-   /**滚动到底部加载更多*/
+    /**滚动到底部加载更多*/
     load() {
       this.loading = true;
-      
       setTimeout(() => {
         this.loading = false;
-        this.getCarList(this.limit,this.page)
+        if (!this.nomore) {
+          this.getCarList(this.limit, this.page).then(res => {
+            if (res.length > 0) {
+              this.list = [...this.list, ...res];
+              this.getCarNum(this.list);
+              //console.log('****************************');
+              //console.log(this.list);
+            } else {
+              this.nomore = true;
+            }
+          });
+        }
         //this.getCarList(this.limit,this.page);
         // console.log("成功数据");
         //this.num += 10;
       }, 1000);
+    },
+
+    /**获取设置购物车数量*/
+    getCarNum(obj){
+      let carnum = 0;
+      for (let item in obj) {
+        carnum += parseInt(obj[item].num);
+      }
+      //设置导航购物车数量
+      this.$store.commit("editCarnum", carnum);
     },
 
     /**拆分购物车双条数据*/
@@ -262,8 +271,8 @@ export default {
         }
       }
       //console.log('00000000000000000000');
-     // console.log(newArrays);
-      
+      // console.log(newArrays);
+
       // console.log(newArrays.length);
       // this.getProductInfo(newArrays);
       return newArrays;
@@ -281,7 +290,7 @@ export default {
 
       this.checkAll = !this.checkAll;
       console.log(this.checkAll);
-      
+
       let list = this.list;
       /*let allprice = 0;*/
       for (let i = 0; i < list.length; i++) {
@@ -324,7 +333,7 @@ export default {
         item.num = 0;
       }
       this.getAllPrice(list);
-      this.eidtCar(item,0);
+      this.eidtCar(item, 0);
     },
 
     /**增加数量值*/
@@ -333,22 +342,27 @@ export default {
       let list = this.list;
       item.num = amount + 1;
       this.getAllPrice(list);
-      this.eidtCar(item,1);
+      this.eidtCar(item, 1);
     },
 
     /**编辑购物车数量*/
-    eidtCar(item,minusOrPlus){
-       //商品data
+    eidtCar(item, minusOrPlus) {
+      //商品data
       let data = {
-        'goods_id':[item.id],
-        'single_price':item.goods_price,
-        'count':item.num,
-        'sum_price':item.num*item.goods_price
-      }
-      EditCarShop(item.carid,data).then(res=>{
+        goods_id: [item.id],
+        single_price: item.goods_price,
+        count: item.num,
+        sum_price: item.num * item.goods_price
+      };
+      EditCarShop(item.carid, data).then(res => {
         //设置导航购物车数量
-        this.$store.commit('editCarnum',minusOrPlus == 0 ? this.$store.state.count - 1 : this.$store.state.count + 1);
-      }) 
+        this.$store.commit(
+          "editCarnum",
+          minusOrPlus == 0
+            ? this.$store.state.count - 1
+            : this.$store.state.count + 1
+        );
+      });
     },
 
     /**结算*/
@@ -358,8 +372,31 @@ export default {
         //打开弹窗
         this.openJS = true;
       } else {
-        this.$router.push({ path: "/order" });
+        //过滤选择商品
+        let data = this.list;
+        let datas = [];
+         console.log(2222222222222222222222222);
+        for(let item in data){
+          if(data[item].checks){
+            datas.push(data[item]);
+          }
+        }
+        console.log(11111111111111111111111111111);
+        
+        this.$router.push({ path: "/order" ,query:{list:JSON.stringify(datas)}});
       }
+    },
+    
+    //删除
+    deleteItem(e) {
+      let index = e.currentTarget.dataset.index;
+      this.restSlide();
+      let item = this.list[index];
+      this.list.splice(index, 1);
+      //console.log(item);
+
+      DeleCarShop(item.carid).then(res => {});
+      this.getCarNum(this.list);
     },
 
     /**关闭弹窗*/
@@ -419,19 +456,6 @@ export default {
       for (let i = 0; i < listItems.length; i++) {
         listItems[i].dataset.type = 0;
       }
-    },
-
-    //删除
-    deleteItem(e) {
-      let index = e.currentTarget.dataset.index;
-      this.restSlide();
-      let item = this.list[index];
-      this.list.splice(index, 1);
-      console.log(item);
-      
-      DeleCarShop(item.carid).then(res=>{
-
-      }) 
     }
 
   }

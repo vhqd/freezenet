@@ -1,12 +1,45 @@
 <template>
   <div id="app">
+    <keep-alive>
     	<router-view/>
+    </keep-alive>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  data(){
+    return{
+      loads:null,
+    }
+  },
+  methods:{
+    /**全局loading*/
+    showLoad(){
+       this.loads = this.$loading();
+    }
+  },
+  computed:{
+    load(){
+      return this.$store.state.load;
+    }
+  },
+  watch:{
+    load(a,b){
+      if(a){
+        this.showLoad();
+      }else{
+        this.loads.close();
+      }
+    }
+  },
+  mounted(){
+    //this.showLoad();
+    /* setTimeout(()=>{
+      this.a.close();
+    },1000) */
+  }
 }
 </script>
 

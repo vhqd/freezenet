@@ -2,6 +2,13 @@ body,html,#app{height:100%;width: 100%;background: #f5f5f5;}
 .mu-grid-tile-titlebar{background: none !important;}
 .mu-grid-tile.multiline .mu-grid-tile-titlebar{height: initial !important;}
 .topul .mu-grid-tile-subtitle{text-align: left !important;}
+/* 全局loading背景 */
+.mu-loading-wrap{background: rgba(255, 255, 255, 1) !important;z-index: 999999999;}
+
+
+.home_main .mu-circular-progress{top: 40% !important;}
+
+.huise{background: #bbb !important;}
 
 .leftright{overflow: hidden;}
 .left{float: left;}

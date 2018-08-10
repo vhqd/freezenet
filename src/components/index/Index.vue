@@ -104,7 +104,7 @@ import HomeSearch from "../common/HomeSearch.vue";
 import HomeBanner from "../home/HomeBanner.vue";
 import Footer from "../common/Footer.vue";
 import { mapState } from "vuex";
-import { getIndexClass, getIndexBanner } from "../../http/http.js";
+import { getIndexClass, getIndexBanner ,getCarList } from "../../http/http.js";
 
 export default {
   components: {
@@ -117,6 +117,7 @@ export default {
       host: this.$store.state.host,
       limit: 10,
       page: 1,
+      carnum:0,//购物车数量
       bannerImg: [
         /*  require("../../../static/img/1-0_02.png"),
         require("../../../static/img/1-0_02.png"),
@@ -206,6 +207,53 @@ export default {
       ]
     };
   },
+   mounted() {
+   this.$store.commit("setLoad",true);
+    //alert(host);
+    /*if(!window.localStorage.getItem('token')){
+  		
+  	}else{
+  		console.log(this.$store.state.isbind)
+	  }*/
+
+    /**
+     * 获取首页banner
+     */
+    getIndexBanner(4, 1).then(res => {
+      if (res) {
+        let data = res.data.data.data;
+        for (let item in data) {
+          data[item].banner_image_address =
+            this.host + data[item].banner_image_address;
+        }
+        this.bannerImg = data;
+        console.log("banner");
+        console.log(data);
+      }
+    });
+
+    /**
+     * 获取首页分类专区
+     */
+    getIndexClass(this.limit, this.page).then(res => {
+      //console.log("分类数据");
+      this.classlist = res.data.data.data;
+      this.$store.commit("setLoad",false);
+      //console.log(res);
+      //console.log(res.data.data.data);
+    });
+
+    /**获取购物车数量显示到底部 */
+    getCarList(999,1).then((res)=>{
+      let data = res.data.data.data;
+      for(let item in data){
+        this.carnum += data[item].count.length
+      }
+      this.$store.commit('editCarnum',this.carnum)
+    })
+
+    /* window.addEventListener('scroll', this.menuScrollTopStop)*/
+  },
   methods: {
     getClassList() {
       let that = this;
@@ -242,12 +290,8 @@ export default {
       this.showlist.splice(index, 1);
     },
     goDetail(item) {
-      if (item.id == 2) {
         this.$router.push({ path: "/chuanchuan", query: { typeid: item.id } });
-      }
-      if (item.id == 1) {
-        this.$router.push({ path: "/hotpot", query: { typeid: item.id } });
-      }
+        //this.$router.push({ path: "/hotpot", query: { typeid: item.id } });
     },
     /*减少数量值*/
     minus(item) {
@@ -270,43 +314,8 @@ export default {
       token: "token",
       isbind: "isbind"
     })
-  },
-  mounted() {
-    //alert(host);
-    /*if(!window.localStorage.getItem('token')){
-  		
-  	}else{
-  		console.log(this.$store.state.isbind)
-	  }*/
-
-    /**
-     * 获取首页banner
-     */
-    getIndexBanner(4, 1).then(res => {
-      if (res) {
-        let data = res.data.data.data;
-        for (let item in data) {
-          data[item].banner_image_address =
-            this.host + data[item].banner_image_address;
-        }
-        this.bannerImg = data;
-        console.log("banner");
-        console.log(data);
-      }
-    });
-
-    /**
-     * 获取首页分类专区
-     */
-    getIndexClass(this.limit, this.page).then(res => {
-      //console.log("分类数据");
-      this.classlist = res.data.data.data;
-      //console.log(res);
-      //console.log(res.data.data.data);
-    });
-
-    /* window.addEventListener('scroll', this.menuScrollTopStop)*/
   }
+ 
 };
 </script>
 

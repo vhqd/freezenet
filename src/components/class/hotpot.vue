@@ -234,11 +234,12 @@
 
 <style scoped>
 	.mu-infinite-scroll{margin-bottom:0.1rem}
+	.adimg {padding-top:1rem;}
 	.adimg img{height: 2.06rem;width: 100%;}
 	
 	.searchreult{overflow: hidden;}
 	.searchreult .flex-row img{width: 1.45rem;height: 1rem;margin: 0.2rem;}
-	.searchreult .flex-row p{text-align: left !important; width: 2.4rem;padding-left: 0.17rem;overflow: hidden;}
+	.searchreult .flex-row p{text-align: left !important; width: 2.4rem;padding-left: 0.17rem;overflow: hidden;word-break: keep-all;}
 	.liang{font-size: 0.22rem;color: #666;}
 	.price{font-size: 0.3rem;color: #f24c4c;padding-bottom: 0.8rem;}
 	.searchreult .flex-column{position: relative;max-width:32%;overflow: hidden;background: #fff;margin-top: 0.14rem;}

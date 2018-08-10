@@ -19,9 +19,9 @@
 					        </mu-avatar>
 					      </mu-list-item-action>
 					      <mu-list-item-content>
-					        <mu-list-item-title>{{item.title}}</mu-list-item-title>
+					        <mu-list-item-title>{{item.goods_type_id.goods_type_name}}</mu-list-item-title>
 					        <mu-list-item-sub-title>
-					          <span style="color: #666;font-size: 0.2rem;">库存{{item.inventory}}件</span>
+					          <span style="color: #666;font-size: 0.2rem;">库存{{item.goods_type_id.goods_type_leaset}}件</span>
 					          <p style="color: red;">
 					          	<span v-show="!isbind" style="color: #a9a9a9;">绑定手机号才能查看价格</span>
 					          	<span v-show="isbind">￥<span style="font-size: 0.5rem;">{{item.price}}</span></span>
@@ -75,6 +75,9 @@
 <script>
 	import { mapState } from 'vuex'
 	import BackBar from '../common/BackBar.vue'
+	import {
+	getCaiClassChild
+	} from "../../http/http.js";
 	
 	export default{
 		data(){
@@ -123,6 +126,19 @@
 		components:{
 			BackBar
 		},
+		activated(){
+			let id = this.$route.query.typeid;
+			getCaiClassChild(id).then(res => {
+			let data = res.data.data;
+			this.showlist = data;
+			/*初始化加载数据*/
+			//this.switchMenu(0, data[0]);
+			//console.log(data);
+			});
+		},
+		mounted(){
+			
+		},
 		methods:{
 			/*结算*/
 	    	settlement(){
@@ -168,7 +184,9 @@
 </script>
 
 <style scoped>
-	.adimg img{height: 2.06rem;width: 100%;}
+
+.adimg {padding-top:1rem;}
+.adimg img{height: 2.06rem;width: 100%;}
 	
 		
 .mu-list{padding: 8px 0 0 0;/*margin-bottom: 1rem;*/}

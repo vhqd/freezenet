@@ -70,6 +70,11 @@ axios.interceptors.response.use(function (response) {
 return response
 }, function (error) {
     let status = error.response.status;
+    if(status == 500){
+        let msg = error.response.data.message;
+        console.log(status+'=>:'+msg);
+        return;
+    }
     let msg = error.response.data.errors;
     let allmsg = ''
     for(let item in msg){

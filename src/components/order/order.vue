@@ -1,7 +1,7 @@
 <template>
 	<div class="orderbox">
 		<BackBar :dTitle='dTitle'></BackBar>
-		<mu-flex class="flex-wrapper shdz" align-items="center" @click='goAddDress'>
+		<mu-flex class="flex-wrapper shdz" align-items="center" @click='goAddDress' style="padding-top:1rem;" v-if="!dress">
 			<mu-flex class="flex-demo" align-items="center" justify-content="center" fill>
 				<img src="../../../static/img/car/ic_tianjia.png" />
 				<p class="title">
@@ -10,13 +10,13 @@
 			</mu-flex>
 		</mu-flex>
 
-		<mu-paper :z-depth="1" class="demo-list-wrap">
+		<mu-paper :z-depth="1" class="demo-list-wrap" style="padding-top:1rem;" v-if="dress">
 			<mu-list textline="two-line">
 				<mu-list-item avatar :ripple="false" button>
 					<mu-list-item-content>
-						<mu-list-item-title>收货人：liuliu 1388465848</mu-list-item-title>
+						<mu-list-item-title>收货人：{{dress.name}}</mu-list-item-title>
 						<mu-list-item-sub-title>
-							收货地址：从大家老双方空档开双就开双脚开动就开开老算A好弄的
+							收货地址：{{dress.address}}
 						</mu-list-item-sub-title>
 					</mu-list-item-content>
 					<mu-list-item-action>
@@ -49,22 +49,22 @@
 		<!--订单列表-->
 		<div class="listbox">
 			<mu-paper :z-depth="1" class="demo-list-wrap">
-				<mu-list textline="three-line">
+				<mu-list textline="three-line" v-if="list">
 
 					<div v-for="(item,index) in list" :key="index" class="li-box">
 						<mu-list-item avatar :ripple="false" button>
 							<mu-list-item-action>
 								<mu-avatar style="width: 1.4rem;height: 1.4rem;">
-									<img :src="item.img">
+									<img :src="item.goods_photo">
 								</mu-avatar>
 							</mu-list-item-action>
 							<mu-list-item-content>
-								<mu-list-item-title>{{item.title}}</mu-list-item-title>
+								<mu-list-item-title>{{item.goods_title}}</mu-list-item-title>
 								<mu-list-item-sub-title>
 									<!--<span style="color: #a9a9a9;font-size: 0.2rem;">库存{{item.inventory}}件</span>-->
 									<p style="color: red;">
-										￥<span style="font-size: 0.5rem;">{{item.price}}</span>
-										<span style="color: #ccc;text-decoration: line-through;">￥{{item.oldPrice}}</span>
+										￥<span style="font-size: 0.5rem;">{{item.goods_price}}</span>
+										<span style="color: #ccc;text-decoration: line-through;">￥{{item.goods_original_price}}</span>
 									</p>
 								</mu-list-item-sub-title>
 							</mu-list-item-content>
@@ -72,9 +72,13 @@
 						<mu-divider></mu-divider>
 						<div style="position: absolute;right: 0;bottom: 0;">
 							<div class="saoma">
-								<span>x1</span>
+								<span>x{{item.num}}</span>
 							</div>
 						</div>
+					</div>
+					<div @click="showAlllist">
+						<p style="color:#666;font-size:13px;font-weigth:bold;" v-if="!iszk&&shenyu>0">展开其余（{{shenyu}}）件</p>
+						<p v-if="shenyu>0"><img :src="!iszk ? zankai : shouqi " alt="" style="width:12px;height:7px;"></p>
 					</div>
 				</mu-list>
 
@@ -82,31 +86,31 @@
 					<mu-list-item button :ripple="false">
 						<mu-list-item-title>商品总额</mu-list-item-title>
 						<mu-list-item-action>
-							<span>￥845</span>
+							<span>￥{{allprice}}</span>
 						</mu-list-item-action>
 					</mu-list-item>
 					<mu-list-item button :ripple="false">
 						<mu-list-item-title>配送费</mu-list-item-title>
 						<mu-list-item-action>
-							<span>（免配送费）￥0.00</span>
+							<span>（免配送费）￥{{psf}}</span>
 						</mu-list-item-action>
 					</mu-list-item>
 					<mu-list-item button :ripple="false" @click="openBotttomSheet">
-						<mu-list-item-title>优惠券优惠<span>满300减20</span></mu-list-item-title>
+						<mu-list-item-title>优惠券优惠<span style="font-size:12px;padding-left:15px;">(满300减20)</span></mu-list-item-title>
 						<mu-list-item-action>
-							<span>-￥20</span>
+							<span>-￥{{yhj}}</span>
 						</mu-list-item-action>
 					</mu-list-item>
-					<mu-list-item button :ripple="false">
+					<mu-list-item button :ripple="false" v-for="(item,index) in payway" :key="index" v-if="item.checks">
 						<mu-list-item-title>付款方式</mu-list-item-title>
 						<mu-list-item-action>
-							<span>货到付款</span>
+							<span>{{item.title}}</span>
 						</mu-list-item-action>
 					</mu-list-item>
 					<mu-list-item button :ripple="false">
 						<mu-list-item-title>应付款</mu-list-item-title>
 						<mu-list-item-action>
-							<span>￥784</span>
+							<span>￥{{allprice}}</span>
 						</mu-list-item-action>
 					</mu-list-item>
 				</mu-list>
@@ -114,9 +118,9 @@
 			</mu-paper>
 
 			<div class="total">
-				<span class="xj" style="font-size: 0.26rem;font-weight: bold;">小计：<span style="color: red;">￥89.265</span></span>
+				<span class="xj" style="font-size: 0.26rem;font-weight: bold;">小计：<span style="color: red;">￥{{payprice}}</span></span>
 				<span class="xj">
-					共两件商品
+					共{{alllistlength}}件商品
 				</span>
 			</div>
 
@@ -126,7 +130,7 @@
 			<mu-list class="carbut">
 				<mu-list-item avatar button :ripple="false">
 					<div class="pricecarbox">
-						<div>合计：<span style="color: red;">￥50</span></div>
+						<div>合计：<span style="color: red;">￥{{payprice}}</span></div>
 					</div>
 					<div class="settlement" @click="toPay">
 						提交订单
@@ -235,25 +239,58 @@
 
 <script>
 	import BackBar from '../common/BackBar.vue'
+	import QS from "qs";
+	import {
+	getDress,
+	AddOrder
+	} from "../../http/http.js";
 
 	export default {
 		data() {
 			return {
 				dTitle: '确认订单',
 				open: false,
+				iszk:false,//商品展开收起
+				page: 1,
+      			limit: 10, //当前页面分页条数
 				active1: 0,
+				dress:null,//默认地址
+				orderdata:[{
+					'goods_id':[],//商品id
+					'single_price':[],//商品单价
+					'count':[],//商品数量
+					'sum_price':0,//商品总价
+					'use_red_packet':0,//是否使用红包 1=>使用,0=>未使用
+					'red_packet_price':0,//红包金额
+					'real_pay_price':0,//实际支付金额
+					'pay_way':0,//付款方式,1=>在线支付,0=>货到付款
+					'pay_status':0,//支付状态,1=>已经支付,0=>未支付,2=>货到付款,3=>已经失效
+					'distribution_id':0,//配送方式id
+					'red_packet_id':0,//红包id
+					'transport_id':0//配送方式id
+				}],//需要提交的订单数据
+				allprice:0,//商品总额
+				psf:0,//配送费
+				yhj:0,//优惠卷
+				payprice:0,//应付总额
+				alllistlength:0,//商品数量
+				shenyu:0,//商品展开剩余数量
 				radioF: require('../../../static/img/car/ic_xuanzhong.png'), //选中图片
 				radioT: require('../../../static/img/car/ic_weixuan.png'), //未选图片
+				zankai: require('../../../static/img/order/ic_zhankai@3x.png'), //展开
+				shouqi: require('../../../static/img/order/ic_shouqi@3x.png'), //收起
 				payway: [{
+						id:1,
 						title: '在线支付', //标题
-						checks: false
+						checks: true
 					},
 					{
+						id:0,
 						title: '货到付款', //标题
 						checks: false
 					}
 				],
-				list: [{
+				list: [/* {
 						id: 1,
 						img: require('../../../static/img/1-0_03.png'), //图片
 						title: '算哈哈是111', //标题
@@ -270,7 +307,7 @@
 						price: '20', //单价
 						oldPrice: '50', //旧的价格
 						inventory: '5' //库存
-					}
+					} */
 				],
 				coupons: [
 					{
@@ -309,7 +346,113 @@
 		components: {
 			BackBar
 		},
+		activated(){
+			console.log('22222222222222222222222');
+			console.log(JSON.parse(this.$route.query.list));
+			
+			this.calculate();
+		},
+		mounted(){
+			
+		
+			
+			/**获取收货地址*/
+			getDress(this.limit , this.page).then(res => {
+				let data = res.data.data.data;
+				for(let item in data){
+					if(data[item].is_default == 1){
+						this.dress = data[item]
+					}
+				}
+    		});
+		},
 		methods: {
+			/**
+			 * 计算商品信息
+			*/
+			calculate(){
+				this.allprice = 0;
+				this.payprice = 0;
+				this.alllistlength = 0;
+				this.shenyu = 0;
+				let showlist = JSON.parse(this.$route.query.list);
+				let list = JSON.parse(this.$route.query.list);
+				if(showlist.length >= 2){
+					showlist.length = 2;
+				}
+				this.list = showlist//显示两条商品
+				this.shenyu = list.length - 2;
+
+				this.alllistlength = list.length;
+				for(let item in list){
+					this.llength += list[item].num;//总商品数
+					this.allprice += parseFloat(list[item].goods_price*list[item].num)
+				}
+				this.payprice = this.allprice - this.yhj + this.psf;
+			},
+			/* 
+			orderdata:[{
+					'goods_id':[],//商品id
+					'single_price':[],//商品单价
+					'count':[],//商品数量
+					'sum_price':0,//商品总价
+					'use_red_packet':0,//是否使用红包 1=>使用,0=>未使用
+					'red_packet_price':0,//红包金额
+					'real_pay_price':0,//实际支付金额
+					'pay_way':0,//付款方式,1=>在线支付,0=>货到付款
+					'pay_status':0,//支付状态,1=>已经支付,0=>未支付,2=>货到付款,3=>已经失效
+					'distribution_id':0,//配送方式id
+					'red_packet_id':0,//红包id
+					'transport_id':0//配送方式id
+				}],//需要提交的订单数据
+			*/
+			/**提交订单*/
+			toPay() {
+				let alldata = JSON.parse(this.$route.query.list);
+				for(let ite in alldata){
+					let item = alldata[ite];
+					this.orderdata[0].goods_id.push(item.id);
+					this.orderdata[0].single_price.push(item.goods_price);
+					this.orderdata[0].count.push(item.num);
+				}
+				let payway = null;
+				for(let i in this.payway){
+					if(this.payway[i].checks){
+						payway = this.payway[i].id;
+					}
+				}
+				this.orderdata[0].sum_price = this.allprice
+				this.orderdata[0].use_red_packet = 0;
+				this.orderdata[0].red_packet_price = 0;
+				this.orderdata[0].real_pay_price = this.payprice;
+				this.orderdata[0].pay_way = payway;
+				this.orderdata[0].pay_status = 0;
+				this.orderdata[0].distribution_id = this.dress.id;
+				this.orderdata[0].red_packet_id = 0;
+				this.orderdata[0].transport_id = 0;
+      
+
+
+				AddOrder(QS.stringify(this.orderdata)).then(res =>{
+
+				})
+				//this.$router.push('/paysuccessful')
+				//this.$router.push('/payfailure')
+			},
+			
+			/**展开所有数据*/
+			showAlllist(){
+				let showlist = JSON.parse(this.$route.query.list);
+				showlist.length = 2;
+				if(this.iszk){
+					this.list = showlist
+					this.iszk = !this.iszk;
+				}else{
+					this.list = JSON.parse(this.$route.query.list)
+					this.iszk = !this.iszk;
+				}
+				
+			},
 			/*单选按钮*/
 			checkRadio(index) {
 				let payway = this.payway
@@ -325,10 +468,7 @@
 			goAddDress() {
 				this.$router.push('/address')
 			},
-			toPay() {
-				//this.$router.push('/paysuccessful')
-				this.$router.push('/payfailure')
-			},
+			
 			closeBottomSheet() {
 				this.open = false;
 			},
@@ -343,7 +483,9 @@
 	.orderbox {
 		padding-bottom: 1rem;
 	}
-	
+
+	.mu-list-two-line .mu-item{height: auto !important;}
+	.mu-item-sub-title{white-space: initial;text-overflow: initial;}
 	.orderbox .title {
 		height: 1.03rem;
 		line-height: 1.03rem;
@@ -466,10 +608,10 @@
 	
 	.pricecarbox div {
 		line-height: 45px;
-		text-align: right;
 		padding-right: 0.3rem;
 		font-weight: bold;
-		text-align: center;
+		text-align: left;
+		padding-left: 15px;
 		font-size: 0.32rem;
 	}
 	
@@ -542,7 +684,7 @@
 		width: 1.68rem;
 		height: .6rem;
 		border-radius: .5rem;
-		color: #fff;
+		color: #333;
 		line-height: .6rem;
 	}
 	
@@ -558,4 +700,6 @@
 		border: none;
 	}
 	.mu-sub-header{font-size: 0.32rem;font-weight: bold;color: #333;} 
+	.infoboxbut .mu-item-action{min-width: 50%;font-weight: bold;font-size: 13px;color:#333;}
+	.infoboxbut .mu-item-title{color: #666;}
 </style>

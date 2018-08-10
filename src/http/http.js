@@ -32,10 +32,6 @@ export const getCaiClassChildDetail = ( typeid , limit , page ) =>{ return axios
  */
 export const getProductInfos = objid=>{ return axios.get(host + "/api/goods/" + objid).then((res) => {return res;}).catch((error) => {return error.response})};
 
-/**
- * 获取搜索历史关键词
- */
-export const getSearchWords = () => { return axios.get(host + "/api/get-history").then((res) => {return res}).catch((error) => {return error.response})};
 
 
 /**
@@ -57,6 +53,34 @@ export const DeleCarShop = id =>{ return axios.delete(host + "/api/shoppingcart/
  * 修改购物车
  */
 export const EditCarShop =( id , upData ) =>{ return axios.put(host + "/api/shoppingcart/"+id , upData).then((res) => {return res;}).catch((error) => {return error.response})};
+
+/**
+ * 提交购物车
+ */
+export const AddOrder = upData  =>{ return axios.post(host + "/api/order/" , upData).then((res) => {return res;}).catch((error) => {return error.response})};
+
+
+
+/**
+ * 搜索商品
+ */
+export const SearchWord = word =>{ return axios.get(host + "/api/get-search-goods?key_word="+word).then((res) => {return res;}).catch((error) => {return error.response})};
+
+/**
+ * 获取搜索关键字
+ */
+export const GetKeyWord = ()  =>{ return axios.get(host + "/api/get-history").then((res) => {return res;}).catch((error) => {return error.response})};
+
+/**
+ * 获取搜索热门关键字
+ */
+export const GetKeyHotWord = ()  =>{ return axios.get(host + "/api/get-hot").then((res) => {return res;}).catch((error) => {return error.response})};
+
+/**
+ * 获取搜索热门关键字
+ */
+export const DeleKeyWord = ()  =>{ return axios.delete(host + "/api/delete-history").then((res) => {return res;}).catch((error) => {return error.response})};
+
 
 
 
