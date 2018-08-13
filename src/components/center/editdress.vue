@@ -101,21 +101,24 @@
 			BackBar
 		},
 		mounted(){
-			//this.getDress(this.page);
+			this.getDress(this.page);
 			
-					let loading = this.$loading();
-			getDress(this.limit,this.page).then(res => {
-					this.page = this.page + 1;
-					let data = res.data.data.data;
-						loading.close();
-					if(data.length > 0 ){
-						this.list = this.list.concat(data);
-					}else{
-						this.nomore = true
-					}
-				})
+				
 		},
 		methods:{
+			getDress(page){
+				let loading = this.$loading();
+				getDress(this.limit,page).then(res => {
+						this.page = page + 1;
+						let data = res.data.data.data;
+							loading.close();
+						if(data.length > 0 ){
+							this.list = this.list.concat(data);
+						}else{
+							this.nomore = true
+						}
+					})
+			},
 			/*滚动到底部加载更多*/
 		    load () {
 		       if(!this.nomore){
@@ -131,10 +134,10 @@
 		    },
 			/*取消管理*/
 			qxglFunc(){
-				this.$router.push('/dressmanagement')
+				this.$router.replace('/dressmanagement')
 			},
 			goAddress(){
-				this.$router.push('/address')
+				this.$router.push({path:'/address', query:{status:1}})
 			},
 			/*到编辑页面*/
 			toEdit(item){

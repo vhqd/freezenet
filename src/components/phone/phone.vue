@@ -41,11 +41,15 @@
 </template>
 
 <script>
+	import { getToken , getTokentest , getUserWXInfo , sendPhoneYzm } from '../../http/http.js'
+	import QS from "qs";
+
 	export default {
 		components: {
 		},
 		data() {
 			return {
+				host: this.$store.state.host,
 				dTitle: '绑定手机号',
 				sec:60,//倒计时时间
 				issend:false,//是否已经发送验证码
@@ -55,29 +59,39 @@
 				yqm: '321'//邀请码
 			}
 		},
+		mounted(){
+			/**测试获取登录token（存在跨域问题）*/
+			/* getTokentest().then(res=>{
+				console.log('tokentest');
+				console.log(res);
+			}) */
+
+			/**测试获取用户信息（存在跨域问题）*/
+			/* getUserWXInfo().then(res=>{
+				console.log('WXuserInfo');
+				console.log(res);
+			}) */
+		},
 		methods:{
 			getToken(){
-	  			this.$http.post('http://enet.api.gg/api/login', {
+				let data = {
 						username: 'test_04',
 						password: 'admin@'
-					})
-					.then(res => {
+					};
+					getToken(data).then(res => {
 						let token = res.data.data.access_token;
 						//设置token
 						this.$store.commit('set_token', token);
 						this.$store.commit('editIsBind');
 						
 						this.$router.push('/')
-						/*window.localStorage.setItem('token',tokens);
-						$store.state.token = tokens;*/
+						//window.localStorage.setItem('token',tokens);
+						//$store.state.token = tokens;
 						//console.log(this.$store.state.token)
 						//this.$store.state.isbind = true;
 						//console.log(res);
 						//console.log(res.data.data.access_token);
 					})
-					.catch(function (error) {
-						console.log(error);
-					});
 	  		},
 	  		/*绑定手机操作*/
 	  		bindPone(){
@@ -92,7 +106,7 @@
 	  			if(this.yqm == ''){
 	  				this.$toast.error('请输入邀请码');
 	  				return;
-	  			}
+				  }
 	  			this.getToken();
 	  		},
 			/*发送验证码*/
@@ -108,7 +122,7 @@
 						let sec = that.sec;
 						if(sec > 0){
 							that.issend = true;
-							console.log(that.sec)
+							//console.log(that.sec)
 							that.sec = sec - 1
 						}else{
 							clearInterval(timedown)
@@ -116,7 +130,12 @@
 							that.sec = 5
 							that.issend = false;
 						}
-					},1000)
+					},1000);
+					let data = QS.stringify({phone:tel});
+					sendPhoneYzm(data).then(res =>{
+						console.log(res);
+						
+					})
 				}
 			},
 			back(){

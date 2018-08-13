@@ -81,7 +81,7 @@
                         <span v-show="!isbind" style="color: #a9a9a9;">绑定手机号才能查看价格</span>
                         <div v-show="isbind" style="color: red;">
                           ￥
-                          <span style="font-size: 0.5rem;">{{item.goods_price}}</span>
+                          <span style="font-size: 24px;">{{item.goods_price}}</span>
                           <span style="color: #ccc;text-decoration: line-through;">￥{{item.goods_original_price}}</span>
                         </div>
                       </div>
@@ -92,9 +92,12 @@
               <mu-divider></mu-divider>
               <div style="position: absolute;right: 0;bottom: 0;" v-show="isbind">
                 <div class="saoma">
-                  <span class="minus mpsytl" @click="minus(item)" v-if="item.num != 0">-</span>
+                 <!--  <span class="minus mpsytl" @click="minus(item)" v-if="item.num != 0">-</span>
                   <span v-show="item.num != 0">{{item.num}}</span>
-                  <span class="plus mpsytl" @click="plus(item)">+</span>
+                  <span class="plus mpsytl" @click="plus(item)"><img src="../../../static/img/ic_jia.png" alt="" style="width:25px;height:25px;"></span> -->
+                   <span class="minus" @click="minus(item)" v-if="item.num != 0"><img src="../../../static/img/ic_jian.png" alt="" style="width:25px;height:25px;"></span>
+                  <span v-show="item.num != 0">{{item.num}}</span>
+                  <span class="plus" @click="plus(item)"><img src="../../../static/img/ic_jia.png" alt="" style="width:25px;height:25px;"></span>
                 </div>
               </div>
             </div>
@@ -169,6 +172,7 @@ export default {
       initdata: true, //初始化菜单
       carnum: 0,//分类底部小车数量
       loading2: false,
+      page:1,
       qigoujia:100,//起购价
       alldata:[{
         'goods_id':[],
@@ -529,11 +533,11 @@ export default {
 }
 .saoma {
   float: right;
-  padding: 0.2rem 0;
+  padding: 0.2rem 0 0 0;
   border-radius: 0.2rem;
   margin-right: 0.3rem;
 }
-.minus {
+/* .minus {
   background: #c3c3c3;
 }
 .plus {
@@ -547,7 +551,7 @@ export default {
   display: inline-block;
   font-size: 0.3rem;
   line-height: 0.4rem;
-}
+} */
 .saoma span {
   margin-left: 0.15rem;
 }
@@ -596,6 +600,7 @@ export default {
   background: #f24c4c;
   border-radius: 0.5rem;
   color: #fff;
+  box-shadow: 0px 1px 5px #f24c4c;
 }
 
 /*顶部导航滚动设置*/
@@ -640,11 +645,11 @@ export default {
 	    right: 16px; bottom: 8px; left: 16px; height: 5px;
 	    background-color: #DD524D; content: ' '; transform: scaleY(0.5); -webkit-transform: scaleY(0.5);}*/
 .toptabbox {
-  height: 1.1rem;
+  height: 1rem;
   position: fixed;
   background: whitesmoke;
   width: 100%;
-  z-index: 1;
+  z-index: 2;
 }
 
 .toggledown {
@@ -706,29 +711,7 @@ export default {
 }
 
 
-.addToCar{position: fixed;bottom: 1rem;width: 100%;z-index: 2;}
-	.pricecarbox{width: 67%; background:#fff;left: 0; position: absolute;height: 100%;}
-	.pricecarbox>div{line-height: 32px;text-align: right;padding-right: 0.3rem;font-weight: bold;font-size: 0.32rem;}
-	.carprice{position: absolute;left: 0.8rem;font-size: 0.26rem !important;color: #666;}
-	.settlement{position: absolute;right: 0px;background: #f24c4c;width: 33%;height: 45px;line-height: 45px;color: #fff;}
-	.carlistbox{padding: 0.15rem 0.3rem !important;}
-	.carlistbox>ul{overflow: hidden;}
-	.carimgbox img{width: 0.47rem;height: 0.47rem;}
-	.addToCar .mu-list{overflow: initial;}
-	.carimgbox{width: 1rem;height: 1rem;background: #fff;border-radius: 100%;margin-top: -15px;display: flex;align-items: center;justify-content: center;box-shadow: 0px 1px 1px rgba(0, 0, 0, .2);}
-	.carnum{    position: absolute;
-    top: -0.1rem;
-    left: 0.5rem;
-    color: #fff;
-    background: red;
-    line-height: 0.25rem;
-    border-radius: 0.2rem;
-    min-width: 0.25rem;
-    height: 0.25rem;
-    padding: 0 5px;
-    text-align: center;	}
-    .qigou{position: absolute;right: 0.3rem;bottom: -0.36rem;font-size: 0.22rem;color: #999;}
-    .opentab{width: 100%;background: #fff;border-bottom: 1px solid #e0e0e0;padding: 0.1rem;}
+
 
 /*.opentab .toptab:not(:first-child){
     	background: #f0f0f0;

@@ -90,11 +90,12 @@ router.beforeEach((to, from, next) => {
 	if(token){ //如果有就直接到首页咯
 	    next();
 	} else {
-	    if(to.path=='/login'||to.path=='/'){ //如果是登录页面路径，就直接next()
+        next();
+	   /*  if(to.path=='/login'||to.path=='phone'){ //如果是登录页面路径，就直接next()
 	        next();
 	    } else { //不然就跳转到登录；
 	        next('/login');
-	    }
+	    } */
     }
     
    /*  if(to.path=='/car'){ 

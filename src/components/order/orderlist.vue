@@ -2,7 +2,7 @@
 	<div class="orderlistbox">
 		<!--头部-->
 		<BackBar dTitle='我的订单'></BackBar>
-		<mu-tabs style="display: flex;justify-content: center;">
+		<mu-tabs style="display: flex;justify-content: center;margin-top:1rem;">
 		    <mu-tab class='tabtitle'>全部</mu-tab>
 		    <mu-tab class='tabtitle'>待支付</mu-tab>
 		    <mu-tab class='tabtitle'>待发货</mu-tab>
@@ -84,12 +84,15 @@
 <script>
 	import BackBar from '../common/BackBar.vue'
 	import { mapState } from 'vuex'
+	import { getOrders } from '../../http/http.js'
 	
 	export default{
 		data(){
 			return{
 				num: 10,
-		        refreshing: false,
+				refreshing: false,
+				limit:15,
+				page:1,
 		        loading: false,
 		        openJS:false,//弹窗
 		        index:0,
@@ -156,6 +159,12 @@
 		    })
 		}, 
 		methods:{
+			/**获取用户订单*/
+			getOrders(){
+				getOrders(this.limit,this.page).then(res => {
+					
+				})
+			},
 			/*滚动到底部加载更多*/
 		    load () {
 		      this.loading = true;

@@ -23,7 +23,13 @@
 
 			<!--历史记录-->
 			<mu-container class="demo-chip-wrapper" v-if="history.length>0">
-				<p class="historybox">历史搜索</p>
+				<div class="historybox">
+          <span>历史搜索</span>
+          <div class="dele" @click="deleSearchbox">
+            <img src="../../../static/img/ic-del.png" />
+          </div>
+        </div>
+        
 				<mu-chip class="demo-chip" v-for="(item , index) in history" :key="index">
 					{{item.key_word}}
 				</mu-chip>
@@ -77,27 +83,36 @@
 		
 		</div>-->
 
-		<div class="searchreult">
+		<div class="searchreult" v-if="list.length != 0">
 			<mu-flex class="flex-wrapper" align-items="center" wrap="wrap">
 				<mu-flex v-for="(item,index) in list" :key="index" class="flex-demo" direction='column' align-items="center" justify-content="center" fill>
-					<img src="../../../static/img/1.6_03.png" alt="" />
+					<img src="../../../static/img/1.6_03.png" alt="" class="shouimg"/>
+          <div class="infobox">
 					<p class="rtitle">{{item.title}}</p>
 					<p class="liang">{{item.weight}}斤装</p>
 					<p class="price">￥{{item.price}}</p>
+          </div>
 					<div style="position: absolute;right: 0;bottom: 0;">
 						<div class="saoma">
-							<span class="minus mpsytl" @click="minus(item)" v-if="item.num != 0">-</span>
+							<!-- <span class="minus mpsytl" @click="minus(item)" v-if="item.num != 0">-</span>
 							<span>{{item.num}}</span>
-							<span class="plus mpsytl" @click="plus(item)">+</span>
+							<span class="plus mpsytl" @click="plus(item)">+</span> -->
+              <span class="minus" @click="minus(item)" v-if="item.num != 0"><img src="../../../static/img/ic_jian.png" alt="" style="width:.5rem;height:.5rem;"></span>
+              <span v-show="item.num != 0">{{item.num}}</span>
+              <span class="plus" @click="plus(item)"><img src="../../../static/img/ic_jia.png" alt="" style="width:.5rem;height:.5rem;"></span>
 						</div>
 					</div>
 				</mu-flex>
 			</mu-flex>
 		</div>
+    <div v-else style="position: absolute;left: 50%;top: 50%;margin-top: -97.5px;margin-left: -96px;">
+			<img src="../../../static/img/img_wujieguo@2x.png" style="width: 3.9rem;height: 3.3rem;" />
+			<p style="color: #999;">没有找到相关商品</p>
+		</div>
 
 		<!--购物车bar-->
 
-		<div class="addToCar">
+		<div class="addToCar" v-if="list.length > 0">
 			<mu-list class="carbut">
 				<mu-list-item avatar button :ripple="false">
 					<div class="pricecarbox">
@@ -109,10 +124,10 @@
 						</div>
 						<div style="position: relative;">合计：
 							<span style="color: red;">￥{{allPrice}}</span>
-							<span class="qigou">100元起购</span>
+							<span class="qigou">{{qigou}}元起购</span>
 						</div>
 					</div>
-					<div class="settlement" @click="settlement">
+					<div :class="allPrice >= qigou ? 'settlement gotobuy' : 'settlement'" @click="settlement">
 						去结算
 					</div>
 				</mu-list-item>
@@ -124,6 +139,12 @@
 			</mu-dialog>
 		</div>
 
+
+    <mu-dialog title="温馨提示" width="360" :open.sync="deleSearch">
+      <span class="cancelbox" @click="closedeleDialog"><img src="../../../static/img/ic_Shut .png" /></span>
+      删除历史搜索记录
+      <mu-button slot="actions" flat color="primary" @click="closedeleDialog">确定</mu-button>
+    </mu-dialog>
 		<!--<div class="carBox">
 			<mu-container>
 			  <mu-bottom-nav>
@@ -141,14 +162,16 @@
 
 <script>
 import Search from "../common/Search.vue";
-import { getSearchWords , GetKeyWord , GetKeyHotWord , SearchWord} from "../../http/http.js";
+import { getSearchWords , GetKeyWord , GetKeyHotWord , SearchWord , DeleKeyWord } from "../../http/http.js";
 
 export default {
   data() {
     return {
       showList: [], //默认显示的数据
       openJS: false, //结算弹窗
-	  carnum: 0, //购物车数量
+       deleSearch: false, //删除弹窗
+    carnum: 0, //购物车数量
+    qigou:100,
 	  history:[
 		  /* {
 			  title:'鸭肠'
@@ -317,6 +340,19 @@ export default {
         this.$router.push({ path: "/order" });
       }
     },
+    /**删除记录*/
+    deleSearchbox(){
+      DeleKeyWord().then(res => {
+        if(res.data.code == 200){
+          this.deleSearch = true;
+        }
+      })
+      
+    },
+     /**关闭删除记录弹窗*/
+    closedeleDialog() {
+      this.deleSearch = false;
+    },
     /*关闭弹窗*/
     closeJSDialog() {
       this.openJS = false;
@@ -394,6 +430,7 @@ export default {
 }
 .historybox{
 	  text-align: left;
+    position: relative;
   padding: 0.2rem 0.3rem;
   color: #999;
   border-bottom: 1px solid #e0e0e0;
@@ -419,11 +456,10 @@ export default {
 }
 .saoma {
   float: right;
-  padding: 0.2rem 0;
   border-radius: 0.2rem;
   margin-right: 0.3rem;
 }
-.minus {
+/* .minus {
   background: #c3c3c3;
 }
 .plus {
@@ -437,7 +473,7 @@ export default {
   display: inline-block;
   font-size: 0.3rem;
   line-height: 0.4rem;
-}
+} */
 .saoma span {
   margin-left: 0.15rem;
 }
@@ -500,7 +536,7 @@ export default {
   overflow: hidden;
   padding-bottom: 50px;
 }
-.searchreult .flex-row img {
+.searchreult .flex-row .shouimg {
   width: 1.45rem;
   height: 1rem;
   margin: 0.2rem;
@@ -508,7 +544,7 @@ export default {
 .searchreult .flex-row p {
   text-align: left !important;
   width: 100%;
-  padding-left: 0.17rem;
+  overflow: hidden;
 }
 .liang {
   font-size: 0.22rem;
@@ -549,7 +585,7 @@ export default {
   height: 100%;
 }
 .pricecarbox > div {
-  line-height: 45px;
+  line-height: 35px;
   text-align: right;
   padding-right: 0.3rem;
   font-weight: bold;
@@ -568,6 +604,9 @@ export default {
   width: 33%;
   height: 45px;
   line-height: 45px;
+}
+.gotobuy{
+  background: #f24c4c !important;
 }
 .carlistbox {
   padding: 0.15rem 0.3rem !important;
@@ -612,5 +651,19 @@ export default {
   bottom: -0.36rem;
   font-size: 0.22rem;
   color: #999;
+}
+
+.dele {
+  position: absolute;
+  right: 0.3rem;
+  top: 0.12rem;
+}
+.dele img {
+  width: 0.35rem;
+  height: 0.35rem;
+}
+.infobox{
+  width: 87%;
+  overflow: hidden;
 }
 </style>

@@ -52,11 +52,11 @@
 					        <mu-list-item-title>{{item.title}}</mu-list-item-title>
 					        <mu-list-item-sub-title>
 					          <span style="color: #a9a9a9;font-size: 0.2rem;">库存{{item.inventory}}件</span>
-					          <p style="color: red;">
+					          <div style="color: red;">
 					          		<span v-show="!isbind" style="color: #a9a9a9;">绑定手机号才能查看价格</span>
 					          		<div v-show="isbind">￥<span style="font-size: 0.5rem;">{{item.price}}</span></div>
 					          	<!--<span style="color: #ccc;text-decoration: line-through;">￥{{item.oldPrice}}</span>-->
-					          </p>
+					          </div>
 					        </mu-list-item-sub-title>
 					      </mu-list-item-content>
 					    </mu-list-item>
@@ -65,9 +65,12 @@
 				    <div style="position: absolute;right: 0.3rem;top: 1.32rem;">
 				    	<div class="saoma">
 				    		<div v-if="item.type == 1">
-					        	<span class="minus mpsytl" @click="minus(item)" v-if="item.num != 0">-</span>
+					        	<!-- <span class="minus mpsytl" @click="minus(item)" v-if="item.num != 0">-</span>
 					        	<span>{{item.num}}</span>
-					        	<span class="plus mpsytl" @click="plus(item)">+</span>
+					        	<span class="plus mpsytl" @click="plus(item)">+</span> -->
+								<span class="minus" @click="minus(item)" v-if="item.num != 0"><img src="../../../static/img/ic_jian.png" alt=""></span>
+								<span v-show="item.num != 0">{{item.num}}</span>
+								<span class="plus" @click="plus(item)"><img src="../../../static/img/ic_jia.png" alt=""></span>
 				        	</div>
 				        	<div v-if="item.type == 2">
 					        	<span class="mpsytl" @click="typeo2show(item , 1)"><img src="../../../static/img/often/down.png"/></span>
@@ -91,9 +94,12 @@
 						      <mu-list-item-action>
 						        <div class="saoma">
 						        	<div>
-							        	<span class="minus mpsytl" @click="minus(ite)" v-if="ite.num != 0">-</span>
+							        	<!-- <span class="minus mpsytl" @click="minus(ite)" v-if="ite.num != 0">-</span>
 							        	<span>{{ite.num}}</span>
-							        	<span class="plus mpsytl" @click="plus(ite)">+</span>
+							        	<span class="plus mpsytl" @click="plus(ite)">+</span> -->
+										<span class="minus" @click="minus(item)" v-if="item.num != 0"><img src="../../../static/img/ic_jian.png" alt=""></span>
+										<span v-show="item.num != 0">{{item.num}}</span>
+										<span class="plus" @click="plus(item)"><img src="../../../static/img/ic_jia.png" alt=""></span>
 						        	</div>
 						        </div>
 						      </mu-list-item-action>

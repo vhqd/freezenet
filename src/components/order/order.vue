@@ -625,7 +625,7 @@
 	.settlement {
 		position: absolute;
 		right: 0px;
-		background: #ffe253;
+		background: #f24c4c;
 		width: 33%;
 		height: 45px;
 		line-height: 45px;

@@ -94,11 +94,19 @@
 		  // 因为当守卫执行前，组件实例还没被创建
 		  console.log(self);
 		},*/
+		activated(){
+			this.getDress(this.page);
+		},
 		mounted(){
 			//this.getDress(this.page);
+			
+			//this.getDress(this.page);
+		},
+		methods:{	
+		getDress(page){
 			let loading = this.$loading();
-			getDress(this.limit,this.page).then(res => {
-					this.page = this.page + 1;
+			getDress(this.limit,page).then(res => {
+					this.page = page + 1;
 					let data = res.data.data.data;
 						loading.close();
 					if(data.length > 0 ){
@@ -108,8 +116,6 @@
 					}
 				})
 		},
-		methods:{	
-		
 			/*滚动到底部加载更多*/
 		    load () {
 		      if(!this.nomore){
@@ -124,10 +130,10 @@
 		      
 		    },
 			goAddress(){
-				this.$router.push('/address')
+				this.$router.push({path:'/address', query:{status:1}})
 			},
 			goEditDress(){
-				this.$router.push('/editdress');
+				this.$router.replace('/editdress');
 			}
 			
 		}

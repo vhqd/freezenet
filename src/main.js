@@ -69,21 +69,28 @@ axios.interceptors.response.use(function (response) {
 }  */
 return response
 }, function (error) {
-    let status = error.response.status;
-    if(status == 500){
-        let msg = error.response.data.message;
-        console.log(status+'=>:'+msg);
-        return;
-    }
-    let msg = error.response.data.errors;
-    let allmsg = ''
-    for(let item in msg){
-        let itemmsg = status +":" + item +"=>"+msg[item];
-        allmsg += itemmsg;
-    }
-    console.log('-------------------------------------------------');
-    console.log(allmsg);
-    console.log('-------------------------------------------------');
+         let status = error.response.status;
+        if(status && status == 401){
+            router.replace({
+                path: '/login'
+            })
+            return;
+        }
+        if(status && status == 500){
+            let msg = error.response.data.message;
+            console.log(status+'=>:'+msg);
+            return;
+        }
+        let msg = error.response.data.errors;
+        let allmsg = ''
+        for(let item in msg){
+            let itemmsg = status +":" + item +"=>"+msg[item];
+            allmsg += itemmsg;
+        }
+        console.log('-------------------------------------------------');
+        console.log(allmsg);
+        console.log('-------------------------------------------------');
+     
     
 // Do something with response error
 return Promise.reject(error)

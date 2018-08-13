@@ -14,8 +14,8 @@
           <ul style="padding-bottom: 2rem;">
             <li class="list-item " v-for="(item,index) in list" :key="index" data-type="0">
               <!--<div class="list-box" @touchstart.capture="touchStart" @touchend.capture="touchEnd" @click="skip">-->
-              <div class="list-box" @touchstart.capture="touchStart" @touchend.capture="touchEnd">
-                <div class="list-content">
+              <div class="list-box" @touchstart.capture="touchStart" @touchend.capture="touchEnd" :data-index='index'>
+                <div :class="item.isslid ? 'list-content isslid' : 'list-content'">
 
                   <mu-paper :z-depth="1" class="demo-list-wrap">
                     <mu-list textline="three-line">
@@ -44,9 +44,12 @@
                         </mu-list-item>
                         <div style="position: absolute;right: 0.2rem;bottom: 0.34rem;" v-show="isbind">
                           <div class="saoma">
-                            <span class="minus mpsytl" @click="minus(item)" v-if="item.num != 0">-</span>
+                            <!-- <span class="minus mpsytl" @click="minus(item)" v-if="item.num != 0">-</span>
                             <span class="mpnum">{{item.num}}</span>
-                            <span class="plus mpsytl" @click="plus(item)">+</span>
+                            <span class="plus mpsytl" @click="plus(item)">+</span> -->
+                            <span class="minus mpsytl" @click="minus(item)" v-if="item.num != 0"><img src="../../../static/img/ic_jian.png" alt="" style="width:25px;height:25px;"></span>
+                            <span v-if="item.num != 0" class="mpnum">{{item.num}}</span>
+                            <span class="plus mpsytl" @click="plus(item)"><img src="../../../static/img/ic_jia.png" alt="" style="width:25px;height:25px;"></span>
                           </div>
                         </div>
                       </div>
@@ -113,6 +116,7 @@ export default {
       page: 1,
       limit: 10, //当前页面分页条数
       loading: false,
+      lastinde:0,
       radioF: require("../../../static/img/car/ic_xuanzhong.png"), //选中图片
       radioT: require("../../../static/img/car/ic_weixuan.png"), //未选图片
       openJS: false, //结算弹窗
@@ -204,6 +208,7 @@ export default {
             listval[item].carid = carids[item]; //将购物车id添加到商品信息里面，删除购物车需要
             listval[item].num = counts[item]; //将购物车id添加到商品信息里面，删除购物车需要
             listval[item].checks = false;
+            listval[item].isslid = false;
           }
         });
       }
@@ -416,23 +421,35 @@ export default {
     //滑动开始
     touchStart(e) {
       this.startX = e.touches[0].clientX;
+      let index = e.currentTarget.dataset.index;
+      this.list[this.lastinde].isslid = false;
+      this.lastinde = index;
     },
 
     //滑动结束
     touchEnd(e) {
       let parentElement = e.currentTarget.parentElement;
       this.endX = e.changedTouches[0].clientX;
+      
 
       if (parentElement.dataset.type == 0 && this.startX - this.endX > 30) {
         this.restSlide();
+        this.list[this.lastinde].isslid = true;
         parentElement.dataset.type = 1;
+
+        
       }
 
       if (parentElement.dataset.type == 1 && this.startX - this.endX < -30) {
         this.restSlide();
+        this.list[this.lastinde].isslid = false;
         parentElement.dataset.type = 0;
-      }
 
+       
+        
+        
+      }
+      
       this.startX = 0;
       this.endX = 0;
     },
@@ -452,7 +469,8 @@ export default {
     //一次只能滑动一个
     restSlide() {
       let listItems = document.querySelectorAll(".list-item");
-
+      //alert(this.lastinde);
+      /* this.list[this.lastinde].isslid = false; */
       for (let i = 0; i < listItems.length; i++) {
         listItems[i].dataset.type = 0;
       }
@@ -561,6 +579,18 @@ export default {
   align-items: flex-start;
   justify-content: center;
   overflow: hidden;
+  border-radius: 20px;
+}
+
+.list-item  .isslid{
+  padding: 0 0 0.1rem 0;
+  position: relative;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  overflow: hidden;
+  border-radius:initial; 
 }
 
 .list-item .title {
@@ -594,8 +624,8 @@ export default {
 }
 
 .list-item .delete {
-  width: 1.25rem;
-  height: 2.1rem;
+  width: 1.1rem;
+  height: 2.08rem;
   background: #ff4949;
   font-size: 17px;
   color: #fff;
@@ -603,7 +633,9 @@ export default {
   line-height: 2.1rem;
   position: absolute;
   top: 0;
-  right: -1.3rem;
+  right: -1.1rem;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
 }
 
 .topgrid .mu-grid-tile-subtitle span {

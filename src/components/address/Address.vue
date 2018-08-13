@@ -82,10 +82,25 @@ export default {
       }
     };
   },
+  activated(){
+    let add = this.$route.query.status;
+    if(add == 1){//防止缓存
+      this.city= "", //所在地区
+      this.item= {}, //传递过来编辑的数据
+      this.form= {
+        name: "", //联系人
+        phone: "", //联系电话
+        city: "", //所在地区
+        address: "", //详细地址
+        switch: false //是否默认
+      }
+    }
+  },
   mounted() {
     if (this.$route.query.isedit) {
       this.isedit = this.$route.query.isedit; //这个值判断是否是编辑地址
     }
+    
     /*获取显示用户地址*/
     if (this.$route.query.item) {
       this.item = this.$route.query.item;
@@ -130,17 +145,17 @@ export default {
         is_default: is_default //是否默认
       };
       console.log(upData);
-      if (this.isedit) {
+      if (this.isedit || this.$route.query.status != 1) {
         /*编辑地址*/
         console.log(this.item.id);
          EditDress(this.item,upData).then(res => {
-            this.$router.push("/editdress");
+            this.$router.replace("/editdress");
             console.log(res);
         })
       } else {
         /*新增地址*/
         AddDress(upData).then(res => {
-            this.$router.push("/dressmanagement");
+            this.$router.replace("/dressmanagement");
             console.log(res);
             console.log(res.data.message);
         })

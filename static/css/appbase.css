@@ -67,11 +67,11 @@ body,html,#app{height:100%;width: 100%;background: #f5f5f5;}
 
 .pm input{padding-left: 0.8rem;border-radius: 0.15rem !important;color: #333;}
 .pm .material-icons{left:0.2rem !important;top: 0.1rem;color: #c3c3c3;}
-.minus{background: #c3c3c3;line-height: 0.3rem;box-shadow: 1px 2px 1px rgba(199, 199, 199, 0.5);}
+/* .minus{background: #c3c3c3;line-height: 0.3rem;box-shadow: 1px 2px 1px rgba(199, 199, 199, 0.5);}
 .plus{background: #f24c4c;line-height: 0.44rem;box-shadow: 1px 2px 1px rgba(199, 49, 49, 0.5);}
-.mpsytl{border-radius: 50%;color: #fff;width: 0.44rem;height: 0.44rem;display: inline-block;font-size: 0.6rem;}
+.mpsytl{border-radius: 50%;color: #fff;width: 0.44rem;height: 0.44rem;display: inline-block;font-size: 0.6rem;} */
 .saoma{display: flex;}
-.saoma span{margin-left: 0.15rem;}
+.saoma span{margin-left: 0.15rem;color: #333;}
 .inputitem{width: 100%;overflow: hidden;border-bottom: 1px solid #e0e0e0;}
 .mu-input{padding: 0 !important;margin:0 !important;min-height: 0.66rem !important;background: #fff;}
 .pm{border-bottom: none !important;}
@@ -131,7 +131,8 @@ color: #c3c3c3;
 
 
 .carbut .mu-item{height: 0.9rem !important;}
-
+.detail .carbut .mu-item{height: .98rem !important;}
+.detail .settlement{height: 50px !important;}
 .carMbox .list-item:after{border-bottom: 0 !important;}
 .carMbox .mu-item{padding: 0 16px 0 6px !important;}
 
@@ -165,3 +166,30 @@ color: #999;
 .mu-elevation-1{box-shadow: initial !important;}
 
 .distpicker-address-wrapper .address-container ul{height: 4rem !important;overflow-y: scroll !important;}
+
+/**购物车*/
+.addToCar{position: fixed;bottom: 1rem;width: 100%;z-index: 2;}
+	.pricecarbox{width: 67%; background:#fff;left: 0; position: absolute;height: 100%;}
+	.pricecarbox>div{line-height: 32px;text-align: right;padding-right: 0.3rem;font-weight: bold;font-size: 0.32rem;}
+	.carprice{position: absolute;left: 0.8rem;font-size: 0.26rem !important;color: #666;}
+	.settlement{position: absolute;right: 0px;background: #f24c4c;width: 33%;height: 45px;line-height: 45px;color: #fff;}
+	.carlistbox{padding: 0.15rem 0.3rem !important;}
+	.carlistbox>ul{overflow: hidden;}
+	.carimgbox img{width: 0.47rem;height: 0.47rem;}
+	.addToCar .mu-list{overflow: initial;}
+	.carimgbox{width: 1rem;height: 1rem;background: #fff;border-radius: 100%;margin-top: -15px;display: flex;align-items: center;justify-content: center;box-shadow: 0px 1px 1px rgba(0, 0, 0, .2);}
+	.carnum{    position: absolute;
+    top: -0.1rem;
+    left: 0.5rem;
+    color: #fff;
+    background: red;
+    line-height: 0.25rem;
+    border-radius: 0.2rem;
+    min-width: 0.25rem;
+    height: 0.25rem;
+    padding: 1px 5px;
+    text-align: center;	}
+    .qigou{position: absolute;right: 0.3rem;bottom: -0.36rem;font-size: 0.22rem;color: #999;}
+    .opentab{width: 100%;background: #fff;border-bottom: 1px solid #e0e0e0;padding: 0.1rem;}
+    
+    .dInfobox .mu-item{height: auto !important;}

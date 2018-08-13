@@ -5,7 +5,7 @@
 			<!--<span style="position: absolute;right: 10px;top: 0.2rem;">地址管理</span>-->
 			<mu-container>
 				<mu-card style="width: 100%; max-width: 375px; margin: 0 auto;">
-				  <mu-card-header title="一花一世界" sub-title="绑定手机号">
+				  <mu-card-header title="一花一世界" sub-title="绑定手机号" @click="goBindPhone">
 				    <mu-avatar slot="avatar">
 				      <img src="../../../static/img/back.png">
 				    </mu-avatar>
@@ -45,10 +45,10 @@
 				<p class="ordertopbox"><span class="myordertext">帮助中心</span></p>
 				<ul>
 					<li v-for="(item,index) in hlep" :key="index">
-						<router-link :to="{path:'/orderlist', query:{id:item.id}}">
+						<!-- <router-link :to="{path:'/orderlist', query:{id:item.id}}"> -->
 							<img :src="item.img"/>
 							<p>{{item.title}}</p>
-						</router-link>
+						<!-- </router-link> -->
 					</li>
 				</ul>
 			</div>
@@ -147,6 +147,9 @@
 	    }
 	  },
 	  methods: {
+		  goBindPhone(){
+			  this.$router.push('/phone')
+		  },
 	  	/*打开头部订单管理*/
 	  	goDressManage(){
 	  		this.$router.push('/dressmanagement')
@@ -181,7 +184,7 @@
 .topboxinfo ul li{float: left;width: 20%;color: #8e8e8e;}
 .topboxinfo ul li p{font-size: 0.24rem;color: #8e8e8e;}
 .topboxinfo ul li img{width: 0.55rem;height: 0.55rem;}
-.listcenterbox{background: #fff;margin-top: 0.15rem;}
+.listcenterbox{background: #fff;margin-top: 0.15rem;padding-bottom: 1.5rem;}
 .listcenterbox li:not(:last-child){border-bottom: 1px solid #e0e0e0;}
 .mu-item-action{min-width: 2.4rem;}
 

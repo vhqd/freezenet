@@ -1,5 +1,5 @@
 <template>
-	<mu-appbar style="width: 100%;position: fixed" color="primary">
+	<mu-appbar style="width: 100%;position: fixed;top:0;z-index:999;" color="primary">
 		<mu-button icon slot="left" @click="back">
 			<img src="../../../static/img/back.png"/>
 		</mu-button>
