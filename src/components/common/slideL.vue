@@ -47,9 +47,9 @@
                             <!-- <span class="minus mpsytl" @click="minus(item)" v-if="item.num != 0">-</span>
                             <span class="mpnum">{{item.num}}</span>
                             <span class="plus mpsytl" @click="plus(item)">+</span> -->
-                            <span class="minus mpsytl" @click="minus(item)" v-if="item.num != 0"><img src="../../../static/img/ic_jian.png" alt="" style="width:25px;height:25px;"></span>
-                            <span v-if="item.num != 0" class="mpnum">{{item.num}}</span>
-                            <span class="plus mpsytl" @click="plus(item)"><img src="../../../static/img/ic_jia.png" alt="" style="width:25px;height:25px;"></span>
+                            <span class="minus mpsytl" @click="minus(item,index)" v-if="item.count != 0"><img src="../../../static/img/ic_jian.png" alt="" style="width:25px;height:25px;"></span>
+                            <span v-if="item.count != 0" class="mpnum">{{item.count}}</span>
+                            <span class="plus mpsytl" @click="plus(item,index)"><img src="../../../static/img/ic_jia.png" alt="" style="width:25px;height:25px;"></span>
                           </div>
                         </div>
                       </div>
@@ -107,6 +107,7 @@ import {
   DeleCarShop,
   EditCarShop
 } from "../../http/http.js";
+import QS from "qs";
 
 export default {
   name: "index",
@@ -150,14 +151,14 @@ export default {
     this.checkAll =false;
     this.checkNum = 0;
     this.allPrice = 0;
-    this.$store.commit("setLoad",true);
+
+
+    //this.$store.commit("setLoad",true);
+
+
      //let loadings = this.$loading();
-     this.getCarList(this.limit, 1).then(res => {
-      /* this.list = [...this.list, ...res]; */
-      this.list = res;
-      this.getCarNum(this.list);
-      this.$store.commit("setLoad",false);
-    });
+     this.getCarList(this.limit, 1);
+     // this.$store.commit("setLoad",false);
   },
   mounted() {
    /*  this.$store.commit("setLoad",true);
@@ -174,15 +175,23 @@ export default {
   },
   methods: {
     /**获取购物车数据*/
-    async getCarList(limit, page) {
-      const lists = await getCarList(limit, page).then(res => {
+    getCarList(limit, page) {
+      getCarList(limit, page).then(res => {
         this.page = page + 1;
-        let data = res.data.data.data;
-        if (data) {
-          return this.sliceData(data);
+        
+        let data = res.data.shopInfo.data;
+        for(let item in data){
+          data[item].goods_photo = this.host + data[item].goods_photo;
+          data[item].isslid = false;
         }
+        console.log('返回的购物车list');
+        console.log(data);
+        this.list = data;
+        this.getCarNum(this.list);
+
       });
-      let listval = [];
+
+     /*let listval = [];
       let ids = [];
       let carids = []; //购物车id
       let counts = []; //购物车商品个数
@@ -211,8 +220,8 @@ export default {
             listval[item].isslid = false;
           }
         });
-      }
-      return listval;
+      } 
+      return listval;*/
     },
 
     /**滚动到底部加载更多*/
@@ -242,7 +251,7 @@ export default {
     getCarNum(obj){
       let carnum = 0;
       for (let item in obj) {
-        carnum += parseInt(obj[item].num);
+        carnum += parseInt(obj[item].count);
       }
       //设置导航购物车数量
       this.$store.commit("editCarnum", carnum);
@@ -314,8 +323,8 @@ export default {
       let checkNum = 0;
       for (let i = 0; i < data.length; i++) {
         if (data[i].checks) {
-          allprice += data[i].goods_price * parseInt(data[i].num);
-          checkNum += parseInt(data[i].num);
+          allprice += data[i].goods_price * parseInt(data[i].count);
+          checkNum += parseInt(data[i].count);
         }
       }
 
@@ -329,37 +338,42 @@ export default {
     },
 
     /**减少数量值*/
-    minus(item) {
-      let amount = parseInt(item.num);
+    minus(item,index) {
+      let amount = parseInt(item.count);
       let list = this.list;
       if (amount > 0) {
-        item.num = amount - 1;
+        item.count = amount - 1;
       } else {
-        item.num = 0;
+        item.count = 0;
       }
       this.getAllPrice(list);
-      this.eidtCar(item, 0);
+      this.eidtCar(item, 0,index);
     },
 
     /**增加数量值*/
-    plus(item) {
-      let amount = parseInt(item.num);
+    plus(item,index) {
+      let amount = parseInt(item.count);
       let list = this.list;
-      item.num = amount + 1;
+      item.count = amount + 1;
       this.getAllPrice(list);
-      this.eidtCar(item, 1);
+      this.eidtCar(item, 1,index);
     },
 
     /**编辑购物车数量*/
-    eidtCar(item, minusOrPlus) {
+    eidtCar(item, minusOrPlus,index) {
+      //alert(item.count);
       //商品data
       let data = {
-        goods_id: [item.id],
+        goods_id: item.goods_id,
         single_price: item.goods_price,
-        count: item.num,
-        sum_price: item.num * item.goods_price
+        count: item.count,
+        isadd:minusOrPlus
       };
-      EditCarShop(item.carid, data).then(res => {
+      EditCarShop(item.id, QS.stringify(data)).then(res => {
+        //减少购物车商品数量到0删除订单
+        if(item.count == 0){
+          this.list.splice(index,1)
+        } 
         //设置导航购物车数量
         this.$store.commit(
           "editCarnum",
@@ -399,8 +413,7 @@ export default {
       let item = this.list[index];
       this.list.splice(index, 1);
       //console.log(item);
-
-      DeleCarShop(item.carid).then(res => {});
+      DeleCarShop(item.id).then(res => {});
       this.getCarNum(this.list);
     },
 
@@ -579,7 +592,7 @@ export default {
   align-items: flex-start;
   justify-content: center;
   overflow: hidden;
-  border-radius: 20px;
+  border-radius: 6px;
 }
 
 .list-item  .isslid{
@@ -634,8 +647,8 @@ export default {
   position: absolute;
   top: 0;
   right: -1.1rem;
-  border-top-right-radius: 20px;
-  border-bottom-right-radius: 20px;
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
 }
 
 .topgrid .mu-grid-tile-subtitle span {

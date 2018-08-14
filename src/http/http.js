@@ -107,6 +107,17 @@ export const DeleKeyWord = ()  =>{ return axios.put(host + "/api/delete-history"
 
 
 
+
+/**
+ *查询可领取的优惠券
+ */
+export const getCoupons = (limit , page) =>{ return axios.get(host + "/api/get-self-redpacket?limit=" + limit+ "&page=" + page).then((res) => {return res;}).catch((error) => {return error.response})};
+
+/**
+ *删除过期优惠券
+ */
+export const deletCoupons = id =>{ return axios.delete(host + "/api/get-self-redpacket?id=" + id).then((res) => {return res;}).catch((error) => {return error.response})};
+
 /**
  *获取个人优惠券
  */

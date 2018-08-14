@@ -5,10 +5,11 @@
 			<!--<span style="position: absolute;right: 10px;top: 0.2rem;">地址管理</span>-->
 			<mu-container>
 				<mu-card style="width: 100%; max-width: 375px; margin: 0 auto;">
-				  <mu-card-header title="一花一世界" sub-title="绑定手机号" @click="goBindPhone">
+				  <mu-card-header title="一花一世界">
 				    <mu-avatar slot="avatar">
 				      <img src="../../../static/img/back.png">
 				    </mu-avatar>
+					<span class="mu-card-sub-titles" @click.stop.prevent="goBindPhone">绑定手机号</span>
 				  </mu-card-header>
 				</mu-card>
 			</mu-container>
@@ -21,6 +22,7 @@
 							<img :src="item.img"/>
 							<p>{{item.title}}</p>
 						</router-link>
+						<span class="fanallcar">0</span>
 					</li>
 					<!--<li>
 						<img src="../../../static/img/center/ic_daifahuo.png"/>
@@ -80,6 +82,8 @@
 
 <script>
 	import Footer from '../common/Footer.vue';
+	import { getOrders } from '../../http/http.js'
+
 	
 	
 	
@@ -90,6 +94,8 @@
 	   },
 	  data () {
 	    return {
+			limit:15,
+			page:1,
 	    	orderlist:[
 	    		{
 	    			id:1,
@@ -147,9 +153,21 @@
 	    }
 	  },
 	  methods: {
-		  goBindPhone(){
-			  this.$router.push('/phone')
-		  },
+		/**
+		 * 获取订单保存的store
+		*/
+		getOrders(){
+			getOrders(this.limit,this.page).then(res => {
+				console.log(res);
+				let data = res.data.data.data;
+				this.$store.commit('setOrder',data)
+			})
+		},
+
+		goBindPhone(){
+			this.$router.push('/phone')
+			
+		},
 	  	/*打开头部订单管理*/
 	  	goDressManage(){
 	  		this.$router.push('/dressmanagement')
@@ -173,7 +191,9 @@
 .mu-avatar{width: 1.24rem !important;height: 1.24rem !important;}  
 .center-title{height: 0.88rem;font-size: 0.32rem;color: #333;line-height: 0.88rem;background: #fff;}
 .mu-card-header-title{margin-top: 0.2rem;}
-.mu-card-header-title .mu-card-sub-title{text-align: left;color: #f95151;background: #ff9a38;color:#fff;padding: 0.1rem;border-radius: 0.25rem;}
+.mu-card-sub-titles{text-align: left;color: #f95151;background: #ff9a38;color:#fff;padding: 0.1rem;border-radius: 0.25rem;position: absolute;
+    top: 50px;
+    left: 140px;}
 .center-top{height: 3.3rem;background: url(../../../static/img/center/centerbg.png) no-repeat center;background-size: 100%;}
 .topboxinfo{width: 90%;margin: auto;background: #fff;border-radius: 10px;box-shadow:0 0px 2px -1px rgba(0,0,0,.1), 0 0px 1px 0 rgba(0,0,0,.1), 0 0px 0px 0 rgba(0,0,0,.1);}
 .ordertopbox{overflow: hidden;padding: 0.3rem;border-bottom: 1px solid #e0e0e0;}
@@ -181,7 +201,7 @@
 .goordertex{color:#8e8e8e;float: right;}
 
 .topboxinfo ul{overflow: hidden;padding: 0.4rem 0.3rem;}
-.topboxinfo ul li{float: left;width: 20%;color: #8e8e8e;}
+.topboxinfo ul li{float: left;width: 20%;color: #8e8e8e;position: relative;}
 .topboxinfo ul li p{font-size: 0.24rem;color: #8e8e8e;}
 .topboxinfo ul li img{width: 0.55rem;height: 0.55rem;}
 .listcenterbox{background: #fff;margin-top: 0.15rem;padding-bottom: 1.5rem;}
@@ -197,4 +217,5 @@
 .mu-dialog-body .ewm{width: 1.86rem;height: 1.86rem;}
 
 .hlepbox{margin-top: 0.2rem;}
+.fanallcar{top: .03rem;left: .6rem;}
 </style>

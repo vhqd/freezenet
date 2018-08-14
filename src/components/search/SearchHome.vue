@@ -1,52 +1,52 @@
 <template>
-	<div style="height: 100%;" class="searchhomebox">
-		<!-- 搜索区 -->
-		<Search :ishome='false' v-on:sendword="showword"></Search>
-		<!--搜索历史-->
-		<div id="search-content">
-			<!--搜索列表-->
-			<ul class="res-searchbox" v-show="resData.length != 0">
-				<li v-for="(item , index) in resData" :key="index">{{item.title}}</li>
-			</ul>
-			<!--暂无历史-->
-			<mu-paper v-if="history.length == 0 && hothistory.length == 0">
-				<mu-list>
-					<mu-list-item avatar button :ripple="false">
-						<mu-list-item-title>搜索历史</mu-list-item-title>
-						<mu-list-item-action>
-							<img src="../../../static/img/trash.png" style="width: 0.42rem;height: 0.4rem;" />
-						</mu-list-item-action>
-					</mu-list-item>
-				</mu-list>
-			</mu-paper>
-			<p class="noneHis">暂无搜索历史</p>
+  <div style="height: 100%;" class="searchhomebox">
+    <!--头部-->
+    <BackBarFullWhite dTitle='搜索'></BackBarFullWhite>
+    <!-- 搜索区 -->
+    <Search :ishome='false' :keyword='keyword' v-on:sendword="showword"></Search>
+    <!--搜索历史-->
+    <div id="search-content">
+      <!--搜索列表-->
+      <ul class="res-searchbox" v-show="resData.length != 0 && resData.length == 0">
+        <li v-for="(item , index) in resData" :key="index" @click="goDetail(item)">{{item.goods_title}}</li>
+      </ul>
+      <!--暂无历史-->
+      <mu-paper v-if="history.length == 0 && hothistory.length == 0 && searchshow">
+        <mu-list>
+          <mu-list-item avatar button :ripple="false">
+            <mu-list-item-title>搜索历史</mu-list-item-title>
+            <mu-list-item-action>
+              <img src="../../../static/img/trash.png" style="width: 0.42rem;height: 0.4rem;" />
+            </mu-list-item-action>
+          </mu-list-item>
+        </mu-list>
+      </mu-paper>
+      <p class="noneHis" v-if="history.length == 0 && searchshow">暂无搜索历史</p>
 
-			<!--历史记录-->
-			<mu-container class="demo-chip-wrapper" v-if="history.length>0">
-				<div class="historybox">
+      <!--历史记录-->
+      <mu-container class="demo-chip-wrapper" v-if="history.length>0 && searchshow">
+        <div class="historybox">
           <span>历史搜索</span>
-          <div class="dele" @click="deleSearchbox">
+          <div class="dele" @click="openDeleWin">
             <img src="../../../static/img/ic-del.png" />
           </div>
         </div>
-        
-				<mu-chip class="demo-chip" v-for="(item , index) in history" :key="index">
-					{{item.key_word}}
-				</mu-chip>
-			</mu-container>
 
-			
+        <mu-chip class="demo-chip" v-for="(item , index) in history" :key="index">
+          {{item.key_word}}
+        </mu-chip>
+      </mu-container>
 
-		</div>
-		<!--热门搜索-->
-		<mu-container class="demo-chip-wrapper hotsearchbox" v-if="hothistory.length>0">
-			<p class="historybox">热门搜索</p>
-			<mu-chip class="demo-chip" v-for="(item , index) in hothistory" :key="index">
-				{{item.key_word}}
-			</mu-chip>
-		</mu-container>
-		<!--搜索结果-->
-		<!--<div class="listbox">
+    </div>
+    <!--热门搜索-->
+    <mu-container class="demo-chip-wrapper hotsearchbox" v-if="hothistory.length>0 && searchshow">
+      <p class="historybox">热门搜索</p>
+      <mu-chip class="demo-chip" v-for="(item , index) in hothistory" :key="index">
+        {{item.key_word}}
+      </mu-chip>
+    </mu-container>
+    <!--搜索结果-->
+    <!--<div class="listbox">
 			<mu-paper :z-depth="1" class="demo-list-wrap">
 			  <mu-list textline="three-line">
 			  	
@@ -83,69 +83,68 @@
 		
 		</div>-->
 
-		<div class="searchreult" v-if="list.length != 0">
-			<mu-flex class="flex-wrapper" align-items="center" wrap="wrap">
-				<mu-flex v-for="(item,index) in list" :key="index" class="flex-demo" direction='column' align-items="center" justify-content="center" fill>
-					<img src="../../../static/img/1.6_03.png" alt="" class="shouimg"/>
+    <div class="searchreult" v-if="resData.length > 0">
+      <mu-flex class="flex-wrapper" align-items="center" wrap="wrap">
+        <mu-flex v-for="(item,index) in resData" :key="index" class="flex-demo" direction='column' align-items="center" justify-content="center" fill>
+          <img src="../../../static/img/1.6_03.png" alt="" class="shouimg" />
           <div class="infobox">
-					<p class="rtitle">{{item.title}}</p>
-					<p class="liang">{{item.weight}}斤装</p>
-					<p class="price">￥{{item.price}}</p>
+            <p class="rtitle">{{item.goods_title}}</p>
+            <p class="liang">{{item.goods_price}}斤装</p>
+            <p class="price">￥{{item.goods_price}}</p>
           </div>
-					<div style="position: absolute;right: 0;bottom: 0;">
-						<div class="saoma">
-							<!-- <span class="minus mpsytl" @click="minus(item)" v-if="item.num != 0">-</span>
+          <div style="position: absolute;right: 0;bottom: 0;">
+            <div class="saoma">
+              <!-- <span class="minus mpsytl" @click="minus(item)" v-if="item.num != 0">-</span>
 							<span>{{item.num}}</span>
 							<span class="plus mpsytl" @click="plus(item)">+</span> -->
               <span class="minus" @click="minus(item)" v-if="item.num != 0"><img src="../../../static/img/ic_jian.png" alt="" style="width:.5rem;height:.5rem;"></span>
               <span v-show="item.num != 0">{{item.num}}</span>
               <span class="plus" @click="plus(item)"><img src="../../../static/img/ic_jia.png" alt="" style="width:.5rem;height:.5rem;"></span>
-						</div>
-					</div>
-				</mu-flex>
-			</mu-flex>
-		</div>
-    <div v-else style="position: absolute;left: 50%;top: 50%;margin-top: -97.5px;margin-left: -96px;">
-			<img src="../../../static/img/img_wujieguo@2x.png" style="width: 3.9rem;height: 3.3rem;" />
-			<p style="color: #999;">没有找到相关商品</p>
-		</div>
+            </div>
+          </div>
+        </mu-flex>
+      </mu-flex>
+    </div>
+    <div v-else-if="!searchshow" style="position: absolute;left: 50%;top: 35%;margin-left: -96px;">
+      <img src="../../../static/img/img_wujieguo@2x.png" style="width: 3.9rem;height: 3.3rem;" />
+      <p style="color: #999;">没有找到相关商品</p>
+    </div>
 
-		<!--购物车bar-->
+    <!--购物车bar-->
 
-		<div class="addToCar" v-if="list.length > 0">
-			<mu-list class="carbut">
-				<mu-list-item avatar button :ripple="false">
-					<div class="pricecarbox">
-						<div class="carprice">
-							<div class="carimgbox">
-								<img src="../../../static/img/car/car.png" />
-								<span class="carnum">{{carnum}}</span>
-							</div>
-						</div>
-						<div style="position: relative;">合计：
-							<span style="color: red;">￥{{allPrice}}</span>
-							<span class="qigou">{{qigou}}元起购</span>
-						</div>
-					</div>
-					<div :class="allPrice >= qigou ? 'settlement gotobuy' : 'settlement'" @click="settlement">
-						去结算
-					</div>
-				</mu-list-item>
-			</mu-list>
-			<mu-dialog title="温馨提示" width="360" :open.sync="openJS">
-				<span class="cancelbox" @click="closeJSDialog"><img src="../../../static/img/ic_Shut .png" /></span>
-				你还没有选中商品<br>还不能去结算
-				<mu-button slot="actions" flat color="primary" @click="closeJSDialog">确定</mu-button>
-			</mu-dialog>
-		</div>
-
+    <div class="addToCar" v-if="resData.length > 0">
+      <mu-list class="carbut">
+        <mu-list-item avatar button :ripple="false">
+          <div class="pricecarbox">
+            <div class="carprice">
+              <div class="carimgbox">
+                <img src="../../../static/img/car/car.png" />
+                <span class="carnum">{{carnum}}</span>
+              </div>
+            </div>
+            <div style="position: relative;">合计：
+              <span style="color: red;">￥{{allPrice}}</span>
+              <span class="qigou">{{qigou}}元起购</span>
+            </div>
+          </div>
+          <div :class="allPrice >= qigou ? 'settlement gotobuy' : 'settlement'" @click="settlement">
+            去结算
+          </div>
+        </mu-list-item>
+      </mu-list>
+      <mu-dialog title="温馨提示" width="360" :open.sync="openJS">
+        <span class="cancelbox" @click="closeJSDialog"><img src="../../../static/img/ic_Shut .png" /></span>
+        你还没有选中商品<br>还不能去结算
+        <mu-button slot="actions" flat color="primary" @click="closeJSDialog">确定</mu-button>
+      </mu-dialog>
+    </div>
 
     <mu-dialog title="温馨提示" width="360" :open.sync="deleSearch">
       <span class="cancelbox" @click="closedeleDialog"><img src="../../../static/img/ic_Shut .png" /></span>
       删除历史搜索记录
-      <mu-button slot="actions" flat color="primary" @click="closedeleDialog">确定</mu-button>
+      <mu-button slot="actions" flat color="primary" @click="deleSearchbox">确定</mu-button>
     </mu-dialog>
-		<!--<div class="carBox">
+    <!--<div class="carBox">
 			<mu-container>
 			  <mu-bottom-nav>
 			    <mu-bottom-nav-item title="购物车"></mu-bottom-nav-item>
@@ -157,39 +156,71 @@
 			</mu-container>
 		</div>-->
 
-	</div>
+  </div>
 </template>
 
 <script>
+import BackBarFullWhite from "../common/BackBarFullWhite.vue";
 import Search from "../common/Search.vue";
-import { getSearchWords , GetKeyWord , GetKeyHotWord , SearchWord , DeleKeyWord } from "../../http/http.js";
+import {
+  getSearchWords,
+  GetKeyWord,
+  GetKeyHotWord,
+  SearchWord,
+  DeleKeyWord
+} from "../../http/http.js";
 
 export default {
   data() {
     return {
+      host:this.$store.state.host,
+      keyword:'',
+      searchshow:true,
       showList: [], //默认显示的数据
       openJS: false, //结算弹窗
-       deleSearch: false, //删除弹窗
-    carnum: 0, //购物车数量
-    qigou:100,
-	  history:[
-		  /* {
+      deleSearch: false, //删除弹窗
+      carnum: 0, //购物车数量
+      qigou: 100,
+      history: [
+        /* {
 			  title:'鸭肠'
 		  } */
-	  ],
-	  hothistory:[
-		 /*  {
+      ],
+      hothistory: [
+        /*  {
 			  title:'鱼鱼鱼'
 		  } */
-	  ],
+      ],
       allPrice: 0, //总价
-	  checkNum: 0, //选中的条数
-	  resData:[//搜索下拉框
-		  {
-			  title:'aaa'
-		  }
-	  ],
+      checkNum: 0, //选中的条数
+      resData: [
+        //搜索下拉框
+       /*  {
+          title: "aaa"
+        } */
+      ],
       list: [
+        {
+          img: require("../../../static/img/1-0_03.png"),
+          title: "BreakfastBreakfastBreakfast",
+          num: 0,
+          weight: 5,
+          price: 20
+        },
+        {
+          img: require("../../../static/img/1-0_03.png"),
+          title: "CameraCameraCamera",
+          num: 0,
+          weight: 5,
+          price: 20
+        },
+        {
+          img: require("../../../static/img/1-0_03.png"),
+          title: "CameraCameraCameraCamera",
+          num: 0,
+          weight: 5,
+          price: 20
+        },
         {
           img: require("../../../static/img/1-0_03.png"),
           title: "BreakfastBreakfastBreakfast",
@@ -285,11 +316,31 @@ export default {
       ]
     };
   },
+  activated(){
+    this.searchshow = true;
+  },
   methods: {
-    showword(data){
-      SearchWord(data).then(res =>{
+    /**获取显示搜索结果*/
+    showword(data) {
+      SearchWord(data).then(res => {
+        let data = res.data.data;
+        if(data.length == 0 ){
+            this.searchshow = false;
+            return;
+        }
+        if(data.length > 0){
 
-      })
+        }
+        for(let i in data){
+          data[i].goods_photo = this.host + data[i].goods_photo;
+			    data[i].num = 0;
+        }
+        this.resData = data;
+      });
+    },
+    /**点击搜索结果查看详情*/
+    goDetail(item){
+      this.$router.push({path:'/detail',query:{id:item.id}})
     },
     /*获取默认显示的数据*/
     getMenuListOne() {
@@ -307,7 +358,7 @@ export default {
       if (amount > 0) {
         item.num = amount - 1;
         this.carnum = this.carnum - 1;
-        this.allPrice = this.allPrice - item.price;
+        this.allPrice = this.allPrice - item.goods_price;
       } else {
         item.num = 0;
       }
@@ -317,7 +368,7 @@ export default {
       let amount = item.num;
       item.num = amount + 1;
       this.carnum = this.carnum + 1;
-      this.allPrice = this.allPrice + item.price;
+      this.allPrice = this.allPrice + item.goods_price;
     },
     /*获取购物车数量*/
     getCarNum() {
@@ -340,16 +391,20 @@ export default {
         this.$router.push({ path: "/order" });
       }
     },
-    /**删除记录*/
-    deleSearchbox(){
-      DeleKeyWord().then(res => {
-        if(res.data.code == 200){
-          this.deleSearch = true;
-        }
-      })
-      
+    /**打开删除弹窗*/
+    openDeleWin(){
+       this.deleSearch = true;
     },
-     /**关闭删除记录弹窗*/
+    /**删除记录*/
+    deleSearchbox() {
+       DeleKeyWord().then(res => {
+        if (res.data.code == 200) {
+          this.history =[];
+          this.deleSearch = false;
+        }
+      });
+    },
+    /**关闭删除记录弹窗*/
     closedeleDialog() {
       this.deleSearch = false;
     },
@@ -360,55 +415,59 @@ export default {
   },
   mounted() {
     /*获取搜索历史*/
-     GetKeyWord().then((res)=>{
-        let data = res.data.data;
-        this.history = data;
-				console.log(data);
-				
-				console.log('--------');
-				
-				console.log(res);
-	
-      })
-       /*获取搜索历史*/
-     GetKeyHotWord().then((res)=>{
-        let data = res.data.data;
-        this.hothistory = data;
-				console.log(data);
-				
-				console.log('--------');
-				
-				console.log(res);
-	
-			})
+    GetKeyWord().then(res => {
+      let data = res.data.data;
+      this.history = data;
+      console.log(data);
+
+      console.log("--------");
+
+      console.log(res);
+    });
+    /*获取搜索历史*/
+    GetKeyHotWord().then(res => {
+      let data = res.data.data;
+      this.hothistory = data;
+      console.log(data);
+
+      console.log("--------");
+
+      console.log(res);
+    });
     //this.getMenuListOne();
     //this.getCarNum();
   },
   components: {
-    Search
+    Search,
+    BackBarFullWhite
   }
 };
 </script>
 
 <style scoped>
-.res-searchbox{
-	position: absolute;
-	top: 50px;
-	width: 100%;
-	z-index: 10;
-	background: #fff;
-}	
-.hotsearchbox{margin-top: 7px;background: #fff}
-.res-searchbox li{
-	padding: .2rem 10px;
-	border-bottom: 1px solid #e0e0e0;
-	text-align: left;
-	font-size: 14px;
-	color: #333;
-	font-weight: bold;
+/* .home_h{top: 1rem !important;} */
+.home_h{position: relative !important;padding-top: .9rem;}
+.res-searchbox {
+  position: absolute;
+  top: 95px;
+  width: 100%;
+  z-index: 10;
+  background: #fff;
+}
+.hotsearchbox {
+  margin-top: 7px;
+  background: #fff;
+}
+.res-searchbox li {
+  padding: 0.2rem 10px;
+  border-bottom: 1px solid #e0e0e0;
+  text-align: left;
+  font-size: 14px;
+  color: #333;
+  font-weight: bold;
 }
 #search-content {
-  padding-top: 0.9rem;
+  padding-top: 0rem;
   background: #fff;
 }
 .mu-paper {
@@ -428,9 +487,9 @@ export default {
   padding: 0.45rem 0.3rem;
   color: #999;
 }
-.historybox{
-	  text-align: left;
-    position: relative;
+.historybox {
+  text-align: left;
+  position: relative;
   padding: 0.2rem 0.3rem;
   color: #999;
   border-bottom: 1px solid #e0e0e0;
@@ -526,7 +585,7 @@ export default {
 .carNum {
   background: red;
   color: #fff;
-  margin-op: -0.2rem;
+  /* margin-top: -0.2rem; */
   margin-left: -0.2rem;
   line-height: 20px;
   padding: 0 7px;
@@ -544,6 +603,7 @@ export default {
 .searchreult .flex-row p {
   text-align: left !important;
   width: 100%;
+  height: 25px;
   overflow: hidden;
 }
 .liang {
@@ -561,6 +621,7 @@ export default {
   overflow: hidden;
   background: #fff;
   margin-top: 0.14rem;
+  padding-bottom: .3rem;
 }
 .rtitle {
   text-overflow: ellipsis;
@@ -605,7 +666,7 @@ export default {
   height: 45px;
   line-height: 45px;
 }
-.gotobuy{
+.gotobuy {
   background: #f24c4c !important;
 }
 .carlistbox {
@@ -662,7 +723,7 @@ export default {
   width: 0.35rem;
   height: 0.35rem;
 }
-.infobox{
+.infobox {
   width: 87%;
   overflow: hidden;
 }

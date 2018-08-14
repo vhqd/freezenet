@@ -10,7 +10,8 @@ const store = new Vuex.Store({
 		load:false,
     	token:'',
         count:0,//导航栏上面的购物车数量
-        isbind:true//用户是否绑定手机号，如果绑定才能看菜品价格否则不能查看
+		isbind:true,//用户是否绑定手机号，如果绑定才能看菜品价格否则不能查看
+		order:[]//个人中心订单
     },
     
 	mutations:{
@@ -35,7 +36,15 @@ const store = new Vuex.Store({
 		editCarnum(state,carnum){
 			state.count = carnum;
 		},
-		
+
+		/**
+		 * 设置个人订单
+		*/
+		setOrder(state,obj){
+			state.order = obj
+		},
+
+
 		/**
 		 * 设置token到sessionStorage
 		 */

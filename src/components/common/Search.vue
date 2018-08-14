@@ -3,7 +3,8 @@
 	<div class="home_h">
 		<header class="m_header">
             <div class="inputitem pm">
-		    	<mu-text-field v-model="value1" @focus="goSearch" class="widthstyle midm" id="searchIn" placeholder="您想要111..." icon="search"></mu-text-field>
+				<img src="../../../static/img/ic-search@2x.png" alt="" class="imgsearch">
+		    	<mu-text-field v-model="keyword" @focus="goSearch" class="widthstyle midm" id="searchIn" placeholder="您想要111..."></mu-text-field>
 		    	<div class="guanbi" @click="clearinput"><img src="../../../static/img/ic_remove.png"/></div>
 		    	<div class="cancel" @click="cancelClick">取消</div>
 	    	</div>
@@ -16,7 +17,7 @@
     export default{
     	data(){
     		return{
-    			value1:''
+				timer:null
     		}
     	},
         methods:{
@@ -28,7 +29,7 @@
             },
             /*清楚输入框的值*/
            clearinput(){
-           	
+           	this.keyword = ''
            },
             /*处理取消事件搜索页返回，首页清空input*/
             cancelClick(){
@@ -40,15 +41,22 @@
            		}
 		   },
 		   sendKeyWord(){
-			   this.$emit("sendword",this.value1)
+			   let reg = /[\u4E00-\u9FA5\uF900-\uFA2D]/;
+			   if(this.keyword != '' && reg.test(this.keyword)){
+					this.timer = setTimeout(()=>{
+						 this.$emit("sendword",this.keyword);
+						clearTimeout(this.timer)
+					},1000)
+			   }
+			  
 		   }
 		},
 		watch:{
-			value1(){
+			keyword(){
 				this.sendKeyWord();
 			}
 		},
-        props:['ishome'],
+        props:['ishome','keyword'],
         mounted(){
 			
         	/*处理到搜索页面自动获取焦点*/
@@ -61,15 +69,15 @@
     }
 </script>
 <style scoped>
-	@import 'http://cdn.bootcss.com/material-design-icons/3.0.1/iconfont/material-icons.css';
-	.home_h{position: fixed;top: 0;width: 100%;z-index: 9999;}
+	/* @import 'http://cdn.bootcss.com/material-design-icons/3.0.1/iconfont/material-icons.css'; */
+	.home_h{position: fixed;top: 0;width: 100%;z-index: 99;}
 	.m_header{height: 0.9rem;background: #fff !important}
 	.mu-input.has-icon{border-radius: 0.3rem;}
-	.pm{padding: 0.1rem;}
+	.pm{padding: 0.1rem;position: relative;}
 	.cancel{line-height: 0.7rem;float: right;padding-right: 0.3rem;}
 	.mu-input{width: 85%;}
 	.guanbi{position: absolute;right: 18%;top: 0.28rem;}
 	.guanbi img{width: 0.3rem;height: 0.3rem;}
-
+	.imgsearch{top: 12px;}
 
 </style>

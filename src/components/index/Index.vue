@@ -249,7 +249,7 @@ export default {
 
     /**获取购物车数量显示到底部 */
     getCarList(999,1).then((res)=>{
-      let data = res.data.data.data;
+      let data = res.data.shopInfo.data;
       for(let item in data){
         this.carnum += parseInt(data[item].count)
       }

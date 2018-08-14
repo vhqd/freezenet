@@ -73,8 +73,8 @@
 								<span class="plus" @click="plus(item)"><img src="../../../static/img/ic_jia.png" alt=""></span>
 				        	</div>
 				        	<div v-if="item.type == 2">
-					        	<span class="mpsytl" @click="typeo2show(item , 1)"><img src="../../../static/img/often/down.png"/></span>
-					        	<span class="mpsytl" @click="typeo2show(item), 2"><img src="../../../static/img/often/up.png"/></span>
+					        	<span class="mpsytl" @click="typeo2show(item , 1)" v-if="!item.show"><img src="../../../static/img/often/down.png"/></span>
+					        	<span class="mpsytl" @click="typeo2show(item), 2" v-if="item.show"><img src="../../../static/img/often/up.png"/></span>
 				        	</div>
 				        </div>
 				    </div>
@@ -97,9 +97,9 @@
 							        	<!-- <span class="minus mpsytl" @click="minus(ite)" v-if="ite.num != 0">-</span>
 							        	<span>{{ite.num}}</span>
 							        	<span class="plus mpsytl" @click="plus(ite)">+</span> -->
-										<span class="minus" @click="minus(item)" v-if="item.num != 0"><img src="../../../static/img/ic_jian.png" alt=""></span>
-										<span v-show="item.num != 0">{{item.num}}</span>
-										<span class="plus" @click="plus(item)"><img src="../../../static/img/ic_jia.png" alt=""></span>
+										<span class="minus" @click="minus(item,ind)" v-if="ite.num != 0" :data-index="ind"><img src="../../../static/img/ic_jian.png" alt=""></span>
+										<span v-show="ite.num != 0">{{ite.num}}</span>
+										<span class="plus" @click="plus(item,ind)" :data-index="ind"><img src="../../../static/img/ic_jia.png" alt=""></span>
 						        	</div>
 						        </div>
 						      </mu-list-item-action>
@@ -345,18 +345,20 @@
 	  			item.show = false
 	  	},
 	  	/*减少数量值*/
-    	minus(item){
-    		let amount = item.num;
+    	minus(item,ind){
+			
+    		let amount = item.weights[ind].num;
     		if(amount>0){
-    			item.num = amount - 1;
+    			item.weights[ind].num = amount - 1;
     		}else{
-    			item.num = 0;
+    			item.weights[ind].num = 0;
     		}
     	},
     	/*增加数量值*/
-    	plus(item){
-    		let amount = item.num;
-    		item.num = amount + 1
+		plus(item,ind){
+			
+    		let amount = item.weights[ind].num;
+    		item.weights[ind].num = amount + 1
     	},
 	  }
 	}
@@ -384,6 +386,7 @@
 .dele{position: absolute;right: 0.3rem;top: 0.12rem;}
 .dele img{width: 0.35rem;height: 0.35rem;}
 .saoma img{width: 0.5rem;height: 0.5rem;}
+.saoma>div{display: flex;}
 .type2list .mu-item-title{font-size: 0.24rem;color: #333;}
 .mu-item-sub-title{color: red;}
 </style>

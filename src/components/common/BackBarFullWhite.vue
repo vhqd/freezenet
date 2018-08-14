@@ -1,10 +1,9 @@
 <template>
-	<mu-appbar style="width: 100%;position: fixed;top:0;z-index:999;" color="primary">
+	<mu-appbar style="width: 100%;position:fixed;" color="primary">
 		<mu-button icon slot="left" @click="back">
-			<img src="../../../static/img/back.png"/>
+			<img src="../../../static/img/backwhit.png"/>
 		</mu-button>
 		{{dTitle}}
-		<!--<span v-if="isshow" style="position: absolute;right: .2rem;top: -.1rem;" @click="goEditDress">管理</span>-->
 	</mu-appbar>
 </template>
 
@@ -17,16 +16,14 @@
 		methods:{
 			back(){
 				this.$router.go(-1);
-			},
-			goEditDress(){
-				this.$router.push('/editdress');
 			}
 		},
-		props:['dTitle','isshow']
+		props:['dTitle']
 	}
 </script>
 
 <style scoped>
+.mu-appbar{border-bottom: 1px solid #e0e0e0;}
 .mu-appbar-left{position: absolute !important;}
 .mu-appbar-title{color: #333;}
 .mu-primary-color{background: #fff;}

@@ -95,23 +95,9 @@
 	.footerbox{position: fixed;bottom: 0;width: 100%;z-index: 999;display: flex;background: #fff;justify-content: space-around;}
 	.footerbox a{height: 1rem;line-height: 1rem;width: 33%;position: relative;}
 	.footerbox a img{width: 0.43rem;height: 0.43rem;position: absolute;top: 0.1rem;left:50%;margin-left: -0.215rem;}
-	.footerbox a p{margin-top: 0.6rem !important;font-size: 12px;font-weight: bold}
+	.footerbox a p{margin-top: 0.6rem !important;font-size: 12px;}
 	.mu-raised-button{box-shadow: none;width: 100%;height: 100%;}
 	.mu-button-wrapper{flex-direction: column !important;}
 	.tabimgbox{width: 100%;}
 	.router-link-exact-active p{color: #f24c4c;}
-	
-	.fanallcar{
-		position: absolute;
-	    top: 0.1rem;
-	    left: 0.8rem;
-	    color: #fff;
-	    background: red;
-	    line-height: 0.25rem;
-	    border-radius: 0.2rem;
-	    min-width: 0.25rem;
-	    height: 0.25rem;
-	    padding: 0 5px;
-	    text-align: center;
-	}
 </style>

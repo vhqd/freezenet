@@ -66,7 +66,7 @@
           <mu-list textline="three-line" v-if="caiDetailList.length != 0">
 
             <div v-for="(item,index) in caiDetailList" :key="index" class="li-box">
-              <router-link to="/detail">
+              <router-link :to="{path:'/detail',query: {id: item.id}}">
                 <mu-list-item avatar :ripple="false" button>
                   <mu-list-item-action>
                     <mu-avatar style="width: 1.4rem;height: 1.4rem;">
@@ -221,7 +221,7 @@ export default {
   },
    mounted() {
 
-     this.$store.commit("setLoad",true);
+     //this.$store.commit("setLoad",true);
     /*获取顶部菜单*/
     getCaiClassOne(this.limit, this.page).then(res => {
      
@@ -234,7 +234,7 @@ export default {
       this.classification = this.classification.concat(data);
       /*初始化二级默认菜单和菜品*/
       this.getChildList(this.classification[0]);
-      this.$store.commit("setLoad",false);
+     // this.$store.commit("setLoad",false);
     });
 
     //this.getMenuListOne();

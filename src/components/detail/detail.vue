@@ -5,16 +5,16 @@
 		<!-- 轮播图-->
 		<HomeBannerView :imgs='bannerImg'></HomeBannerView>
 
-		<div class="dInfobox">
+		<div class="dInfobox" v-if="contentinfo[0]">
 			<mu-list textline="three-line">
 				<mu-list-item avatar :ripple="false" button>
 					<mu-list-item-content>
-						<mu-list-item-title>{{data.title}}</mu-list-item-title>
+						<mu-list-item-title>{{contentinfo[0].goods_title}}</mu-list-item-title>
 						<mu-list-item-sub-title>
-							<span style="color: #a9a9a9;font-size: 0.2rem;">{{data.inventory}}斤装</span>
+							<span style="color: #a9a9a9;font-size: 0.2rem;">{{contentinfo[0].goods_count}}斤装</span>
 							<p style="color: red;">
 								￥
-								<span style="font-size: 0.5rem;">{{data.price}}</span>
+								<span style="font-size: 0.5rem;">{{contentinfo[0].goods_price}}</span>
 								<!-- <span style="color: #ccc;text-decoration: line-through;">￥{{data.oldPrice}}</span> -->
 							</p>
 							<div class="mjbox">
@@ -26,15 +26,17 @@
 				<mu-divider></mu-divider>
 				<div style="position: absolute;right:0.28rem;bottom: 0.36rem;color: red;">
 					<div class="saoma">
-						<span class="minus" @click="minus(data)" v-if="data.num != 0"><img src="../../../static/img/ic_jian.png" alt="" style="width:.5rem;height:.5rem;"></span>
-						<span v-show="data.num != 0">{{data.num}}</span>
-						<span class="plus" @click="plus(data)"><img src="../../../static/img/ic_jia.png" alt="" style="width:.5rem;height:.5rem;"></span>
+						<span class="minus" @click="minus()" v-if="contentinfo[0].num != 0"><img src="../../../static/img/ic_jian.png" alt="" style="width:.5rem;height:.5rem;"></span>
+						<span v-show="contentinfo[0].num != 0">{{contentinfo[0].num}}</span>
+						<span class="plus" @click="plus()"><img src="../../../static/img/ic_jia.png" alt="" style="width:.5rem;height:.5rem;"></span>
 					</div>
 				</div>
 			</mu-list>
-			<p class="instructions">{{data.instructions}}</p>
+			<p class="instructions">{{contentinfo[0].goods_desc}}</p>
 		</div>
-		<img src="../../../static/img/1-2_02.png" style="width: 100%;margin-top: 0.2rem;" />
+		<div style="padding-bottom:1rem;">
+			<img v-if="contentinfo[0]" :src="contentinfo[0].goods_photo" style="width: 100%;margin-top: 0.2rem;" />
+		</div>
 
 		<div class="addToCar">
 			<mu-list class="carbut">
@@ -54,9 +56,10 @@
 								<mu-list textline="two-line" class="gwc">
 									<mu-list-item avatar button :ripple="false">
 										<mu-list-item-content>
-											<mu-list-item-title><img src="../../../static/img/car/car.png" /></mu-list-item-title>
+											<mu-list-item-title><img src="../../../static/img/car/car.png"/></mu-list-item-title>
 											<mu-list-item-sub-title>购物车</mu-list-item-sub-title>
 										</mu-list-item-content>
+										<span class="fanallcar" v-if="contentinfo[0]" v-show="contentinfo[0].num != 0">{{contentinfo[0].num}}</span>
 									</mu-list-item>
 								</mu-list>
 
@@ -72,11 +75,11 @@
 			       	加入购物车
 			      </div>
              -->
-					<div v-if="carnum == 0 || allPrice < qigoujia" class="huise settlement">
-						加入购物车
+					<div v-if="allPrice < qigoujia" class="huise settlement">
+						去结算
 					</div>
-					<div v-else class="settlement" @click="settlement">
-						加入购物车
+					<div v-else class="settlement" @click="goBuy">
+						去结算
 					</div>
 				</mu-list-item>
 			</mu-list>
@@ -110,7 +113,8 @@
 <script>
 import HomeBannerView from "../home/HomeBanner.vue";
 import BackBar from "../common/BackBar.vue";
-
+import { getProductInfos , AddCarShop } from '../../http/http.js'
+import QS from "qs";
 import carouselImg1 from "../../../static/img/1-0_02.png";
 import carouselImg2 from "../../../static/img/1-0_02.png";
 
@@ -121,15 +125,17 @@ export default {
   },
   data() {
     return {
-      dTitle: "商品详情", //详情标题
+			dTitle: "商品详情", //详情标题
+			host:this.$store.state.host,
+			id:0,//商品id
       carnum: 0, //分类底部小车数量
       qigoujia: 100, //起购价
       openJS: false, //结算弹窗
       allPrice: 0,
       jcg1: require("../../../static/img/home/ic_jiachanggou_moren@3x.png"),
       jcg2: require("../../../static/img/home/ic_jiachanggou_yijia@3x.png"),
-      data: {
-        id: 1,
+      contentinfo: [],
+       /*  id: 1,
         img: require("../../../static/img/1-0_03.png"), //图片
         title: "算哈哈是111", //标题
         num: 0, //数量
@@ -137,28 +143,56 @@ export default {
         oldPrice: "50", //旧的价格
         inventory: "5", //库存
         manjian: 310, //满减
-        instructions: "发货说明发货说明发货说明发货说明发货说明发货说明"
-      },
+				instructions: "发货说明发货说明发货说明发货说明发货说明发货说明" */
+      
       bannerImg: [
-        require("../../../static/img/1-0_02.png"),
-        require("../../../static/img/1-0_02.png")
+				{banner_image_address:require("../../../static/img/1-0_02.png")},
+				{banner_image_address:require("../../../static/img/1-0_02.png")}
       ]
     };
-  },
+	},
+	activated(){
+		//this.contentinfo = [];//防止缓存
+		this.id = this.$route.query.id;
+		let data = {"id":[this.id]}
+		getProductInfos(JSON.stringify(data)).then(res => {
+			let data = res.data.data;
+			data[0].goods_photo = this.host + data[0].goods_photo;
+			data[0].num = 0;
+			this.contentinfo = data;
+		})
+	},
+	mounted(){
+		
+	},
   methods: {
+		/**添加商品到购物车结算*/
+		goBuy(){
+			let alldata = {
+						'goods_id':[this.id],
+						'single_price':[this.contentinfo[0].goods_price],
+						'count':[this.contentinfo[0].num],
+						'sum_price':parseInt(this.contentinfo[0].num)*parseFloat(this.contentinfo[0].goods_price)
+					}
+			 AddCarShop(QS.stringify(alldata)).then(res=>{
+        this.$router.push('/car')
+      })
+		},
     /*减少数量值*/
-    minus(dta) {
-      let amount = this.data.num;
+    minus() {
+      let amount = this.contentinfo[0].num;
       if (amount > 0) {
-        this.data.num = amount - 1;
+        this.contentinfo[0].num = amount - 1;
       } else {
-        this.data.num = 0;
-      }
+        this.contentinfo[0].num = 0;
+			}
+			this.allPrice = parseInt(this.contentinfo[0].num)*parseFloat(this.contentinfo[0].goods_price)
     },
     /*增加数量值*/
-    plus(item) {
-      let amount = this.data.num;
-      this.data.num = amount + 1;
+    plus() {
+      let amount = this.contentinfo[0].num;
+			this.contentinfo[0].num = amount + 1;
+			this.allPrice =parseInt(this.contentinfo[0].num)*parseFloat(this.contentinfo[0].goods_price)
     },
     /*关闭弹窗*/
     closeJSDialog() {
@@ -179,6 +213,8 @@ export default {
 .mu-item {
   height: 100%;
 }
+.settlement{background: #f24c4c;}
+.huise{background: #bbb}
 .instructions {
   color: red;
   padding: 0.3rem;

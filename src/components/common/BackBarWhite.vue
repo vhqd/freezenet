@@ -26,7 +26,7 @@
 .mu-appbar{border-bottom: 1px solid #e0e0e0;}
 .mu-appbar-left{position: absolute !important;}
 .mu-appbar-title{color: #333;}
-.mu-primary-color{background: #fff!important;}
+.mu-primary-color{background: #fff;}
 .mu-button-wrapper img{width: 60%;}
 .mu-elevation-4{box-shadow: none;}
 .home_ban{padding-top: 0 !important;}

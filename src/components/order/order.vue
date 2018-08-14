@@ -72,7 +72,7 @@
 						<mu-divider></mu-divider>
 						<div style="position: absolute;right: 0;bottom: 0;">
 							<div class="saoma">
-								<span>x{{item.num}}</span>
+								<span>x{{item.count}}</span>
 							</div>
 						</div>
 					</div>
@@ -385,8 +385,8 @@
 
 				this.alllistlength = list.length;
 				for(let item in list){
-					this.llength += list[item].num;//总商品数
-					this.allprice += parseFloat(list[item].goods_price*list[item].num)
+					this.llength += list[item].count;//总商品数
+					this.allprice += parseFloat(list[item].goods_price*list[item].count)
 				}
 				this.payprice = this.allprice - this.yhj + this.psf;
 			},
@@ -413,7 +413,7 @@
 					let item = alldata[ite];
 					this.orderdata[0].goods_id.push(item.id);
 					this.orderdata[0].single_price.push(item.goods_price);
-					this.orderdata[0].count.push(item.num);
+					this.orderdata[0].count.push(item.count);
 				}
 				let payway = null;
 				for(let i in this.payway){
@@ -431,8 +431,11 @@
 				this.orderdata[0].red_packet_id = 0;
 				this.orderdata[0].transport_id = 0;
       
-
-
+				alert(1);
+				console.log('需要提交的商品订单数据');
+				console.log(this.orderdata);
+				
+				
 				AddOrder(QS.stringify(this.orderdata)).then(res =>{
 
 				})
