@@ -32,7 +32,7 @@
           </div>
         </div>
 
-        <mu-chip class="demo-chip" v-for="(item , index) in history" :key="index">
+        <mu-chip class="demo-chip" v-for="(item , index) in history" :key="index" @click="searchAWord(item)">
           {{item.key_word}}
         </mu-chip>
       </mu-container>
@@ -41,7 +41,7 @@
     <!--热门搜索-->
     <mu-container class="demo-chip-wrapper hotsearchbox" v-if="hothistory.length>0 && searchshow">
       <p class="historybox">热门搜索</p>
-      <mu-chip class="demo-chip" v-for="(item , index) in hothistory" :key="index">
+      <mu-chip class="demo-chip" v-for="(item , index) in hothistory" :key="index" @click="searchAWord(item)">
         {{item.key_word}}
       </mu-chip>
     </mu-container>
@@ -85,7 +85,7 @@
 
     <div class="searchreult" v-if="resData.length > 0">
       <mu-flex class="flex-wrapper" align-items="center" wrap="wrap">
-        <mu-flex v-for="(item,index) in resData" :key="index" class="flex-demo" direction='column' align-items="center" justify-content="center" fill>
+        <mu-flex v-for="(item,index) in resData" :key="index" class="flex-demo" direction='column' align-items="center" justify-content="center" fill @click="goDetail(item)">
           <img src="../../../static/img/1.6_03.png" alt="" class="shouimg" />
           <div class="infobox">
             <p class="rtitle">{{item.goods_title}}</p>
@@ -329,7 +329,7 @@ export default {
             return;
         }
         if(data.length > 0){
-
+          this.searchshow = true;
         }
         for(let i in data){
           data[i].goods_photo = this.host + data[i].goods_photo;
@@ -342,15 +342,9 @@ export default {
     goDetail(item){
       this.$router.push({path:'/detail',query:{id:item.id}})
     },
-    /*获取默认显示的数据*/
-    getMenuListOne() {
-      let showList = this.showList;
-      let data = this.menu[0].list;
-      //console.log(data)
-      for (let i = 0; i < data.length; i++) {
-        showList.push(data[i]);
-      }
-      console.log(showList);
+    /**点击搜索历史或者热门搜索*/
+    searchAWord(item){
+      this.showword(item.key_word);
     },
     /*减少数量值*/
     minus(item) {
@@ -434,8 +428,6 @@ export default {
 
       console.log(res);
     });
-    //this.getMenuListOne();
-    //this.getCarNum();
   },
   components: {
     Search,
@@ -623,6 +615,12 @@ export default {
   margin-top: 0.14rem;
   padding-bottom: .3rem;
 }
+.searchreult .flex-column:first-child{
+ margin-left:0 !important;
+}
+.searchreult .flex-column:not(:nth-child(4n)){
+ margin-left: 7px;
+}
 .rtitle {
   text-overflow: ellipsis;
 }
@@ -630,7 +628,7 @@ export default {
   width: 100%;
 }
 .justify-content-start {
-  justify-content: space-between !important;
+  justify-content: flex-start !important;
 }
 
 .addToCar {

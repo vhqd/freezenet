@@ -251,7 +251,7 @@
 				getCenterCoupons(this.limit,page).then(res => {
 					this.page = page + 1;
 					let data = res.data.data;
-					if(data.length > 0 ){
+					if(data && data.length > 0 ){
 						this.list = this.list.concat(data);
 					}else{
 						this.nomore = true

@@ -19,7 +19,21 @@
 
     <div class="iddexcontent">
       <div class="adimg">
-        <img src="../../../static/img/1.0_02.png" />
+        <mu-carousel hide-controls>
+          <mu-carousel-item>
+            <img :src="carouselImg1">
+          </mu-carousel-item>
+          <mu-carousel-item>
+            <img :src="carouselImg2">
+          </mu-carousel-item>
+          <mu-carousel-item>
+            <img :src="carouselImg3">
+          </mu-carousel-item>
+          <mu-carousel-item>
+            <img :src="carouselImg4">
+          </mu-carousel-item>
+        </mu-carousel>
+        <!-- <img src="../../../static/img/1.0_02.png" /> -->
       </div>
       <!--商品列表专区-->
       <div>
@@ -60,8 +74,8 @@
                   </mu-list-item-action>
                   <mu-list-item-content>
                     <mu-list-item-title>{{item.title}}</mu-list-item-title>
+                    <span class="kcstyle">库存{{item.inventory}}件</span>
                     <mu-list-item-sub-title>
-                      <span style="color: #a9a9a9;font-size: 0.2rem;">库存{{item.inventory}}件</span>
                       <div style="color: red;">
                         <span v-show="!isbind" style="color: #a9a9a9;">绑定手机号才能查看价格</span>
                         <div v-show="isbind" class="pricecolor">￥
@@ -108,6 +122,11 @@ import Footer from "../common/Footer.vue";
 import { mapState } from "vuex";
 import { getIndexClass, getIndexBanner ,getCarList } from "../../http/http.js";
 
+import carouselImg1 from '../../../static/img/1.0_02.png';
+import carouselImg2 from '../../../static/img/1.0_02.png';
+import carouselImg3 from '../../../static/img/1.0_02.png';
+import carouselImg4 from '../../../static/img/1.0_02.png';
+
 export default {
   components: {
     HomeSearch,
@@ -116,6 +135,10 @@ export default {
   },
   data() {
     return {
+      carouselImg1,
+      carouselImg2,
+      carouselImg3,
+      carouselImg4,
       host: this.$store.state.host,
       limit: 10,
       page: 1,
@@ -329,6 +352,7 @@ export default {
 }
 .indexlist {
   padding: 0 0.3rem;
+  margin-top: .1rem;
   background: #fff;
   border-bottom: 1px solid #cacaca;
 }
@@ -485,7 +509,7 @@ export default {
   margin-top: -0.2rem;
 }
 .inc-scroll-landscape-container > .inc-scroll-landscape-content ul {
-  margin: 0.08rem 0;
+  margin: 0.15rem 0;
 }
 .inc-scroll-landscape-container > .inc-scroll-landscape-content > ul > li {
   line-height: 0.6rem;
@@ -517,4 +541,5 @@ export default {
   margin-left: 0.15rem;
 }
 .mu-list .li-box:not(:last-child){border-bottom: 1px solid #e0e0e0;}
+.adimg .mu-carousel{height: 103px;}
 </style>

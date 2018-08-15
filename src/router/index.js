@@ -24,6 +24,9 @@ import coupons from '@/components/center/coupons'
 import hot from '@/components/hot/hot'
 import getcoupons from '@/components/center/getcoupons'
 import login from '@/components/phone/phone'
+import CommonProblems from '@/components/help/CommonProblems'
+
+
 
 
 import test from '@/components/test/test'
@@ -56,7 +59,8 @@ const router =  new Router({
     { path: '/coupons',name: 'coupons',component: coupons},//优惠券
     { path: '/hot',name: 'hot',component: hot},//热销榜
     { path: '/getcoupons',name: 'getcoupons',component: getcoupons},//领优惠券
-    { path: '/login',name: 'login',component: login}//绑定手机号
+    { path: '/login',name: 'login',component: login},//绑定手机号
+    { path: '/problems',name: 'problems',component: CommonProblems}//个人中心参加问题
   ]
 })
 

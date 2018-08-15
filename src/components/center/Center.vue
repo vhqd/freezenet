@@ -15,7 +15,7 @@
 			</mu-container>
 			
 			<div class="topboxinfo">
-				<p class="ordertopbox"><span class="myordertext">我的订单</span><span class="goordertex" @click="goOrderList">查看更多订单  ></span></p>
+				<p class="ordertopbox"><span class="myordertext">我的订单</span><span class="goordertex" @click="goOrderList">查看更多订单<img class="rightarr" src="../../../static/img/ic_jump.png"/></span></p>
 				<ul>
 					<li v-for="(item,index) in orderlist" :key="index">
 						<router-link :to="{path:'/orderlist', query:{id:item.id}}">
@@ -47,31 +47,29 @@
 				<p class="ordertopbox"><span class="myordertext">帮助中心</span></p>
 				<ul>
 					<li v-for="(item,index) in hlep" :key="index">
-						<!-- <router-link :to="{path:'/orderlist', query:{id:item.id}}"> -->
+						 <router-link :to="{path:item.router, query:{id:item.id}}">
 							<img :src="item.img"/>
 							<p>{{item.title}}</p>
-						<!-- </router-link> -->
+						</router-link>
 					</li>
 				</ul>
 			</div>
-			
-			<div class="listcenterbox">
-				<mu-list>
-				    <mu-list-item button :ripple="false" @click="goCoupons">
-				      <mu-list-item-title>我的优惠券</mu-list-item-title>
-				      <mu-list-item-action>
-				       >
-				      </mu-list-item-action>
-				    </mu-list-item>
-				    <mu-list-item button :ripple="false" @click="goDressManage">
-				      <mu-list-item-title>地址管理</mu-list-item-title>
-				      <mu-list-item-action>
-				       >
-				      </mu-list-item-action>
-				    </mu-list-item>
-				  </mu-list>
-			  </div>
-		
+				<div class="listcenterbox">
+					<mu-list>
+						<mu-list-item button :ripple="false" @click="goCoupons">
+						<mu-list-item-title>我的优惠券</mu-list-item-title>
+						<mu-list-item-action>
+						<div class="arrbox"><span class="yhjnum">2张</span><img class="rightarr" src="../../../static/img/ic_jump.png"/></div>
+						</mu-list-item-action>
+						</mu-list-item>
+						<mu-list-item button :ripple="false" @click="goDressManage">
+						<mu-list-item-title>地址管理</mu-list-item-title>
+						<mu-list-item-action>
+						<div class="arrbox"><img class="rightarr" src="../../../static/img/ic_jump.png"/></div>
+						</mu-list-item-action>
+						</mu-list-item>
+					</mu-list>
+				</div>
 		</div>
 		
 		
@@ -126,7 +124,8 @@
 	    	hlep:[
 	    		{
 	    			id:1,
-	    			title:'常见问题',
+					title:'常见问题',
+					router:'/problems',
 	    			img:require('../../../static/img/center/ic_changjianweiti@2x.png')
 	    		},
 	    		{
@@ -190,21 +189,24 @@
 .mu-card{background: none;box-shadow: none;}
 .mu-avatar{width: 1.24rem !important;height: 1.24rem !important;}  
 .center-title{height: 0.88rem;font-size: 0.32rem;color: #333;line-height: 0.88rem;background: #fff;}
-.mu-card-header-title{margin-top: 0.2rem;}
+.mu-card-header-title{margin-top: 0.1rem;}
 .mu-card-sub-titles{text-align: left;color: #f95151;background: #ff9a38;color:#fff;padding: 0.1rem;border-radius: 0.25rem;position: absolute;
-    top: 50px;
+    top: 44px;
     left: 140px;}
 .center-top{height: 3.3rem;background: url(../../../static/img/center/centerbg.png) no-repeat center;background-size: 100%;}
-.topboxinfo{width: 90%;margin: auto;background: #fff;border-radius: 10px;box-shadow:0 0px 2px -1px rgba(0,0,0,.1), 0 0px 1px 0 rgba(0,0,0,.1), 0 0px 0px 0 rgba(0,0,0,.1);}
+.topboxinfo{width: 93%;margin: auto;background: #fff;border-radius: 10px;box-shadow:0 0px 2px -1px rgba(0,0,0,.1), 0 0px 1px 0 rgba(0,0,0,.1), 0 0px 0px 0 rgba(0,0,0,.1);}
 .ordertopbox{overflow: hidden;padding: 0.3rem;border-bottom: 1px solid #e0e0e0;}
-.myordertext{float: left;}
-.goordertex{color:#8e8e8e;float: right;}
+.myordertext{float: left;font-weight: bold;font-size: .26rem;color: #333;}
+.goordertex{color:#999;float: right;font-size: .24rem;position: relative;padding-right: .4rem}
+.rightarr{position: absolute;width: .13rem;right:0;top:4px;}
+.arrbox{position: relative;}
+.listcenterbox .mu-item-title{font-size: .26rem}
 
-.topboxinfo ul{overflow: hidden;padding: 0.4rem 0.3rem;}
+.topboxinfo ul{overflow: hidden;padding: 0.4rem 0;}
 .topboxinfo ul li{float: left;width: 20%;color: #8e8e8e;position: relative;}
 .topboxinfo ul li p{font-size: 0.24rem;color: #8e8e8e;}
 .topboxinfo ul li img{width: 0.55rem;height: 0.55rem;}
-.listcenterbox{background: #fff;margin-top: 0.15rem;padding-bottom: 1.5rem;}
+.listcenterbox{background: #fff;width: 93%;border-radius: 10px;margin: .2rem auto 0 auto}
 .listcenterbox li:not(:last-child){border-bottom: 1px solid #e0e0e0;}
 .mu-item-action{min-width: 2.4rem;}
 
@@ -217,5 +219,6 @@
 .mu-dialog-body .ewm{width: 1.86rem;height: 1.86rem;}
 
 .hlepbox{margin-top: 0.2rem;}
-.fanallcar{top: .03rem;left: .6rem;}
+.fanallcar{top: 0;left: .8rem;}
+.yhjnum{padding-right: 20px;}
 </style>

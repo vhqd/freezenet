@@ -48,11 +48,12 @@
 								</div>
 							</mu-list>
 						</mu-paper>
+            <div class="shopinfos"><span>共10件商品</span><span>实付款：</span><span>￥300.00</span></div>
 						<div class="actionli">
 							<ul v-if='item.status == 1'>
 								<li @click="openJSDialog(index)">取消订单</li>
 								<li @click="goDetail(item)">查看详情</li>
-								<li>去支付</li>
+								<li class="qrsh">去支付</li>
 							</ul>
 							<ul v-else-if='item.status == 2'>
 								<li @click="goDetail(item)">查看详情</li>
@@ -60,7 +61,7 @@
 							<ul v-else-if='item.status == 3'>
 								<li>查看物流</li>
 								<li @click="goDetail(item)">查看详情</li>
-								<li>确认收货</li>
+								<li class="qrsh">确认收货</li>
 							</ul>
 							<ul v-else>
 								<li>删除订单</li>
@@ -232,6 +233,7 @@ export default {
 </script>
 
 <style scoped>
+.qrsh{background: #F24C4C;color: #fff !important;}
 .mu-appbar {
   border-bottom: 1px solid #e0e0e0;
 }
@@ -297,7 +299,7 @@ export default {
 }
 .actionli li {
   float: left;
-  padding: 0.08rem 0.36rem;
+  padding: 0.08rem 0.23rem;
   margin-left: 0.2rem;
   border-radius: 0.5rem;
 }
@@ -309,4 +311,10 @@ export default {
   border: 1px solid #f95151;
   color: #f95151;
 }
+.shopinfos{height: .88rem;text-align: right;border-bottom: 1px solid #e0e0e0;padding-right: 15px;}
+.shopinfos span:first-child{padding-right: 10px}
+.shopinfos span:not(:first-child){font-weight: bold;font-size: .28rem;color: #333;}
+.shopinfos span{line-height: .88rem;}
+
+
 </style>

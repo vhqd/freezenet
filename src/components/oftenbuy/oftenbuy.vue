@@ -44,14 +44,14 @@
 				    <router-link to="/detail">
 					    <mu-list-item avatar :ripple="false" button>
 					      <mu-list-item-action>
-					        <mu-avatar style="min-width: 1.4rem;height: 1.4rem;">
+					        <mu-avatar style="min-width: 1.42rem;height: 1.4rem;">
 					          <img :src="item.img">
 					        </mu-avatar>
 					      </mu-list-item-action>
 					      <mu-list-item-content>
 					        <mu-list-item-title>{{item.title}}</mu-list-item-title>
+					        <span class="kcstyle">库存{{item.inventory}}件</span>
 					        <mu-list-item-sub-title>
-					          <span style="color: #a9a9a9;font-size: 0.2rem;">库存{{item.inventory}}件</span>
 					          <div style="color: red;">
 					          		<span v-show="!isbind" style="color: #a9a9a9;">绑定手机号才能查看价格</span>
 					          		<div v-show="isbind">￥<span style="font-size: 0.5rem;">{{item.price}}</span></div>
@@ -161,7 +161,7 @@
       				],
       				show:false,
       				img:require('../../../static/img/1-0_03.png'),//图片
-      				title:'青岛大牡蛎  鲜活贝类海鲜烧烤食材带壳水产青岛大牡蛎  鲜活贝类海鲜烧烤食材带壳水产',//标题
+      				title:'鲜活贝类海鲜烧烤食材带壳水产青岛大牡蛎 ',//标题
       				num:0,//数量
       				price:'20',//单价
       				oldPrice:'50',//旧的价格
@@ -184,7 +184,7 @@
       				],
       				show:false,
       				img:require('../../../static/img/1-0_03.png'),//图片
-      				title:'青岛大牡蛎  鲜活贝类海鲜烧烤食材带壳水产青岛大牡蛎  鲜活贝类海鲜烧烤食材带壳水产',//标题
+      				title:' 鲜活贝类海鲜烧烤食材带壳水产青岛大牡蛎 ',//标题
       				num:0,//数量
       				price:'20',//单价
       				oldPrice:'50',//旧的价格
@@ -207,7 +207,7 @@
       				],
       				show:false,
       				img:require('../../../static/img/1-0_03.png'),//图片
-      				title:'青岛大牡蛎  鲜活贝类海鲜烧烤食材带壳水产青岛大牡蛎  鲜活贝类海鲜烧烤食材带壳水产',//标题
+      				title:'  鲜活贝类海鲜烧烤食材带壳水产青岛大牡蛎 ',//标题
       				num:0,//数量
       				price:'20',//单价
       				oldPrice:'50',//旧的价格
@@ -230,7 +230,7 @@
       				],
       				show:false,
       				img:require('../../../static/img/1-0_03.png'),//图片
-      				title:'青岛大牡蛎  鲜活贝类海鲜烧烤食材带壳水产青岛大牡蛎  鲜活贝类海鲜烧烤食材带壳水产',//标题
+      				title:' 鲜活贝类海鲜烧烤食材带壳水产青岛大牡蛎 ',//标题
       				num:0,//数量
       				price:'20',//单价
       				oldPrice:'50',//旧的价格
@@ -253,7 +253,7 @@
       				],
       				show:false,
       				img:require('../../../static/img/1-0_03.png'),//图片
-      				title:'青岛大牡蛎  鲜活贝类海鲜烧烤食材带壳水产青岛大牡蛎  鲜活贝类海鲜烧烤食材带壳水产',//标题
+      				title:'  鲜活贝类海鲜烧烤食材带壳水产青岛大牡蛎 ',//标题
       				num:0,//数量
       				price:'20',//单价
       				oldPrice:'50',//旧的价格
@@ -276,7 +276,7 @@
       				],
       				show:false,
       				img:require('../../../static/img/1-0_03.png'),//图片
-      				title:'青岛大牡蛎  鲜活贝类海鲜烧烤食材带壳水产青岛大牡蛎  鲜活贝类海鲜烧烤食材带壳水产',//标题
+      				title:'  鲜活贝类海鲜烧烤食材带壳水产青岛大牡蛎 ',//标题
       				num:0,//数量
       				price:'20',//单价
       				oldPrice:'50',//旧的价格
@@ -299,7 +299,7 @@
       				],
       				show:false,
       				img:require('../../../static/img/1-0_03.png'),//图片
-      				title:'青岛大牡蛎  鲜活贝类海鲜烧烤食材带壳水产青岛大牡蛎  鲜活贝类海鲜烧烤食材带壳水产',//标题
+      				title:'  鲜活贝类海鲜烧烤食材带壳水产青岛大牡蛎',//标题
       				num:0,//数量
       				price:'20',//单价
       				oldPrice:'50',//旧的价格
@@ -322,7 +322,7 @@
       				],
       				show:false,
       				img:require('../../../static/img/1-0_03.png'),//图片
-      				title:'青岛大牡蛎  鲜活贝类海鲜烧烤食材带壳水产青岛大牡蛎  鲜活贝类海鲜烧烤食材带壳水产',//标题
+      				title:'  鲜活贝类海鲜烧烤食材带壳水产青岛大牡蛎',//标题
       				num:0,//数量
       				price:'20',//单价
       				oldPrice:'50',//旧的价格
@@ -368,22 +368,22 @@
 <style scoped>
 	
 .mu-list{padding: 8px 0 0 0;/*margin-bottom: 1rem;*/}
-.li-box .mu-item-title{font-size: 0.24rem;}
-.mu-item-action{padding-top: 0.3rem;}
+.li-box .mu-item-title{font-size: 0.24rem;padding-right: .3rem;}
+.mu-item-action{padding-top: .1rem;}
 .mu-avatar img{border-radius: initial;}
 .li-box{position: relative;}
 .mu-item-sub-title,.mu-item-title{padding-left: 0.2rem;}
 .mu-item-content{max-width: 75% !important;}
 .mu-item-title{height: auto;overflow: initial;text-overflow:initial;white-space:initial}
 .mu-list{padding: 0;}
-.li-box li{padding: 8px 0;}
+.li-box li{padding: 6px 0;}
 .mu-item-title{line-height: 0.36rem;}
 
 .type2list .mu-item-content{max-width: 85% !important;}
 .type2list li{padding: 0;}
 
 
-.dele{position: absolute;right: 0.3rem;top: 0.12rem;}
+.dele{position: absolute;right: 0.3rem;top: 0.18rem;}
 .dele img{width: 0.35rem;height: 0.35rem;}
 .saoma img{width: 0.5rem;height: 0.5rem;}
 .saoma>div{display: flex;}

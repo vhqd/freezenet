@@ -120,9 +120,9 @@
 					        <mu-list-item-title>交易完成</mu-list-item-title>
 					        <mu-list-item-sub-title>
 					          <span class="kc"></span>
-							  <!--<p class="ostatus">
-					          	<span>剩29分钟后关闭</span>
-					          </p>-->
+							  		<p class="ostatus">
+					          	<span>欢迎下次光临</span>
+					          </p>
 					        </mu-list-item-sub-title>
 					      </mu-list-item-content>
 					    </mu-list-item>
@@ -150,9 +150,9 @@
 					        <mu-list-item-title>交易关闭</mu-list-item-title>
 					        <mu-list-item-sub-title>
 					          <span class="kc"></span>
-							  <!--<p class="ostatus">
-					          	<span>剩29分钟后关闭</span>
-					          </p>-->
+							  		<p class="ostatus">
+					          	<span>期待您下次光临</span>
+					          </p>
 					        </mu-list-item-sub-title>
 					      </mu-list-item-content>
 					    </mu-list-item>
@@ -359,10 +359,13 @@
 	    vfinished () {
 	      return this.vactiveStep > 2;
 	    }
-	  },
-	  mounted(){
-	  	let status = this.$route.query.status;
+		},
+		activated(){
+			let status = this.$route.query.status;
 	  	this.status = status;
+		},
+	  mounted(){
+	  
 	  },
 	   components:{
 	    BackBar
@@ -435,11 +438,11 @@
 	
 	.mrdz{font-size: 12px;padding: 2px 3px;border: 1px solid #f95151;color: #f95151;border-radius: 15px;}
 	.kc{color: #a9a9a9;font-size: 0.2rem;min-height: 0.14rem;display: block;}
-	.ostatus{color: red;}
-	.status .mu-item-title{margin-top: 0.2rem;font-size: 0.26rem;color: #f95151;}
+	.ostatus{color: #fff;font-size: 12px;}
+	.status .mu-item-title{margin-top: 0.2rem;font-size: 0.28rem;color: #fff;}
 	.status .mu-avatar{background: initial;}
 	.status li{overflow: hidden;}
-	.statustime{font-size: 0.22rem;color: #333;}
+	.statustime{font-size: 0.22rem;color: #fff;}
 	.dfh{height: 100%;}
 	.ckxq{position: absolute;right: 0;bottom: 0;}
 	.wuliubox{background: #fff;margin-top: 0.15rem;}

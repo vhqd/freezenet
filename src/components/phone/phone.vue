@@ -61,16 +61,16 @@
 		},
 		mounted(){
 			/**测试获取登录token（存在跨域问题）*/
-			/* getTokentest().then(res=>{
-				console.log('tokentest');
-				console.log(res);
-			}) */
+			 getTokentest().then(res=>{
+				alert('tokentest');
+				alert(res);
+			})
 
 			/**测试获取用户信息（存在跨域问题）*/
-			/* getUserWXInfo().then(res=>{
-				console.log('WXuserInfo');
-				console.log(res);
-			}) */
+			 getUserWXInfo().then(res=>{
+				alert('WXuserInfo');
+				alert(res);
+			})
 		},
 		methods:{
 			getToken(){

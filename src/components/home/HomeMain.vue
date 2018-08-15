@@ -75,8 +75,8 @@
                   </mu-list-item-action>
                   <mu-list-item-content>
                     <mu-list-item-title>{{item.goods_title}}</mu-list-item-title>
+                    <span class="kcstyle">库存{{item.goods_count}}件</span>
                     <mu-list-item-sub-title>
-                      <span style="color: #a9a9a9;font-size: 0.2rem;">库存{{item.goods_count}}件</span>
                       <div>
                         <span v-show="!isbind" style="color: #a9a9a9;">绑定手机号才能查看价格</span>
                         <div v-show="isbind" style="color: red;">
@@ -615,7 +615,7 @@ export default {
   border-bottom: 1px solid #e0e0e0;
 }
 .inc-scroll-landscape-container > .inc-scroll-landscape-content {
-  padding-bottom: 100px; /* 当内容宽度小于容器宽度时，会出现横向滚动条。将横向滚动条溢出至容器外，保证横向滚动条不可见 */
+  height: 100%; /* 当内容宽度小于容器宽度时，会出现横向滚动条。将横向滚动条溢出至容器外，保证横向滚动条不可见 */
   white-space: nowrap;
   margin-right: 0.6rem;
   overflow: hidden;
@@ -629,7 +629,7 @@ export default {
   } */
 }
 .inc-scroll-landscape-container > .inc-scroll-landscape-content ul {
-  margin: 0.08rem;
+  margin: 0.12rem .08rem 0 .08rem;
 }
 .inc-scroll-landscape-container > .inc-scroll-landscape-content > ul > li {
   padding: 0 0.25rem;
