@@ -27,7 +27,7 @@ body,html,#app{height:100%;width: 100%;background: #f5f5f5;}
 .pricecolor{color: red;}
 .pricecolor span{font-size: 0.5rem;}
 
-.demo-text{max-height: 4.2rem !important;overflow-y: scroll;}
+.demo-text{max-height: 2.2rem !important;overflow-y: scroll;}
 
 .type2list .mu-item{height:1.2rem !important;}
 
@@ -67,7 +67,7 @@ body,html,#app{height:100%;width: 100%;background: #f5f5f5;}
 .cancelbox img{width: 65%;}
 /*弹窗样式修改结束*/
 
-.pm input{padding-left: 0.8rem;border-radius: 20px !important;color: #333;}
+.pm input{padding-left: .7rem;border-radius: 20px !important;color: #333;}
 .pm .material-icons{left:0.2rem !important;top: 0.1rem;color: #c3c3c3;}
 /* .minus{background: #c3c3c3;line-height: 0.3rem;box-shadow: 1px 2px 1px rgba(199, 199, 199, 0.5);}
 .plus{background: #f24c4c;line-height: 0.44rem;box-shadow: 1px 2px 1px rgba(199, 49, 49, 0.5);}
@@ -75,7 +75,7 @@ body,html,#app{height:100%;width: 100%;background: #f5f5f5;}
 .saoma{display: flex;}
 .saoma span{margin-left: 0.15rem;color: #333;}
 .inputitem{width: 100%;overflow: hidden;border-bottom: 1px solid #e0e0e0;}
-.mu-input{padding: 0 !important;margin:0 !important;min-height: 0.66rem !important;background: #fff;}
+.mu-input{padding: 0 !important;margin:0 !important;min-height: 0.66rem !important;background: rgba(255, 255, 255, .95);}
 .pm{border-bottom: none !important;}
 .mu-popover{max-width: 60%;box-shadow: none;border:1px solid #999;}
 .mu-select-input{font-weight: 100;font-size: 0.14rem;padding-left: 0.1rem;}
@@ -89,7 +89,7 @@ body,html,#app{height:100%;width: 100%;background: #f5f5f5;}
 .mu-input-line{height: 0 !important;}
 .mu-input.has-icon{padding-left: 0 !important;}
 .mu-text-field-input{padding-left: 0.15rem;}
-.widthstyle{float:left;padding-left: 0.1rem;font-size: 0.14rem;}
+.widthstyle{float:left;padding-left: 0.1rem;font-size: .24rem;}
 .midw{width: 75%;}
 .mids{width: 55%;}
 .mu-raised-button{min-width: 0.65rem !important;}
@@ -211,7 +211,7 @@ color: #999;
 	    padding: 0 3px;
 	    text-align: center;
 	}
-	.imgsearch{position: absolute;left: 15px;top: 16px;z-index: 9;width: 20px;height: 20px;}
+	.imgsearch{position: absolute;left: .4rem;top: 16px;z-index: 9;width: 20px;height: 20px;}
 	.searchhomebox .mu-primary-color{background: #f24c4c !important;}
 	.searchhomebox .mu-appbar-title{color: #fff;}
 
