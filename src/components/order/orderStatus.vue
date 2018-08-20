@@ -169,13 +169,13 @@
 		</div>
 		
 		<div class="paddingbox">
-		<mu-paper :z-depth="1" class="demo-list-wrap" style='margin-top:0.15rem;border-radius:15px;'>
+		<mu-paper :z-depth="1" class="demo-list-wrap" style='margin-top:0.15rem;border-radius:15px;' v-if="dress">
 		  <mu-list textline="two-line" style="background:#fff;">
 	    <mu-list-item avatar :ripple="false" button>
 	      <mu-list-item-content>
-	        <mu-list-item-title>收货人：liuliu 	1388465848</mu-list-item-title>
+	        <mu-list-item-title>收货人：{{dress.name}}</mu-list-item-title>
 	        <mu-list-item-sub-title>
-	          收货地址：从大家老双方空档开双就开双脚开动就开开老算A好弄的
+	          收货地址：{{dress.address}}
 	        </mu-list-item-sub-title>
 	      </mu-list-item-content>
 	      <mu-list-item-action >
@@ -190,26 +190,26 @@
 		
 		  
 		<!--订单列表-->
-		<div class="listbox">
+		<div class="listbox" v-if="datainfo">
 			
-			<p class="ordernum">订单编号：545454874845</p>
+			<p class="ordernum">订单编号:{{datainfo.order_number}}</p>
 			<mu-paper :z-depth="1" class="demo-list-wrap">
 			  <mu-list textline="three-line">
 			  	
-			  	<div v-for="(item,index) in list" :key="index" class="li-box">
+			  	<div v-for="(item,index) in datainfo.goodsInfo" :key="index" class="li-box">
 				    <mu-list-item avatar :ripple="false" button>
 				      <mu-list-item-action>
 				        <mu-avatar style="width: 1.4rem;height: 1.4rem;">
-				          <img :src="item.img">
+				          <img :src="item.goods_photo" :onerror="onerrorimg">
 				        </mu-avatar>
 				      </mu-list-item-action>
 				      <mu-list-item-content>
-				        <mu-list-item-title>{{item.title}}</mu-list-item-title>
+				        <mu-list-item-title>{{item.goods_title}}</mu-list-item-title>
 				        <mu-list-item-sub-title>
 				          <span class="kc"><!--库存{{item.inventory}}件--></span>
 			<p style="color: red;">
-				          	￥<span style="font-size: 0.5rem;">{{item.price}}</span>
-				          	<span style="color: #ccc;text-decoration: line-through;">￥{{item.oldPrice}}</span>
+				          	￥<span style="font-size: 0.5rem;">{{item.goods_price}}</span>
+				          	<span style="color: #ccc;text-decoration: line-through;">￥{{item.goods_original_price}}</span>
 				          </p>
 				        </mu-list-item-sub-title>
 				      </mu-list-item-content>
@@ -217,7 +217,7 @@
 				    <mu-divider></mu-divider>
 				    <div style="position: absolute;right: 0;bottom: 0;">
 				    	<div class="saoma">
-				        	<span>x1</span>
+				        	<span>x{{datainfo.count[index]}}</span>
 				        </div>
 				    </div>
 			  	</div>
@@ -228,32 +228,32 @@
 			    <mu-list-item button :ripple="false">
 			      <mu-list-item-title>商品总价</mu-list-item-title>
 			      <mu-list-item-action>
-			        <span>￥98</span>
+			        <span>￥{{datainfo.sum_price}}</span>
 			      </mu-list-item-action>
 			    </mu-list-item>
 			    <mu-list-item button :ripple="false">
 			      <mu-list-item-title>会员总优惠</mu-list-item-title>
 			      <mu-list-item-action>
-			        <span>￥545</span>
+			        <span>￥{{datainfo.red_packet_price}}</span>
 			      </mu-list-item-action>
 			    </mu-list-item>
 			    <mu-list-item button :ripple="false">
 			      <mu-list-item-title>运费（满300免运费）</mu-list-item-title>
 			      <mu-list-item-action>
-			        <span>-￥1.2</span>
+			        <span>￥{{datainfo.distribution_fee}}</span>
 			      </mu-list-item-action>
 			    </mu-list-item>
 			    <mu-list-item button :ripple="false" class='blodtext'>
 			      <mu-list-item-title>订单总额</mu-list-item-title>
 			      <mu-list-item-action>
-			        <span>￥1.2</span>
+			        <span>￥{{datainfo.sum_price}}</span>
 			      </mu-list-item-action>
 			    </mu-list-item>
 			    <!--等待付款-->
 			    <mu-list-item v-if='status == 1' button :ripple="false" class='blodtext'>
 			      <mu-list-item-title>需付款</mu-list-item-title>
 			      <mu-list-item-action>
-			        <span style="color: #f95151;font-weight: bold;font-size:0.32rem;">￥89.8</span>
+			        <span style="color: #f95151;font-weight: bold;font-size:0.32rem;">￥{{datainfo.real_pay_price}}</span>
 			      </mu-list-item-action>
 			    </mu-list-item>
 			    
@@ -261,7 +261,7 @@
 			    <mu-list-item v-if='status == 2 || status == 4' button :ripple="false" class='blodtext'>
 			      <mu-list-item-title>实付款</mu-list-item-title>
 			      <mu-list-item-action>
-			        <span style="color: #f95151;font-weight: bold;font-size:0.32rem;">￥89.8</span>
+			        <span style="color: #f95151;font-weight: bold;font-size:0.32rem;">￥{{datainfo.real_pay_price}}</span>
 			      </mu-list-item-action>
 			    </mu-list-item>
 			    
@@ -326,13 +326,21 @@
 
 <script>
 	import BackBar from '../common/BackBar.vue'
+	import {
+	getDress
+	} from "../../http/http.js";
 	
 	export default{
 	  data () {
 	    return {
 	    	dTitle:'确认订单',
-	    	vactiveStep: 0,
-	    	status:null,//订单状态
+				vactiveStep: 0,
+				onerrorimg:this.$store.state.onerrorimg,
+				datainfo:null,
+				page: 1,
+      	limit: 99, //当前页面分页条数
+				status:null,//订单状态
+				dress:null,//默认地址
 	    	list:[
       			{
       				id:1,
@@ -362,7 +370,20 @@
 		},
 		activated(){
 			let status = this.$route.query.status;
-	  	this.status = status;
+			this.status = status;
+			this.datainfo =JSON.parse(this.$route.query.data);
+			this.datainfo.count = eval('(' + this.datainfo.count + ')');
+			console.log(this.datainfo);
+			
+			/**获取收货地址*/
+			getDress(this.limit , this.page).then(res => {
+				let data = res.data.data.data;
+				for(let item in data){
+					if(data[item].is_default == 1){
+						this.dress = data[item]
+					}
+				}
+    		});
 		},
 	  mounted(){
 	  

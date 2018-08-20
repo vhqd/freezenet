@@ -11,16 +11,20 @@
 	 			<div class="searchreult">
 					 <mu-flex class="flex-wrapper" align-items="center" wrap="wrap">
 					    <mu-flex v-for="(item,index) in list" :key="index" class="flex-demo" direction='column' align-items="center" justify-content="center" fill>
-					    	<img src="../../../static/img/1.7_03.png" alt="" />
-					    	<p class="rtitle">{{item.goods_title}}</p>
-					    	<p class="liang">{{item.weight}}斤装</p>
-					    	<p class="price">￥{{item.goods_original_price
-}}</p>
-					    	<div style="position: absolute;right: 0.26rem;bottom: 0.2rem;">
+							<router-link :to="{path:'/detail',query: {id: item.id}}">
+								<img v-bind:src="item.goods_photo" alt=""  :onerror="onerrorimg"/>
+								<p class="rtitle">{{item.goods_title}}</p>
+								<p class="liang">{{item.weight}}斤装</p>
+								<p class="price">￥{{item.goods_price}}</p>
+							</router-link>
+					    	<div style="position: absolute;right:0;bottom: -.2rem;">
 						    	<div class="saoma">
-						        	<span class="minus mpsytl" @click="minus(item)" v-if="item.num != 0">-</span>
+						        	<!-- <span class="minus mpsytl" @click="minus(item)" v-if="item.num != 0">-</span>
 						        	<span>{{item.num}}</span>
-						        	<span class="plus mpsytl" @click="plus(item)">+</span>
+						        	<span class="plus mpsytl" @click="plus(item)">+</span> -->
+									<span class="minus" @click="minus(item)" v-if="item.count != 0"><img src="../../../static/img/ic_jian.png" alt="" style="width:.5rem;height:.5rem;"></span>
+									<span v-show="item.count != 0">{{item.count}}</span>
+									<span class="plus" @click="plus(item)"><img src="../../../static/img/ic_jia.png" alt="" style="width:.5rem;height:.5rem;"></span>
 						        </div>
 						    </div>
 					    </mu-flex>
@@ -39,11 +43,17 @@
 				      		<span class="carnum">{{carnum}}</span>
 				      	</div>
 				      </div>
-				      <div style="position: relative;">合计：<span style="color: red;">￥{{allPrice}}</span><span class="qigou">100元起购</span></div>
+				      <div style="position: relative;">合计：<span style="color: red;">￥{{allPrice}}</span><span class="qigou">{{qigou}}元起购</span></div>
 			      </div>
-			      <div class="settlement" @click="settlement">
+				  <div v-if="allPrice < qigou" class="huise settlement">
 			       	去结算
 			      </div>
+             		<div v-else class="settlement" @click="settlement">
+			       	去结算
+			      </div>
+			     <!--  <div class="settlement" @click="settlement">
+			       	去结算
+			      </div> -->
 			    </mu-list-item>
 		    </mu-list>
 		    <mu-dialog title="温馨提示" width="360" :open.sync="openJS">
@@ -63,7 +73,9 @@
 		data(){
 			return{
 				typeid:null,//分类id
+				onerrorimg:this.$store.state.onerrorimg,
 				host:this.$store.state.host,
+				qigou:this.$store.state.qigou,
 				limit:10,//分页条数
 				page:1,//当前页
 				nomore:false,
@@ -72,77 +84,20 @@
 				loading: false,
 				allPrice:0,//总价
 				checkNum:0,//选中的条数
-				list: [
-				 /*{
-			        img: require('../../../static/img/1-0_03.png'),
-			        title: 'BreakfastBreakfastBreakfast',
-			        num:0,
-			        weight:5,
-			        price: 20
-			      }, {
-			        img: require('../../../static/img/1-0_03.png'),
-			        title: 'CameraCameraCamera',
-			        num:0,
-			        weight:5,
-			        price: 20
-			      }, {
-			        img: require('../../../static/img/1-0_03.png'),
-			        title: 'CameraCameraCameraCamera',
-			        num:0,
-			        weight:5,
-			        price: 20
-			      }, {
-			        img: require('../../../static/img/1-0_03.png'),
-			        title: 'CameraCameraCameraCamera',
-			        num:0,
-			        weight:5,
-			        price: 20
-			      }, {
-			        img: require('../../../static/img/1-0_03.png'),
-			        title: 'CameraCameraCameraCamera',
-			        num:0,
-			        weight:5,
-			        price: 20
-			      }, {
-			        img: require('../../../static/img/1-0_03.png'),
-			        title: 'CameraCameraCameraCamera',
-			        num:0,
-			        weight:5,
-			        price: 20
-			      }, {
-			        img: require('../../../static/img/1-0_03.png'),
-			        title: 'CameraCameraCameraCamera',
-			        num:0,
-			        weight:5,
-			        price: 20
-			      }, {
-			        img: require('../../../static/img/1-0_03.png'),
-			        title: 'CameraCameraCameraCamera',
-			        num:0,
-			        weight:5,
-			        price: 20
-			      }, {
-			        img: require('../../../static/img/1-0_03.png'),
-			        title: 'CameraCameraCameraCamera',
-			        num:0,
-			        weight:5,
-			        price: 20
-			      }, {
-			        img: require('../../../static/img/1-0_03.png'),
-			        title: 'CameraCameraCameraCamera',
-			        num:0,
-			        weight:5,
-			        price: 20
-			      }*/
-			      ],
+				list: [],
 			}
 		},
 		components:{
 			BackBar
 		},
-		mounted(){
+		activated(){
+			this.page = 1;
+			this.list = [];
 			this.typeid = this.$route.query.typeid
 			this.getListDetail(this.page);
+		},
+		mounted(){
+			
 		},
 		methods:{
 			/*获取分类商品列表*/
@@ -153,7 +108,8 @@
 	  				that.page = that.page + 1;
 	  				let data = res.data.data;
 	  				for(let item in data){
-	  					data[item].num = 0
+						data[item].count = 0
+						data[item].goods_photo = that.host + data[item].goods_photo
 	  					data[item].weight = 5
 	  				}
 	  				if(data.length > 0 ){
@@ -185,21 +141,21 @@
 		    },
 			/*减少数量值*/
 	    	minus(item){
-	    		let amount = item.num;
+	    		let amount = item.count;
 	    		if(amount>0){
-	    			item.num = amount - 1;
+	    			item.count = amount - 1;
 	    			this.carnum = this.carnum - 1
-	    			this.allPrice = this.allPrice - item.goods_original_price
+	    			this.allPrice = this.allPrice - item.goods_price
 	    		}else{
-	    			item.num = 0;
+	    			item.count = 0;
 	    		}
 	    	},
 	    	/*增加数量值*/
 	    	plus(item){
-	    		let amount = item.num;
-	    		item.num = amount + 1
+	    		let amount = item.count;
+	    		item.count = amount + 1
 	    		this.carnum = this.carnum + 1
-	    		this.allPrice = parseFloat(this.allPrice) +parseFloat(item.goods_original_price)
+	    		this.allPrice = parseFloat(this.allPrice) +parseFloat(item.goods_price)
 	    	},
 	    	/*获取购物车数量*/
 	    	getCarNum(){
@@ -208,7 +164,7 @@
 	    		for(let item in menu){
 	    			let list = menu[item].list;
 	    			for(let it in list){
-	    				carnum += list[it].num;
+	    				carnum += list[it].count;
 	    			}
 	    		}
 	    	},
@@ -219,7 +175,17 @@
 	    			//打开弹窗
 	    			this.openJS = true;
 	    		}else{
-	    			this.$router.push({path:'/order'})
+	    			let data = this.list;
+					let datas = [];
+					console.log(2222222222222222222222222);
+					for(let item in data){
+					if(data[item].count > 0){
+						datas.push(data[item]);
+					}
+					}
+					console.log(datas);
+					
+					this.$router.push({ path: "/order" ,query:{list:JSON.stringify(datas)}});
 	    		}
 	    		
 	    	},
@@ -244,8 +210,8 @@
 	.price{font-size: 0.3rem;color: #f24c4c;padding-bottom: 0.8rem;}
 	.searchreult .flex-column{position: relative;max-width:32%;overflow: hidden;background: #fff;margin-top: 0.14rem;}
 	.rtitle{text-overflow: ellipsis;}
-	.saoma{width: 100%;}
-	.justify-content-start{justify-content: space-between !important;}
+	.saoma{width: 100%;display: flex;align-items: center;}
+	.justify-content-start{justify-content: flex-start !important;}
 	
 	.mu-list{padding: 0;}
 	
@@ -273,4 +239,5 @@
     text-align: center;	}
     .qigou{position: absolute;right: 0.3rem;bottom: -0.36rem;font-size: 0.22rem;color: #999;}
     .opentab{width: 100%;background: #fff;border-bottom: 1px solid #e0e0e0;padding: 0.1rem;}
+	.searchreult .flex-column:not(:nth-child(3n+1)){margin-left: 6px;}
 </style>

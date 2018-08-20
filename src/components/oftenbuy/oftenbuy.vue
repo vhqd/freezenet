@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="oftenbuy">
 		 <!-- 搜索区 -->
      	<Search  :ishome='true'></Search>
 		<div style="padding-top: 1rem;padding-bottom: 1rem;">
@@ -41,20 +41,20 @@
 			  	
 			  	<!--type==2的是可选择重量的列表-->
 			  	<div v-for="(item,index) in showlist" :key="index" class="li-box">
-				    <router-link to="/detail">
+				    <router-link :to="{path:'/detail',query: {id: item.id}}">
 					    <mu-list-item avatar :ripple="false" button>
 					      <mu-list-item-action>
 					        <mu-avatar style="min-width: 1.42rem;height: 1.4rem;">
-					          <img :src="item.img">
+					          <img :src="item.goods_photo" :onerror="onerrorimg">
 					        </mu-avatar>
 					      </mu-list-item-action>
 					      <mu-list-item-content>
-					        <mu-list-item-title>{{item.title}}</mu-list-item-title>
-					        <span class="kcstyle">库存{{item.inventory}}件</span>
+					        <mu-list-item-title>{{item.goods_title}}</mu-list-item-title>
+					        <span class="kcstyle">库存{{item.goods_count}}件</span>
 					        <mu-list-item-sub-title>
 					          <div style="color: red;">
 					          		<span v-show="!isbind" style="color: #a9a9a9;">绑定手机号才能查看价格</span>
-					          		<div v-show="isbind">￥<span style="font-size: 0.5rem;">{{item.price}}</span></div>
+					          		<div v-show="isbind">￥<span style="font-size: 0.5rem;">{{item.goods_price}}</span></div>
 					          	<!--<span style="color: #ccc;text-decoration: line-through;">￥{{item.oldPrice}}</span>-->
 					          </div>
 					        </mu-list-item-sub-title>
@@ -78,7 +78,7 @@
 				        	</div>
 				        </div>
 				    </div>
-				    <div class="dele">
+				    <div class="dele" @click="deletOfenBuy(item)">
 				    	<img src="../../../static/img/ic-del.png"/>
 				    </div>
 				    
@@ -124,6 +124,9 @@
 	import Search from '../common/Search.vue'
 	import Footer from '../common/Footer.vue';
 	import { mapState } from 'vuex'
+	import { getOfenBuyList , AddCarShop , deletOfenBuy } from '../../http/http.js'
+	import { removeOfenBuyData , setOfenBuyData } from '../../common/common.js'
+	import QS from 'qs'
 	
 	export default {
 	  components:{
@@ -132,8 +135,17 @@
 	   },
 	  data () {
 	    return {
+			limit:15,
+			page:1,
+			onerrorimg:this.$store.state.onerrorimg,
+			alldata:[{
+				'goods_id':[],
+				'single_price':[],
+				'count':[],
+				'sum_price':0
+			} ],
 	    	showlist:[
-      			{
+      			/* {
       				id:1,
       				type:1,
       				show:false,
@@ -166,168 +178,7 @@
       				price:'20',//单价
       				oldPrice:'50',//旧的价格
       				inventory:'5'//库存
-      			},
-      			{
-      				id:2,
-      				type:2,
-      				weights:[
-      					{
-      						weight:5.5,
-      						price:240,
-      						num:0
-      					},
-      					{
-      						weight:5.5,
-      						price:240,
-      						num:0
-      					}
-      				],
-      				show:false,
-      				img:require('../../../static/img/1-0_03.png'),//图片
-      				title:' 鲜活贝类海鲜烧烤食材带壳水产青岛大牡蛎 ',//标题
-      				num:0,//数量
-      				price:'20',//单价
-      				oldPrice:'50',//旧的价格
-      				inventory:'5'//库存
-      			},
-      			{
-      				id:2,
-      				type:2,
-      				weights:[
-      					{
-      						weight:5.5,
-      						price:240,
-      						num:0
-      					},
-      					{
-      						weight:5.5,
-      						price:240,
-      						num:0
-      					}
-      				],
-      				show:false,
-      				img:require('../../../static/img/1-0_03.png'),//图片
-      				title:'  鲜活贝类海鲜烧烤食材带壳水产青岛大牡蛎 ',//标题
-      				num:0,//数量
-      				price:'20',//单价
-      				oldPrice:'50',//旧的价格
-      				inventory:'5'//库存
-      			},
-      			{
-      				id:2,
-      				type:2,
-      				weights:[
-      					{
-      						weight:5.5,
-      						price:240,
-      						num:0
-      					},
-      					{
-      						weight:5.5,
-      						price:240,
-      						num:0
-      					}
-      				],
-      				show:false,
-      				img:require('../../../static/img/1-0_03.png'),//图片
-      				title:' 鲜活贝类海鲜烧烤食材带壳水产青岛大牡蛎 ',//标题
-      				num:0,//数量
-      				price:'20',//单价
-      				oldPrice:'50',//旧的价格
-      				inventory:'5'//库存
-      			},
-      			{
-      				id:2,
-      				type:2,
-      				weights:[
-      					{
-      						weight:5.5,
-      						price:240,
-      						num:0
-      					},
-      					{
-      						weight:5.5,
-      						price:240,
-      						num:0
-      					}
-      				],
-      				show:false,
-      				img:require('../../../static/img/1-0_03.png'),//图片
-      				title:'  鲜活贝类海鲜烧烤食材带壳水产青岛大牡蛎 ',//标题
-      				num:0,//数量
-      				price:'20',//单价
-      				oldPrice:'50',//旧的价格
-      				inventory:'5'//库存
-      			},
-      			{
-      				id:2,
-      				type:2,
-      				weights:[
-      					{
-      						weight:5.5,
-      						price:240,
-      						num:0
-      					},
-      					{
-      						weight:5.5,
-      						price:240,
-      						num:0
-      					}
-      				],
-      				show:false,
-      				img:require('../../../static/img/1-0_03.png'),//图片
-      				title:'  鲜活贝类海鲜烧烤食材带壳水产青岛大牡蛎 ',//标题
-      				num:0,//数量
-      				price:'20',//单价
-      				oldPrice:'50',//旧的价格
-      				inventory:'5'//库存
-      			},
-      			{
-      				id:2,
-      				type:2,
-      				weights:[
-      					{
-      						weight:5.5,
-      						price:240,
-      						num:0
-      					},
-      					{
-      						weight:5.5,
-      						price:240,
-      						num:0
-      					}
-      				],
-      				show:false,
-      				img:require('../../../static/img/1-0_03.png'),//图片
-      				title:'  鲜活贝类海鲜烧烤食材带壳水产青岛大牡蛎',//标题
-      				num:0,//数量
-      				price:'20',//单价
-      				oldPrice:'50',//旧的价格
-      				inventory:'5'//库存
-      			},
-      			{
-      				id:2,
-      				type:2,
-      				weights:[
-      					{
-      						weight:5.5,
-      						price:240,
-      						num:0
-      					},
-      					{
-      						weight:5.5,
-      						price:240,
-      						num:0
-      					}
-      				],
-      				show:false,
-      				img:require('../../../static/img/1-0_03.png'),//图片
-      				title:'  鲜活贝类海鲜烧烤食材带壳水产青岛大牡蛎',//标题
-      				num:0,//数量
-      				price:'20',//单价
-      				oldPrice:'50',//旧的价格
-      				inventory:'5'//库存
-      			}
+      			} */
       		],
 	    }
 	  },
@@ -336,7 +187,46 @@
 		        isbind: 'isbind',
 		    })
 		}, 
+		activated(){
+			
+		},
+		mounted(){
+			this.getOfenBuyList()
+		},
 	  methods: {
+		  /**获取常购清单*/
+		  getOfenBuyList(){
+			getOfenBuyList(this.limit,this.page).then(res => {
+			let data = res.data.info.data;
+			for(let item in data){
+				data[item].goods_photo = this.host + data[item].goods_photo
+				data[item].num = 0
+				data[item].type = 1//type-1（没有分重量的） type-2（分了重量的）
+			}
+			this.showlist = data;
+			console.log('+++++++++++++++++++++');
+			
+			console.log(data);
+			
+			})
+		  },
+
+		/**删除常购清单*/
+		deletOfenBuy(item){
+			deletOfenBuy(item.oftenBrowseId).then(res => {
+				
+			})
+			let data = this.showlist;
+			console.log(data);
+			console.log(item);
+			
+			for(let ite in data){
+				if(parseInt(data[ite].oftenBrowseId) == parseInt(item.oftenBrowseId)){
+					this.showlist.splice(ite,1);
+				}
+			}
+		},
+
 	  	/*切换显示重量选择*/
 	  	typeo2show(item , ind){
 	  		if(ind == 1)
@@ -347,19 +237,22 @@
 	  	/*减少数量值*/
     	minus(item,ind){
 			
-    		let amount = item.weights[ind].num;
+    		let amount = item.num;
     		if(amount>0){
-    			item.weights[ind].num = amount - 1;
+    			item.num = amount - 1;
     		}else{
-    			item.weights[ind].num = 0;
-    		}
+    			item.num = 0;
+			}
+			 removeOfenBuyData(item,this.alldata);
+
     	},
     	/*增加数量值*/
 		plus(item,ind){
-			
-    		let amount = item.weights[ind].num;
-    		item.weights[ind].num = amount + 1
-    	},
+    		let amount = item.num;
+			item.num = amount + 1
+			setOfenBuyData(item,this.alldata);
+		},
+
 	  }
 	}
 	
@@ -368,6 +261,7 @@
 <style scoped>
 	
 .mu-list{padding: 8px 0 0 0;/*margin-bottom: 1rem;*/}
+.mu-avatar{background: initial}
 .li-box .mu-item-title{font-size: 0.24rem;padding-right: .3rem;}
 .mu-item-action{padding-top: .1rem;}
 .mu-avatar img{border-radius: initial;}

@@ -55,7 +55,7 @@
 				      		<span class="carnum">{{carnum}}</span>
 				      	</div>
 				      </div>
-				      <div style="position: relative;">合计：<span style="color: red;">￥{{allPrice}}</span><span class="qigou">100元起购</span></div>
+				      <div style="position: relative;">合计：<span style="color: red;">￥{{allPrice}}</span><span class="qigou">{{qigou}}元起购</span></div>
 			      </div>
 			      <div class="settlement" @click="settlement">
 			       	去结算
@@ -80,7 +80,8 @@
 		data(){
 			return{
 				 carnum:0,
-     			allPrice:0,
+				 allPrice:0,
+				 qigou:this.$store.state.qigou,
      			 openJS:false,//结算弹窗
 				showlist:[
       			{

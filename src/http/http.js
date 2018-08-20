@@ -4,6 +4,12 @@ const host = store.state.host;
 
 
 /**
+ * test跨域
+ */
+export const test = () =>{ return axios.get(host + "/api/get-can-use-packet?price=15").then((res) => {return res;}).catch((error) => {return error.response})};
+
+
+/**
  * 获取Token
  * 
  */
@@ -30,8 +36,14 @@ export const sendPhoneYzm = ( phone ) =>{ return axios.post(host + "/api/config/
  * @param page当前页码
  */
 export const getIndexBanner = (limit , page) =>{ return axios.get(host + "/api/banner?limit=" + limit + "&page=" + page).then((res) => {return res;}).catch((error) => {return error.response})};
+
 /**
- * 获取首页分类专区
+ * 获取首页分类专区1
+ */
+export const getIndexTopClass = () =>{ return axios.get(host + "/api/get-second-type-lists").then((res) => {return res;}).catch((error) => {return error.response})};
+
+/**
+ * 获取首页分类专区(废弃)
  */
 export const getIndexClass = (limit , page) =>{ return axios.get(host + "/api/goods_type?limit=" + limit + "&page=" + page).then((res) => {return res;}).catch((error) => {return error.response})};
 
@@ -57,6 +69,20 @@ export const getProductInfos = objid =>{ return axios.get(host + "/api/goods/" +
 
 
 
+/* 
+* 添加常购商品
+*/
+export const addOfenBuy = id =>{ return axios.post(host + "/api/goods-often?goods_id="+ id).then((res) => {return res;}).catch((error) => {return error.response})};
+/**
+ * 查看常购商品列表
+ */
+export const getOfenBuyList = (limit , page) =>{ return axios.get(host + "/api/get-goods-often?limit=" + limit + "&page=" + page).then((res) => {return res;}).catch((error) => {return error.response})};
+/* 
+* 删除常购商品
+*/
+export const deletOfenBuy = id =>{ return axios.get(host + "/api/delete-goods-often?id=" + id ).then((res) => {return res;}).catch((error) => {return error.response})};
+
+
 /**
  * 获取购物车列表
  */
@@ -78,9 +104,9 @@ export const DeleCarShop = id =>{ return axios.delete(host + "/api/shoppingcart/
 export const EditCarShop = (id , upData) =>{ return axios.put(host + "/api/shoppingcart/"+id , upData).then((res) => {return res;}).catch((error) => {return error.response})};
 
 /**
- * 提交购物车
+ * 提交购物车结算订单
  */
-export const AddOrder = upData  =>{ return axios.post(host + "/api/order/" , upData).then((res) => {return res;}).catch((error) => {return error.response})};
+export const AddOrder = upData  =>{ return axios.post(host + "/api/order" , upData).then((res) => {return res;}).catch((error) => {return error.response})};
 
 
 
@@ -111,22 +137,37 @@ export const DeleKeyWord = ()  =>{ return axios.put(host + "/api/delete-history"
 /**
  *查询可领取的优惠券
  */
-export const getCoupons = limit =>{ return axios.get(host + "/api/red-packet-list?limit=" + limit).then((res) => {return res;}).catch((error) => {return error.response})};
+export const getCouponsList = limit =>{ return axios.get(host + "/api/red-packet-list?limit=" + limit).then((res) => {return res;}).catch((error) => {return error.response})};
+
+/**
+ *领取优惠券
+ */
+export const getCoupons = id =>{ return axios.post(host + "/api/receive-red-packet?redpacket_id=" + id).then((res) => {return res;}).catch((error) => {return error.response})};
 
 /**
  *删除过期优惠券
  */
-export const deletCoupons = id =>{ return axios.delete(host + "/api/get-self-redpacket?user_redpacket_id=" + id).then((res) => {return res;}).catch((error) => {return error.response})};
+export const deletCoupons = id =>{ return axios.post(host + "/api/delete-red-packet?user_redpacket_id=" + id).then((res) => {return res;}).catch((error) => {return error.response})};
 
 /**
- *获取个人优惠券
+ *获取个人个人中心的优惠券
  */
-export const getCenterCoupons = (limit , page) =>{ return axios.get(host + "/api/get-self-redpacket?limit=" + limit+ "&page=" + page + "&is_receive=0").then((res) => {return res;}).catch((error) => {return error.response})};
+export const getCenterCoupons = (limit , page) =>{ return axios.get(host + "/api/get-self-redpacket?limit=" + limit+ "&page=" + page + "&is_receive=1").then((res) => {return res;}).catch((error) => {return error.response})};
 
 /**
  *获取个人订单
  */
-export const getOrders = (limit , page) =>{ return axios.get(host + "/api/get-self-order?order_status=0&limit=" + limit+ "&page=" + page).then((res) => {return res;}).catch((error) => {return error.response})};
+export const getOrders = (limit , page , status) =>{ return axios.get(host + "/api/get-self-order?order_status="+status+"&limit=" + limit+ "&page=" + page).then((res) => {return res;}).catch((error) => {return error.response})};
+
+/**
+ *删除个人订单
+ */
+export const deleteOrder = ( id , redPacketId ) =>{ return axios.post(host + "/api/delete-order?id="+id+"&redPacketId=" + redPacketId).then((res) => {return res;}).catch((error) => {return error.response})};
+
+/**
+ *取消个人订单
+ */
+export const cancelOrder = ( id , redPacketId ) =>{ return axios.get(host + "/api/cancel-order?id="+id+"&redPacketId=" + redPacketId).then((res) => {return res;}).catch((error) => {return error.response})};
 
 
 /**

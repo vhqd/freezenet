@@ -7,24 +7,25 @@
  		
  		<!--菜品列表-->
  		<div>
+			 <mu-load-more :loading="loading" @load="load">
 			<mu-paper :z-depth="1" class="demo-list-wrap">
 			  <mu-list textline="three-line">
 			  	
-			  	<div v-for="(item,index) in showlist" :key="index" class="li-box">
-				    <router-link to="/detail">
+			  	<div v-for="(item,index) in list" :key="index" class="li-box">
+				    <router-link :to="{path:'/detail',query: {id: item.id}}">
 					    <mu-list-item avatar :ripple="false" button>
 					      <mu-list-item-action>
 					        <mu-avatar style="min-width: 1.4rem;height: 1.4rem;">
-					          <img :src="item.img">
+					          <img :src="item.goods_photo" :onerror="onerrorimg">
 					        </mu-avatar>
 					      </mu-list-item-action>
 					      <mu-list-item-content>
-					        <mu-list-item-title>{{item.goods_type_id.goods_type_name}}</mu-list-item-title>
+					        <mu-list-item-title>{{item.goods_title}}</mu-list-item-title>
 					        <mu-list-item-sub-title>
-					          <span style="color: #666;font-size: 0.2rem;">库存{{item.goods_type_id.goods_type_leaset}}件</span>
+					          <span style="color: #666;font-size: 0.2rem;">库存{{item.goods_count}}件</span>
 					          <p style="color: red;">
 					          	<span v-show="!isbind" style="color: #a9a9a9;">绑定手机号才能查看价格</span>
-					          	<span v-show="isbind">￥<span style="font-size: 0.5rem;">{{item.price}}</span></span>
+					          	<span v-show="isbind">￥<span style="font-size: 0.5rem;">{{item.goods_price}}</span></span>
 					          </p>
 					        </mu-list-item-sub-title>
 					      </mu-list-item-content>
@@ -33,16 +34,19 @@
 				    <mu-divider></mu-divider>
 				    <div style="position: absolute;right: 0.3rem;bottom: 0.12rem;">
 				    	<div class="saoma">
-				        	<span class="minus mpsytl" @click="minus(item)" v-if="item.num != 0">-</span>
+				        	<!-- <span class="minus mpsytl" @click="minus(item)" v-if="item.num != 0">-</span>
 				        	<span>{{item.num}}</span>
-				        	<span class="plus mpsytl" @click="plus(item)">+</span>
+				        	<span class="plus mpsytl" @click="plus(item)">+</span> -->
+							<span class="minus" @click="minus(item)" v-if="item.count != 0"><img src="../../../static/img/ic_jian.png" alt="" style="width:.5rem;height:.5rem;"></span>
+							<span v-show="item.count != 0">{{item.count}}</span>
+							<span class="plus" @click="plus(item)"><img src="../../../static/img/ic_jia.png" alt="" style="width:.5rem;height:.5rem;"></span>
 				        </div>
 				    </div>
 			  	</div>
 			  	
 			  </mu-list>
 			</mu-paper>
-			
+			</mu-load-more>
 		</div>
  		
  					<div class="addToCar">
@@ -55,11 +59,17 @@
 				      		<span class="carnum">{{carnum}}</span>
 				      	</div>
 				      </div>
-				      <div style="position: relative;">合计：<span style="color: red;">￥{{allPrice}}</span><span class="qigou">100元起购</span></div>
+				      <div style="position: relative;">合计：<span style="color: red;">￥{{allPrice}}</span><span class="qigou">{{qigou}}元起购</span></div>
 			      </div>
-			      <div class="settlement" @click="settlement">
+					<div v-if="allPrice < qigou" class="huise settlement">
 			       	去结算
 			      </div>
+             		<div v-else class="settlement" @click="settlement">
+			       	去结算
+			      </div>
+			     <!--  <div class="settlement" @click="settlement">
+			       	去结算
+			      </div> -->
 			    </mu-list-item>
 		    </mu-list>
 		    <mu-dialog title="温馨提示" width="360" :open.sync="openJS">
@@ -82,64 +92,73 @@
 	export default{
 		data(){
 			return{
+				typeid:null,//分类id
+				onerrorimg:this.$store.state.onerrorimg,
+				host:this.$store.state.host,
+				qigou:this.$store.state.qigou,
+				limit:10,//分页条数
+				page:1,//当前页
+				nomore:false,
 				 carnum:0,
+				 loading: false,
      			allPrice:0,
-     			 openJS:false,//结算弹窗
-				showlist:[
-      			{
-      				id:1,
-      				type:1,
-      				show:false,
-      				img:require('../../../static/img/1.6_03.png'),//图片
-      				title:'青岛大牡蛎  鲜活贝类海鲜烧烤食材带壳水产',//标题
-      				num:0,//数量
-      				price:20,//单价
-      				oldPrice:50,//旧的价格
-      				inventory:'5'//库存
-      			},
-      			{
-      				id:2,
-      				type:2,
-      				weights:[
-      					{
-      						weight:5.5,
-      						price:240,
-      						num:0
-      					},
-      					{
-      						weight:5.5,
-      						price:240,
-      						num:0
-      					}
-      				],
-      				show:false,
-      				img:require('../../../static/img/1.6_03.png'),//图片
-      				title:'青岛大牡蛎  鲜活贝类海鲜烧烤食材带壳水产青岛大牡蛎  鲜活贝类海鲜烧烤食材带壳水产',//标题
-      				num:0,//数量
-      				price:20,//单价
-      				oldPrice:50,//旧的价格
-      				inventory:'5'//库存
-      			}
-      		],
+				  openJS:false,//结算弹窗
+				  list:[],
 			}
 		},
 		components:{
 			BackBar
 		},
 		activated(){
-			let id = this.$route.query.typeid;
-			getCaiClassChild(id).then(res => {
-			let data = res.data.data;
-			this.showlist = data;
-			/*初始化加载数据*/
-			//this.switchMenu(0, data[0]);
-			//console.log(data);
-			});
+			this.page = 1;
+			this.list = [];
+			this.typeid = this.$route.query.typeid
+			this.getListDetail(this.page);
 		},
 		mounted(){
 			
 		},
 		methods:{
+			/*获取分类商品列表*/
+			getListDetail(page){
+				let that = this;
+	  			this.$http.get(that.host +　'/api/goods-list?typeid='+this.typeid+'&limit='+this.limit+'&page='+page)
+	  			.then(function (res) {
+	  				that.page = that.page + 1;
+	  				let data = res.data.data;
+	  				for(let item in data){
+						data[item].count = 0
+						data[item].goods_photo = that.host + data[item].goods_photo
+	  					data[item].weight = 5
+	  				}
+	  				if(data.length > 0 ){
+	  					that.list = that.list.concat(data);
+	  				}else{
+	  					that.nomore = true
+	  					console.log('没有更多数据')
+	  				}
+					console.log('商品类别详情数据')
+					console.log(res);
+					console.log(res.data.data)
+				})
+				.catch(function (error) {
+				 console.log(error);
+				});
+			},
+
+				/*滚动到底部加载更多*/
+		    load () {
+		    	if(!this.nomore){
+			      	this.loading = true;
+			      	setTimeout(() => {
+				       this.loading = false;
+			        this.getListDetail(this.page)
+			        console.log('成功数据')
+				        //this.num += 10;
+				      }, 1000)
+			      }
+		     
+		    },
 			/*结算*/
 	    	settlement(){
 	    		//用选中商品总价判断是否选择商品
@@ -147,7 +166,17 @@
 	    			//打开弹窗
 	    			this.openJS = true;
 	    		}else{
-	    			this.$router.push({path:'/order'})
+	    			let data = this.list;
+					let datas = [];
+					console.log(2222222222222222222222222);
+					for(let item in data){
+					if(data[item].count > 0){
+						datas.push(data[item]);
+					}
+					}
+					console.log(datas);
+					
+					this.$router.push({ path: "/order" ,query:{list:JSON.stringify(datas)}});
 	    		}
 	    		
 	    	},
@@ -157,21 +186,21 @@
 		    },
 			/*减少数量值*/
 	    	minus(item){
-	    		let amount = item.num;
+	    		let amount = item.count;
 	    		if(amount>0){
-	    			item.num = amount - 1;
+	    			item.count = amount - 1;
 	    			this.carnum = this.carnum - 1
-	    			this.allPrice = this.allPrice - item.price
+	    			this.allPrice = this.allPrice - item.goods_price
 	    		}else{
-	    			item.num = 0;
+	    			item.count = 0;
 	    		}
 	    	},
 	    	/*增加数量值*/
 	    	plus(item){
-	    		let amount = item.num;
-	    		item.num = amount + 1
+	    		let amount = item.count;
+	    		item.count = amount + 1
 	    		this.carnum = this.carnum + 1
-	    		this.allPrice = this.allPrice + item.price
+	    		this.allPrice = this.allPrice + item.goods_price
 	    	},
 		},
 		computed:{
@@ -230,5 +259,5 @@
     text-align: center;	}
     .qigou{position: absolute;right: 0.3rem;bottom: -0.36rem;font-size: 0.22rem;color: #999;}
     .opentab{width: 100%;background: #fff;border-bottom: 1px solid #e0e0e0;padding: 0.1rem;}
-	
+	.mu-avatar{background: initial;}
 </style>

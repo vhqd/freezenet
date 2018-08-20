@@ -92,7 +92,8 @@
 </script>
 
 <style scoped>
-	.footerbox{position: fixed;bottom: 0;width: 100%;z-index: 999;display: flex;background: #fff;justify-content: space-around;}
+	.footerbox{position: fixed;bottom: 0;width: 100%;z-index: 999;display: flex;justify-content: space-around;}
+	.mu-raised-button{background: rgba(255, 255, 255, .95)}
 	.footerbox a{height: 1rem;line-height: 1rem;width: 33%;position: relative;}
 	.footerbox a img{width: 0.43rem;height: 0.43rem;position: absolute;top: 0.1rem;left:50%;margin-left: -0.215rem;}
 	.footerbox a p{margin-top: 0.6rem !important;font-size: 12px;}

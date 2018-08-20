@@ -10,7 +10,7 @@
       <ul>
         <li v-for="(item,index) in orderlist" @click="toplistgo(index)" :key='index'>
           <!--<router-link :to="{path:'/hot', query:{id:item.id}}">-->
-          <img :src="item.img" />
+          <img :src="item.img"  :onerror="onerrorimglong"/>
           <p>{{item.title}}</p>
           <!--</router-link>-->
         </li>
@@ -20,17 +20,8 @@
     <div class="iddexcontent">
       <div class="adimg">
         <mu-carousel hide-controls>
-          <mu-carousel-item>
-            <img :src="carouselImg1">
-          </mu-carousel-item>
-          <mu-carousel-item>
-            <img :src="carouselImg2">
-          </mu-carousel-item>
-          <mu-carousel-item>
-            <img :src="carouselImg3">
-          </mu-carousel-item>
-          <mu-carousel-item>
-            <img :src="carouselImg4">
+          <mu-carousel-item v-for="(item , index) in topclass" :key="index">
+            <img :src="item.img" @click="goClasstopDetail(item)" :onerror="onerrorimg">
           </mu-carousel-item>
         </mu-carousel>
         <!-- <img src="../../../static/img/1.0_02.png" /> -->
@@ -41,9 +32,9 @@
           <div class="inc-scroll-landscape-content">
             <ul>
               <li class="toptab" v-for="(item , index) in classlist" :key='index' @click="goDetail(item)">
-                <p>{{item.goods_type_name}}</p>
-                <p class="stip">{{item.goods_type_desc}}</p>
-                <img src="../../../static/img/1.6_03.png" />
+                <p class="fqtitle">{{item.goods_type_second_name}}</p>
+                <p class="stip">{{item.goods_type_second_desc}}</p>
+                <img :src="item.img" />
               </li>
             </ul>
           </div>
@@ -65,21 +56,21 @@
           <mu-list textline="three-line">
 
             <div v-for="(item,index) in showlist" :key="index" class="li-box">
-              <router-link to="/detail">
+              <router-link :to="{path:'/detail',query: {id: item.id}}">
                 <mu-list-item avatar :ripple="false" button>
                   <mu-list-item-action>
                     <mu-avatar style="min-width: 1.4rem;height: 1.4rem;">
-                      <img :src="item.img">
+                      <img :src="item.goods_price" :onerror="onerrorimg">
                     </mu-avatar>
                   </mu-list-item-action>
                   <mu-list-item-content>
-                    <mu-list-item-title>{{item.title}}</mu-list-item-title>
-                    <span class="kcstyle">库存{{item.inventory}}件</span>
+                    <mu-list-item-title>{{item.goods_title}}</mu-list-item-title>
+                    <span class="kcstyle">库存{{item.goods_count}}件</span>
                     <mu-list-item-sub-title>
                       <div style="color: red;">
                         <span v-show="!isbind" style="color: #a9a9a9;">绑定手机号才能查看价格</span>
                         <div v-show="isbind" class="pricecolor">￥
-                          <span>{{item.price}}</span>
+                          <span>{{item.goods_price}}</span>
                         </div>
                         <!--<span style="color: #ccc;text-decoration: line-through;">￥{{item.oldPrice}}</span>-->
                       </div>
@@ -97,7 +88,7 @@
                   <span class="plus" @click="plus(item)"><img src="../../../static/img/ic_jia.png" alt="" style="width:.5rem;height:.5rem;"></span>
                 </div>
               </div>
-              <div class="dele" @click="deleList(index)">
+              <div class="dele" @click="deleList(index,item)">
                 <img src="../../../static/img/ic-del.png" />
               </div>
             </div>
@@ -120,12 +111,9 @@ import HomeSearch from "../common/HomeSearch.vue";
 import HomeBanner from "../home/HomeBanner.vue";
 import Footer from "../common/Footer.vue";
 import { mapState } from "vuex";
-import { getIndexClass, getIndexBanner ,getCarList } from "../../http/http.js";
-
-import carouselImg1 from '../../../static/img/1.0_02.png';
-import carouselImg2 from '../../../static/img/1.0_02.png';
-import carouselImg3 from '../../../static/img/1.0_02.png';
-import carouselImg4 from '../../../static/img/1.0_02.png';
+import QS from 'qs'
+import { getIndexClass, getIndexBanner ,getCarList , getIndexTopClass , getOfenBuyList , deletOfenBuy , AddCarShop , test} from "../../http/http.js";
+import { removeOfenBuyData , setOfenBuyData } from '../../common/common.js'
 
 export default {
   components: {
@@ -135,14 +123,19 @@ export default {
   },
   data() {
     return {
-      carouselImg1,
-      carouselImg2,
-      carouselImg3,
-      carouselImg4,
       host: this.$store.state.host,
       limit: 10,
       page: 1,
       carnum:0,//购物车数量
+      topclass:[],
+      onerrorimg:this.$store.state.onerrorimg,
+      onerrorimglong:this.$store.state.onerrorimglong,
+      alldata:[{
+				'goods_id':[],
+				'single_price':[],
+				'count':[],
+				'sum_price':0
+			} ],
       bannerImg: [
         require("../../../static/img/1-0_02.png"),
         require("../../../static/img/1-0_02.png"),
@@ -188,7 +181,7 @@ export default {
       	}*/
       ],
       showlist: [
-        {
+       /*  {
           id: 1,
           img: require("../../../static/img/1-0_03.png"), //图片
           title: "青岛大牡蛎  鲜活贝类海鲜烧烤食材带壳水产", //标题
@@ -206,7 +199,7 @@ export default {
           price: "20", //单价
           oldPrice: "50", //旧的价格
           inventory: "5" //库存
-        }
+        } */
       ],
       orderlist: [
         {
@@ -233,6 +226,12 @@ export default {
     };
   },
    mounted() {
+     test().then(res => {
+       console.log('测试跨域');
+       
+       console.log(res);
+       
+     })
     //this.$store.commit("setLoad",true);
 
     //alert(host);
@@ -240,12 +239,34 @@ export default {
   		
   	}else{
   		console.log(this.$store.state.isbind)
-	  }*/
+    }*/
+    
+    
+    getIndexTopClass().then(res => {
+      if (res) {
+        let data = res.data.info;
+        let grid = [];
+        let columns = [];
+        //'显示格式（1：列表，0：九宫格）'
+        for(let item in data){
+          if(data[item].show_method == 1){
+            columns.push(data[item])
+          }else{
+            grid.push(data[item])
+          }
+        }
+        this.topclass = grid;//九宫格
+        this.classlist = columns;//列表显示
+        console.log("中间class");
+        console.log(data);
+      }
+    });
+
 
     /**
      * 获取首页banner
      */
-    getIndexBanner(4, 1).then(res => {
+     getIndexBanner(4, 1).then(res => {
       if (res) {
         let data = res.data.data.data;
         for (let item in data) {
@@ -258,17 +279,28 @@ export default {
       }
     });
 
+    /**获取常购清单列表*/
+    getOfenBuyList(2,1).then(res => {
+      let data = res.data.info.data;
+      for(let item in data){
+        data[item].goods_photo = this.host + data[item].goods_photo
+        data[item].num = 0
+      }
+      this.showlist = data;
+    })
+
+
     /**
-     * 获取首页分类专区
+     * 获取首页分类专区(废弃)
      */
-    getIndexClass(this.limit, this.page).then(res => {
+    /* getIndexClass(this.limit, this.page).then(res => {
       //console.log("分类数据");
       this.classlist = res.data.data.data;
       //this.$store.commit("setLoad",false);
 
       //console.log(res);
       //console.log(res.data.data.data);
-    });
+    }); */
 
     /**获取购物车数量显示到底部 */
     getCarList(999,1).then((res)=>{
@@ -282,6 +314,7 @@ export default {
     /* window.addEventListener('scroll', this.menuScrollTopStop)*/
   },
   methods: {
+
     getClassList() {
       let that = this;
       this.$http
@@ -313,11 +346,18 @@ export default {
       }
     },
     /*删除一条常购清单记录*/
-    deleList(index) {
+    deleList(index,item) {
       this.showlist.splice(index, 1);
+      this.deletOfenBuy(item);
     },
-    goDetail(item) {
+    /**专区商品1*/
+    goClasstopDetail(item) {
         this.$router.push({ path: "/chuanchuan", query: { typeid: item.id } });
+        //this.$router.push({ path: "/hotpot", query: { typeid: item.id } });
+    },
+    /**专区商品2*/
+    goDetail(item) {
+        this.$router.push({ path: "/hotpot", query: { typeid: item.id } });
         //this.$router.push({ path: "/hotpot", query: { typeid: item.id } });
     },
     /*减少数量值*/
@@ -328,12 +368,22 @@ export default {
       } else {
         item.num = 0;
       }
+      removeOfenBuyData(item,this.alldata);
     },
     /*增加数量值*/
     plus(item) {
       let amount = item.num;
       item.num = amount + 1;
+      setOfenBuyData(item,this.alldata);
+    },
+
+    /**删除常购清单*/
+    deletOfenBuy(item){
+      deletOfenBuy(item.oftenBrowseId).then(res => {
+        
+      })
     }
+
   },
   computed: {
     ...mapState({
@@ -354,7 +404,7 @@ export default {
   padding: 0 0.3rem;
   margin-top: .1rem;
   background: #fff;
-  border-bottom: 1px solid #cacaca;
+  border-bottom: .2px solid rgba(224, 224, 224, .5);
 }
 
 .oftenby {
@@ -371,12 +421,14 @@ export default {
   height: .36rem;
 }
 .oftenbytitle {
-  font-size: .3rem;
+  font-size: .28rem;
+  font-weight: 300;
   color: #333;
   padding-left: 0.1rem;
 }
 .oftenme {
-  font-size: .1rem;
+  font-size: .2rem;
+  font-weight: 300;
   color: #999;
   padding-left: 0.15rem;
   padding-top: 0.04rem;
@@ -389,11 +441,10 @@ export default {
   position: relative;
   z-index: 2;
   width: 90%;
-  margin: -35px auto 0.35rem auto;
+  margin: -35px auto 0.2rem auto;
   background: #fff;
   border-radius: 10px;
-  box-shadow: 0 0px 2px -1px rgba(0, 0, 0, 0.1), 0 0px 1px 0 rgba(0, 0, 0, 0.1),
-    0 0px 0px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 0 3px 4px -1px rgba(224, 224, 224, .35), 0 3px 4px -1px rgba(224, 224, 224, .35), 0 3px 4px -1px rgba(224, 224, 224, .35);
 }
 .ordertopbox {
   overflow: hidden;
@@ -418,7 +469,7 @@ export default {
   color: #333;
 }
 .topboxinfo ul li p {
-  font-size: .28rem;
+  font-size: .26rem;
   color: #333;
   font-weight: 300;
 }
@@ -509,7 +560,7 @@ export default {
   margin-top: -0.2rem;
 }
 .inc-scroll-landscape-container > .inc-scroll-landscape-content ul {
-  margin: 0.15rem 0;
+  margin: 0.1rem 0;
 }
 .inc-scroll-landscape-container > .inc-scroll-landscape-content > ul > li {
   line-height: 0.6rem;
@@ -542,4 +593,5 @@ export default {
 }
 .mu-list .li-box:not(:last-child){border-bottom: 1px solid #e0e0e0;}
 .adimg .mu-carousel{height: 103px;}
+.toptab .fqtitle{max-width: 130px;overflow: hidden;text-overflow: ellipsis;}
 </style>

@@ -62,29 +62,37 @@
 		mounted(){
 			/**测试获取登录token（存在跨域问题）*/
 			 getTokentest().then(res=>{
-				alert('tokentest');
-				alert(res);
+				 let token = res.data.access_token;
+				console.log('tokentest');
+				console.log(token);
 			})
+
 
 			/**测试获取用户信息（存在跨域问题）*/
 			 getUserWXInfo().then(res=>{
-				alert('WXuserInfo');
-				alert(res);
+				console.log('WXuserInfo');
+				console.log(res);
 			})
 		},
 		methods:{
 			getToken(){
 				let data = {
-						username: 'test_04',
+						username: 'test_01',
 						password: 'admin@'
 					};
 					getToken(data).then(res => {
 						let token = res.data.data.access_token;
+						console.log(token);
+						
 						//设置token
 						this.$store.commit('set_token', token);
 						this.$store.commit('editIsBind');
 						
-						this.$router.push('/')
+						this.$router.push('/') 
+
+
+
+
 						//window.localStorage.setItem('token',tokens);
 						//$store.state.token = tokens;
 						//console.log(this.$store.state.token)

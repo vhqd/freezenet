@@ -70,7 +70,7 @@
                 <mu-list-item avatar :ripple="false" button>
                   <mu-list-item-action>
                     <mu-avatar style="width: 1.4rem;height: 1.4rem;">
-                      <img :src="item.goods_photo">
+                      <img :src="item.goods_photo" :onerror="onerrorimg">
                     </mu-avatar>
                   </mu-list-item-action>
                   <mu-list-item-content>
@@ -119,20 +119,20 @@
 		  	<mu-list class="carbut">
 			   <mu-list-item avatar button :ripple="false">
 			      <div class="pricecarbox">
-				      <div class="carprice">
+				      <div class="carprice" @click="goShopCar" style="z-index:9">
 				      	<div class="carimgbox">
 				      		<img src="../../../static/img/car/car.png"/>
 				      		<span class="carnum">{{carnum}}</span>
 				      	</div>
 				      </div>
-				      <div style="position: relative;">合计：<span style="color: red;">￥{{allPrice}}</span><span class="qigou">{{qigoujia}}元起购</span></div>
+				      <div style="position: relative;">合计：<span style="color: red;">￥{{allPrice}}</span><span class="qigou">{{qigou}}元起购</span></div>
 			      </div>
             <!-- 
-              <div :class="carnum == 0 || allPrice < qigoujia ? 'huise settlement': 'settlement'">
+              <div :class="carnum == 0 || allPrice < qigou ? 'huise settlement': 'settlement'">
 			       	加入购物车
 			      </div>
              -->
-			      <div v-if="carnum == 0 || allPrice < qigoujia" class="huise settlement">
+			      <div v-if="carnum == 0 || allPrice < qigou" class="huise settlement">
 			       	加入购物车
 			      </div>
              <div v-else class="settlement" @click="settlement">
@@ -165,6 +165,7 @@ export default {
   data() {
     return {
       host: this.$store.state.host,
+      onerrorimg:this.$store.state.onerrorimg,
       page: 1,
       limit: 15, //当前页面分页条数
       docked: true, //是否显示遮罩
@@ -173,7 +174,7 @@ export default {
       carnum: 0,//分类底部小车数量
       loading2: false,
       page:1,
-      qigoujia:100,//起购价
+      qigou:this.$store.state.qigou,//起购价
       alldata:[{
         'goods_id':[],
         'single_price':[],
@@ -252,6 +253,10 @@ export default {
       setTimeout(() => {
         this.loading2 = false;
       }, 2000)
+    },
+    /**点击底部购物车图标到购物车*/
+    goShopCar(){
+      this.$router.push('/car')
     },
     /*点击切换顶部菜单默认第一个的状态,并且获取数据*/
     removeBg(index, item) {
@@ -617,6 +622,7 @@ export default {
 .inc-scroll-landscape-container > .inc-scroll-landscape-content {
   height: 100%; /* 当内容宽度小于容器宽度时，会出现横向滚动条。将横向滚动条溢出至容器外，保证横向滚动条不可见 */
   white-space: nowrap;
+  padding-bottom: 50px;
   margin-right: 0.6rem;
   overflow: hidden;
   overflow-x: scroll; /* 1 */

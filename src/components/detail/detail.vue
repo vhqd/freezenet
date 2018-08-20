@@ -35,7 +35,7 @@
 			<p class="instructions">{{contentinfo[0].goods_desc}}</p>
 		</div>
 		<div style="padding-bottom:1rem;">
-			<img v-if="contentinfo[0]" :src="contentinfo[0].goods_photo" style="width: 100%;margin-top: 0.2rem;" />
+			<img v-if="contentinfo[0]" :src="contentinfo[0].goods_photo" style="width: 100%;margin-top: 0.2rem;" :onerror="onerrorimglong"/>
 		</div>
 
 		<div class="addToCar">
@@ -45,15 +45,15 @@
 						<div class="carprice">
 							<div class="carimgboxs">
 
-								<mu-list textline="two-line" class="jcg">
+								<mu-list textline="two-line" class="jcg" style="margin-left:.2rem;" @click="addOfenBuy()">
 									<mu-list-item avatar button :ripple="false">
 										<mu-list-item-content>
-											<mu-list-item-title><img :src="jcg1" /></mu-list-item-title>
+											<mu-list-item-title><img v-if="!isOfen" :src="jcg1" /><img v-if="isOfen" :src="jcg2" /></mu-list-item-title>
 											<mu-list-item-sub-title>加常购</mu-list-item-sub-title>
 										</mu-list-item-content>
 									</mu-list-item>
 								</mu-list>
-								<mu-list textline="two-line" class="gwc">
+								<mu-list textline="two-line" class="gwc" style="margin-left:.2rem;">
 									<mu-list-item avatar button :ripple="false">
 										<mu-list-item-content>
 											<mu-list-item-title><img src="../../../static/img/car/car.png"/></mu-list-item-title>
@@ -67,15 +67,15 @@
 						</div>
 						<div style="position: relative;">合计：
 							<span style="color: red;">￥{{allPrice}}</span>
-							<span class="qigou">{{qigoujia}}元起购</span>
+							<span class="qigou">满{{manjian}}减{{jian}}</span>
 						</div>
 					</div>
 					<!-- 
-              <div :class="carnum == 0 || allPrice < qigoujia ? 'huise settlement': 'settlement'">
+              <div :class="carnum == 0 || allPrice < qigou ? 'huise settlement': 'settlement'">
 			       	加入购物车
 			      </div>
              -->
-					<div v-if="allPrice < qigoujia" class="huise settlement">
+					<div v-if="!(allPrice > 0)" class="huise settlement">
 						去结算
 					</div>
 					<div v-else class="settlement" @click="goBuy">
@@ -113,7 +113,7 @@
 <script>
 import HomeBannerView from "../home/HomeBanner.vue";
 import BackBar from "../common/BackBar.vue";
-import { getProductInfos , AddCarShop } from '../../http/http.js'
+import { getProductInfos , AddCarShop , addOfenBuy } from '../../http/http.js'
 import QS from "qs";
 import carouselImg1 from "../../../static/img/1-0_02.png";
 import carouselImg2 from "../../../static/img/1-0_02.png";
@@ -129,9 +129,13 @@ export default {
 			host:this.$store.state.host,
 			id:0,//商品id
       carnum: 0, //分类底部小车数量
-      qigoujia: 100, //起购价
+			qigou: this.$store.state.qigou, //起购价
+			manjian:this.$store.state.manjian,//满减
+			jian:this.$store.state.jian,//免减价格
+			onerrorimglong:this.$store.state.onerrorimglong,
       openJS: false, //结算弹窗
-      allPrice: 0,
+			allPrice: 0,
+			isOfen:false,
       jcg1: require("../../../static/img/home/ic_jiachanggou_moren@3x.png"),
       jcg2: require("../../../static/img/home/ic_jiachanggou_yijia@3x.png"),
       contentinfo: [],
@@ -154,7 +158,9 @@ export default {
 	activated(){
 		//this.contentinfo = [];//防止缓存
 		this.id = this.$route.query.id;
+		this.isOfen = false
 		let data = {"id":[this.id]}
+
 		getProductInfos(JSON.stringify(data)).then(res => {
 			let data = res.data.data;
 			data[0].goods_photo = this.host + data[0].goods_photo;
@@ -166,6 +172,16 @@ export default {
 		
 	},
   methods: {
+		/**添加常购*/
+		addOfenBuy(){
+			
+			addOfenBuy(this.contentinfo[0].id).then(res => {
+				console.log(res);
+				this.isOfen = true;
+			})
+		},
+	
+
 		/**添加商品到购物车结算*/
 		goBuy(){
 			let alldata = {
@@ -207,6 +223,7 @@ export default {
   padding: 0;
   background: #fff;
 }
+
 .dInfobox {
   background: #fff;
 }
@@ -266,7 +283,7 @@ export default {
   padding-right: 0;
 }
 .carimgboxs ul {
-  width: 2rem;
+  width: auto;
 }
 .carimgboxs .mu-list {
   background: initial;
@@ -276,7 +293,8 @@ export default {
 }
 .carimgboxs ul:first-child {
   position: absolute;
-  left: 0;
+	left: 0;
+	z-index: 9;
 }
 .carimgboxs ul:last-child {
   position: absolute;

@@ -22,7 +22,7 @@
 							<img :src="item.img"/>
 							<p>{{item.title}}</p>
 						</router-link>
-						<span class="fanallcar">0</span>
+						<span class="fanallcar" v-if="item.num > 0">{{item.num}}</span>
 					</li>
 					<!--<li>
 						<img src="../../../static/img/center/ic_daifahuo.png"/>
@@ -59,7 +59,7 @@
 						<mu-list-item button :ripple="false" @click="goCoupons">
 						<mu-list-item-title>我的优惠券</mu-list-item-title>
 						<mu-list-item-action>
-						<div class="arrbox"><span class="yhjnum">2张</span><img class="rightarr" src="../../../static/img/ic_jump.png"/></div>
+						<div class="arrbox"><span class="yhjnum" v-if="couponsnum > 0">{{couponsnum}}张</span><img class="rightarr" src="../../../static/img/ic_jump.png"/></div>
 						</mu-list-item-action>
 						</mu-list-item>
 						<mu-list-item button :ripple="false" @click="goDressManage">
@@ -80,7 +80,8 @@
 
 <script>
 	import Footer from '../common/Footer.vue';
-	import { getOrders } from '../../http/http.js'
+	import { getOrders , getCenterCoupons } from '../../http/http.js'
+	import { getAllOrders } from '../../common/common.js'
 
 	
 	
@@ -94,31 +95,38 @@
 	    return {
 			limit:15,
 			page:1,
+			couponsnum:0,
+			order_status:0,//'0-全部 1-待支付 2-待发货 3-已发货(待收货) 4-已完成 5-已取消',
 	    	orderlist:[
 	    		{
 	    			id:1,
 	    			title:'待支付',
-	    			img:require('../../../static/img/center/ic_daizhifu.png')
+	    			img:require('../../../static/img/center/ic_daizhifu.png'),
+					num:0
 	    		},
 	    		{
 	    			id:2,
 	    			title:'待发货',
-	    			img:require('../../../static/img/center/ic_daifahuo.png')
+	    			img:require('../../../static/img/center/ic_daifahuo.png'),
+					num:0
 	    		},
 	    		{
 	    			id:3,
 	    			title:'待收货',
-	    			img:require('../../../static/img/center/ic_daishouhuo.png')
+	    			img:require('../../../static/img/center/ic_daishouhuo.png'),
+					num:0
 	    		},
 	    		{
 	    			id:4,
 	    			title:'已完成',
-	    			img:require('../../../static/img/center/ic_yiwancheng.png')
+	    			img:require('../../../static/img/center/ic_yiwancheng.png'),
+					num:0
 	    		},
 	    		{
 	    			id:5,
 	    			title:'已取消',
-	    			img:'../../../static/img/center/ic_yiquxiao.png'
+	    			img:'../../../static/img/center/ic_yiquxiao.png',
+					num:0
 	    		}
 	    	],
 	    	hlep:[
@@ -151,14 +159,34 @@
 	    	]
 	    }
 	  },
+	  activated(){
+		  this.getCouponsnum(1);
+		  this.getOrders();
+
+		/**获取所有订单*/
+		getAllOrders().then(res =>{
+			
+			console.log('00000000000000');
+			console.log(res);
+		})
+		  
+	  },
 	  methods: {
+		  /**获取个人优惠券*/
+		getCouponsnum(page){
+			getCenterCoupons(999,page).then(res => {
+				let data = res.data.info.data;
+				this.couponsnum = data.length;
+			})
+		},
+
 		/**
 		 * 获取订单保存的store
 		*/
 		getOrders(){
-			getOrders(this.limit,this.page).then(res => {
+			getOrders(this.limit,this.page,this.order_status).then(res => {
 				console.log(res);
-				let data = res.data.data.data;
+				let data = res.data.info;
 				this.$store.commit('setOrder',data)
 			})
 		},
@@ -188,12 +216,12 @@
 .container{padding: 0;}
 .mu-card{background: none;box-shadow: none;}
 .mu-avatar{width: 1.24rem !important;height: 1.24rem !important;}  
-.center-title{height: 0.88rem;font-size: 0.32rem;color: #333;line-height: 0.88rem;background: #fff;}
+.center-title{height: 0.88rem;font-size: 0.32rem;color: #333;line-height: 0.88rem;background: #fff;position: fixed;width: 100%;z-index: 9;}
 .mu-card-header-title{margin-top: 0.1rem;}
 .mu-card-sub-titles{text-align: left;color: #f95151;background: #ff9a38;color:#fff;padding: 0.1rem;border-radius: 0.25rem;position: absolute;
     top: 44px;
     left: 140px;}
-.center-top{height: 3.3rem;background: url(../../../static/img/center/centerbg.png) no-repeat center;background-size: 100%;}
+.center-top{height: 3.3rem;background: url(../../../static/img/center/centerbg.png) no-repeat center;background-size: 100%;padding-top: 1rem;}
 .topboxinfo{width: 93%;margin: auto;background: #fff;border-radius: 10px;box-shadow:0 0px 2px -1px rgba(0,0,0,.1), 0 0px 1px 0 rgba(0,0,0,.1), 0 0px 0px 0 rgba(0,0,0,.1);}
 .ordertopbox{overflow: hidden;padding: 0.3rem;border-bottom: 1px solid #e0e0e0;}
 .myordertext{float: left;font-weight: bold;font-size: .26rem;color: #333;}
@@ -206,7 +234,7 @@
 .topboxinfo ul li{float: left;width: 20%;color: #8e8e8e;position: relative;}
 .topboxinfo ul li p{font-size: 0.24rem;color: #8e8e8e;}
 .topboxinfo ul li img{width: 0.55rem;height: 0.55rem;}
-.listcenterbox{background: #fff;width: 93%;border-radius: 10px;margin: .2rem auto 0 auto}
+.listcenterbox{background: #fff;width: 93%;border-radius: 10px;margin: .2rem auto 1.5rem auto}
 .listcenterbox li:not(:last-child){border-bottom: 1px solid #e0e0e0;}
 .mu-item-action{min-width: 2.4rem;}
 

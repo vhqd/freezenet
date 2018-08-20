@@ -98,7 +98,7 @@
 					<mu-list-item button :ripple="false" @click="openBotttomSheet">
 						<mu-list-item-title>优惠券优惠<span style="font-size:12px;padding-left:15px;">(满300减20)</span></mu-list-item-title>
 						<mu-list-item-action>
-							<span>-￥{{yhj}}</span>
+							<span><span v-if="yhj!=0">-</span>￥{{yhj}}</span>
 						</mu-list-item-action>
 					</mu-list-item>
 					<mu-list-item button :ripple="false" v-for="(item,index) in payway" :key="index" v-if="item.checks">
@@ -132,7 +132,7 @@
 					<div class="pricecarbox">
 						<div>合计：<span style="color: red;">￥{{payprice}}</span></div>
 					</div>
-					<div class="settlement" @click="toPay">
+					<div class="settlement" @click="toPay1">
 						提交订单
 					</div>
 				</mu-list-item>
@@ -144,13 +144,13 @@
 			<mu-sub-header>优惠券</mu-sub-header>
 			<mu-container>
 				<mu-tabs :value.sync="active1" inverse color="secondary" text-color="rgba(0, 0, 0, .54)" center>
-					<mu-tab>可用优惠券（{{coupons.length}}）</mu-tab>
-					<mu-tab>不可用优惠券（{{nocoupons.length}}）</mu-tab>
+					<mu-tab>可用优惠券（{{couponsnum}}）</mu-tab>
+					<mu-tab>不可用优惠券（{{nocouponsnum}}）</mu-tab>
 				</mu-tabs>
 				<div class="demo-text" v-if="active1 === 0">
 					<div class="carlistbox">
 						<ul>
-							<li class="list-item " v-for="(item,index) in coupons" :key="index" data-type="0">
+							<li class="list-item " v-for="(item,index) in coupons" :key="index" data-type="0" v-if="!item.is_overdue && couponsnum != 0" @click='useCoupons(item)'>
 								<!--<div class="list-box" @touchstart.capture="touchStart" @touchend.capture="touchEnd" @click="skip">-->
 								<div class="list-box">
 									<div class="list-content">
@@ -160,23 +160,23 @@
 													<mu-list-item avatar :ripple="false" button>
 														<mu-list-item-action>
 															<mu-avatar style="width: 1.4rem;height: 1.4rem;">
-																<img :src="item.img">
+																<img src="../../../static/img/center/img_youhuiquan @3x.png">
 															</mu-avatar>
 														</mu-list-item-action>
 														<mu-list-item-content>
-															<mu-list-item-title>{{item.title}}</mu-list-item-title>
+															<mu-list-item-title>{{item.red_packet_name}}</mu-list-item-title>
 															<mu-list-item-sub-title style='margin-top: 0.4rem;'>
 																<!--<span style="color: #a9a9a9;font-size: 0.2rem;">库存{{item.inventory}}件</span>-->
 																<p>
-																	{{item.time}}
+																	{{item.end_at}}
 																</p>
 															</mu-list-item-sub-title>
 														</mu-list-item-content>
 													</mu-list-item>
 													<div class="usecar">
 														<div class="saoma" style="color: #fff;">
-															<p style="font-size: 0.52rem;">￥{{item.price}}</p>
-															<p>满{{item.manjian}}可用</p>
+															<p style="font-size: 0.52rem;">￥{{item.red_packet_price}}</p>
+															<p>满{{item.red_packet_threshold_price}}可用</p>
 														</div>
 													</div>
 												</div>
@@ -186,13 +186,17 @@
 									</div>
 								</div>
 							</li>
+							<li v-if="couponsnum == 0" class="yhjtipbox">
+								<img src="../../../static/img/order/img_wuyouhuiquan @2x.png" class="yhjtip" alt="">
+								您暂无可以使用的优惠券
+							</li>
 						</ul>
 					</div>
 				</div>
 				<div class="demo-text" v-if="active1 === 1">
 					<div class="carlistbox">
 						<ul>
-							<li class="list-item " v-for="(item,index) in nocoupons" :key="index" data-type="0">
+							<li class="list-item " v-for="(item,index) in coupons" :key="index" data-type="0" v-if="item.is_overdue && nocouponsnum != 0">
 								<!--<div class="list-box" @touchstart.capture="touchStart" @touchend.capture="touchEnd" @click="skip">-->
 								<div class="list-box">
 									<div class="list-content">
@@ -202,23 +206,23 @@
 													<mu-list-item avatar :ripple="false" button>
 														<mu-list-item-action>
 															<mu-avatar style="width: 1.4rem;height: 1.4rem;">
-																<img :src="item.img">
+																<img src="../../../static/img/center/img_youhuiquan @3x.png">
 															</mu-avatar>
 														</mu-list-item-action>
 														<mu-list-item-content>
-															<mu-list-item-title>{{item.title}}</mu-list-item-title>
+															<mu-list-item-title>{{item.red_packet_name}}</mu-list-item-title>
 															<mu-list-item-sub-title style='margin-top: 0.4rem;'>
 																<!--<span style="color: #a9a9a9;font-size: 0.2rem;">库存{{item.inventory}}件</span>-->
 																<p>
-																	{{item.time}}
+																	{{item.end_at}}
 																</p>
 															</mu-list-item-sub-title>
 														</mu-list-item-content>
 													</mu-list-item>
 													<div class="usecar">
 														<div class="saoma" style="color: #fff;">
-															<p style="font-size: 0.52rem;">￥{{item.price}}</p>
-															<p>满{{item.manjian}}可用</p>
+															<p style="font-size: 0.52rem;">￥{{item.red_packet_price}}</p>
+															<p>满{{item.red_packet_threshold_price}}可用</p>
 														</div>
 													</div>
 												</div>
@@ -227,6 +231,10 @@
 
 									</div>
 								</div>
+							</li>
+							<li v-if="nocouponsnum == 0" class="yhjtipbox">
+								<img src="../../../static/img/order/img_wuyouhuiquan @2x.png" class="yhjtip" alt="">
+								您暂无可以使用的优惠券
 							</li>
 						</ul>
 					</div>
@@ -242,7 +250,8 @@
 	import QS from "qs";
 	import {
 	getDress,
-	AddOrder
+	AddOrder,
+	getCenterCoupons
 	} from "../../http/http.js";
 
 	export default {
@@ -252,9 +261,19 @@
 				open: false,
 				iszk:false,//商品展开收起
 				page: 1,
-      			limit: 10, //当前页面分页条数
+      			limit: 99, //当前页面分页条数
 				active1: 0,
 				dress:null,//默认地址
+				paydata:{
+					goods:'',
+					sum_price:0,
+					red_packet_id:0,
+					real_pay_price:0,
+					transport_id:0,
+					pay_way:0,
+					distribution_fee:0,
+					distribution_id:0
+				},
 				orderdata:[{
 					'goods_id':[],//商品id
 					'single_price':[],//商品单价
@@ -279,6 +298,8 @@
 				radioT: require('../../../static/img/car/ic_weixuan.png'), //未选图片
 				zankai: require('../../../static/img/order/ic_zhankai@3x.png'), //展开
 				shouqi: require('../../../static/img/order/ic_shouqi@3x.png'), //收起
+				couponsnum:0,//可用优惠券数量
+				nocouponsnum:0,//不可用优惠券数量
 				payway: [{
 						id:1,
 						title: '在线支付', //标题
@@ -290,57 +311,8 @@
 						checks: false
 					}
 				],
-				list: [/* {
-						id: 1,
-						img: require('../../../static/img/1-0_03.png'), //图片
-						title: '算哈哈是111', //标题
-						num: 0, //数量
-						price: '20', //单价
-						oldPrice: '50', //旧的价格
-						inventory: '5' //库存
-					},
-					{
-						id: 2,
-						img: require('../../../static/img/1-0_03.png'), //图片
-						title: '算哈哈是', //标题
-						num: 0, //数量
-						price: '20', //单价
-						oldPrice: '50', //旧的价格
-						inventory: '5' //库存
-					} */
-				],
-				coupons: [
-					{
-						img: require('../../../static/img/center/img_youhuiquan @3x.png'), //图片
-						title: '冻货全品类（除特殊商品）', //标题
-						time: '2018-05-05',
-						price: 20, //单价
-						manjian: 50
-					},
-					{
-						img: require('../../../static/img/center/img_youhuiquan @3x.png'), //图片
-						title: '冻货全品类（除特殊商品）', //标题
-						time: '2018-05-05',
-						price: 20, //单价
-						manjian: 50
-					},
-					{
-						img: require('../../../static/img/center/img_youhuiquan @3x.png'), //图片
-						title: '冻货全品类（除特殊商品）', //标题
-						time: '2018-05-05',
-						price: 20, //单价
-						manjian: 50
-					}
-				],
-				nocoupons: [
-					{
-						img: require('../../../static/img/center/img_youhuiquan @3x.png'), //图片
-						title: '冻货全品类（除特殊商品）', //标题
-						time: '2018-05-05',
-						price: 20, //单价
-						manjian: 50
-					}
-				]
+				list: [],
+				coupons: []
 			}
 		},
 		components: {
@@ -349,8 +321,12 @@
 		activated(){
 			console.log('22222222222222222222222');
 			console.log(JSON.parse(this.$route.query.list));
-			
+			this.yhj = 0;
+			this.red_packet_id = 0;
 			this.calculate();
+
+			//获取优惠券
+			this.getCoupons(this.page)
 		},
 		mounted(){
 			
@@ -365,6 +341,11 @@
 					}
 				}
     		});
+		},
+		watch:{
+			yhj:function(a,b){
+				this.calculate()
+			}
 		},
 		methods: {
 			/**
@@ -406,41 +387,103 @@
 					'transport_id':0//配送方式id
 				}],//需要提交的订单数据
 			*/
+
 			/**提交订单*/
-			toPay() {
+			toPay1() {
 				let alldata = JSON.parse(this.$route.query.list);
+				let goods = [];
 				for(let ite in alldata){
-					let item = alldata[ite];
-					this.orderdata[0].goods_id.push(item.id);
-					this.orderdata[0].single_price.push(item.goods_price);
-					this.orderdata[0].count.push(item.count);
+					let obj = {};
+					obj.goods_id = alldata[ite].goods_id;
+					obj.count = alldata[ite].count;
+					obj.single_price = alldata[ite].single_price;
+					//this.paydata.goods.push(obj);
+					goods.push(obj);
 				}
+				this.paydata.goods = JSON.stringify(goods);
+				//付款方式1-在线，0-货到付款
 				let payway = null;
 				for(let i in this.payway){
 					if(this.payway[i].checks){
 						payway = this.payway[i].id;
 					}
 				}
-				this.orderdata[0].sum_price = this.allprice
-				this.orderdata[0].use_red_packet = 0;
-				this.orderdata[0].red_packet_price = 0;
-				this.orderdata[0].real_pay_price = this.payprice;
-				this.orderdata[0].pay_way = payway;
-				this.orderdata[0].pay_status = 0;
+				this.paydata.sum_price = this.allprice;//'商品总价格'
+				this.paydata.red_packet_id = this.red_packet_id;//'红包价格'
+				this.paydata.real_pay_price = this.payprice;//'实际付款价格'
+				this.paydata.transport_id = this.dress.id;//配送地址id
+				this.paydata.pay_way = payway;//'付款方式,1=>在线支付,0=>货到付款',
+				this.paydata.distribution_fee = 20;//'配送费'
+				this.paydata.distribution_id = 20;//'配送方式id'
+				console.log('重新组合的订单数据');
+				console.log(this.paydata);
+				AddOrder(this.paydata).then(res =>{
+				}) 
+			},
+
+			/**提交订单(废弃)*/
+			toPay() {
+				let alldata = JSON.parse(this.$route.query.list);
+				for(let ite in alldata){
+					let item = alldata[ite];
+					this.orderdata[0].goods_id.push(item.goods_id);
+					this.orderdata[0].single_price.push(item.goods_price);
+					this.orderdata[0].count.push(item.count);
+				}
+				//付款方式1-在线，0-货到付款
+				let payway = null;
+				for(let i in this.payway){
+					if(this.payway[i].checks){
+						payway = this.payway[i].id;
+					}
+				}
+				//通过yhj价格判断是否使用了优惠券1-使用，0-未使用
+				if(this.yhj != 0){
+					this.orderdata[0].use_red_packet = 1;
+				}else{
+					this.orderdata[0].use_red_packet = 0;
+				}
+				this.orderdata[0].sum_price = this.allprice//'商品总价格'
+				this.orderdata[0].red_packet_price = this.yhj;//'红包价格'
+				this.orderdata[0].real_pay_price = this.payprice;//'实际付款价格'
+				this.orderdata[0].pay_way = payway;//'付款方式,1=>在线支付,0=>货到付款',
+				this.orderdata[0].pay_status = 0;//'支付状态,1=>已经支付,0=>未支付,2=>货到付款,3=>已经失效',
+				this.orderdata[0].transport_id = this.dress.id;//默认地址的id
 				this.orderdata[0].distribution_id = this.dress.id;
-				this.orderdata[0].red_packet_id = 0;
-				this.orderdata[0].transport_id = 0;
+				this.orderdata[0].red_packet_id = this.red_packet_id;//红包id
       
-				alert(1);
 				console.log('需要提交的商品订单数据');
 				console.log(this.orderdata);
-				
-				
-				AddOrder(QS.stringify(this.orderdata)).then(res =>{
-
+				AddOrder(QS.stringify(this.orderdata[0])).then(res =>{
 				})
 				//this.$router.push('/paysuccessful')
 				//this.$router.push('/payfailure')
+			},
+
+			/**获取个人优惠券*/
+			getCoupons(page){
+				this.couponsnum = 0,//可用优惠券数量(防止缓存)
+				this.nocouponsnum = 0,//不可用优惠券数量(防止缓存)
+				getCenterCoupons(this.limit,page).then(res => {
+					let data = res.data.info.data;
+					if(data && data.length > 0 ){
+						this.coupons = data;
+						for(let i in this.coupons){
+							if(!this.coupons[i].is_overdue){
+								this.couponsnum ++ 
+							}else{
+								this.nocouponsnum ++
+							}
+						}
+					}
+				})
+			},
+
+			/**使用优惠券*/
+			useCoupons(item){
+				this.yhj = item.red_packet_price;
+				this.red_packet_id = item.id;
+				this.open = false;
 			},
 			
 			/**展开所有数据*/
@@ -652,6 +695,7 @@
 	
 	.carlistbox>ul {
 		overflow-x: hidden;
+		min-height: 95px;
 	}
 	
 	.qigou {
@@ -705,4 +749,6 @@
 	.mu-sub-header{font-size: 0.32rem;font-weight: bold;color: #333;} 
 	.infoboxbut .mu-item-action{min-width: 50%;font-weight: bold;font-size: 13px;color:#333;}
 	.infoboxbut .mu-item-title{color: #666;}
+	.yhjtipbox{display: flex;align-items: center;justify-content: center;margin-top: 20px;}
+	.yhjtip{width: 1rem;height: .6rem;}
 </style>

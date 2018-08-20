@@ -145,7 +145,10 @@ export default {
         is_default: is_default //是否默认
       };
       console.log(upData);
-      if (this.isedit || this.$route.query.status != 1) {
+      let state = this.$route.query.status;
+      let isedit = this.$route.query.isedit;
+      if (isedit || (state && state != 1)) {
+        alert(2)
         /*编辑地址*/
         console.log(this.item.id);
          EditDress(this.item,upData).then(res => {
@@ -154,6 +157,7 @@ export default {
         })
       } else {
         /*新增地址*/
+        alert(1)
         AddDress(upData).then(res => {
             this.$router.replace("/dressmanagement");
             console.log(res);

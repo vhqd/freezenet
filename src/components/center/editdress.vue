@@ -100,8 +100,13 @@
 		components: {
 			BackBar
 		},
-		mounted(){
+		activated(){
+			this.page = 1;
+			this.list = [];
 			this.getDress(this.page);
+		},
+		mounted(){
+			
 			
 				
 		},

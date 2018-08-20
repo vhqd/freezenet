@@ -41,7 +41,7 @@
 											</mu-list-item>
 											<div class="usecar">
 												<div class="saoma">
-													<span class="mpnum nousecoupons" v-if="!item.user_is_recive">立即领取</span>
+													<span class="mpnum nousecoupons" v-if="!item.user_is_recive" @click="getCoupons(item)">立即领取</span>
 													<span class="mpnum usecoupons" v-if="item.user_is_recive">去使用</span>
 												</div>
 												<div class="yuan garden1"></div>
@@ -69,7 +69,7 @@
 
 <script>
 import BackBar from "../common/BackBar.vue";
-import { getCoupons } from '../../http/http.js'
+import { getCouponsList , getCoupons } from '../../http/http.js'
 
 export default {
   name: "index",
@@ -87,14 +87,32 @@ export default {
       endX: 0
     };
   },
+  activated(){
+
+  },
   mounted() {
 	  /**获取优惠券列表*/
-	  getCoupons(this.limit).then(res => {
-		  let data = res.data.info.data;
-		  this.list = data;
-	  })
+	  this.getCouponsList();
   },
-  methods: {},
+  methods: {
+    /**获取优惠券列表*/
+    getCouponsList(){
+      getCouponsList(this.limit).then(res => {
+        let data = res.data.info.data;
+        this.list = data;
+      })
+    },
+     /**领取个人优惠券*/
+    getCoupons(item){
+      getCoupons(item.id).then(res => {
+        if(res.data.code == 200){
+          item.user_is_recive = !item.user_is_recive
+          console.log('个人优惠券领取成功');
+          console.log(res);
+        }
+      })
+    }
+  },
   computed: {},
   components: {
     BackBar
@@ -245,7 +263,7 @@ export default {
   top: 0;
   right: -1.3rem;
 }
-
+.mu-item-sub-title{font-size: 12px;}
 .topgrid .mu-grid-tile-subtitle span {
   text-align: center;
   color: #f95151;

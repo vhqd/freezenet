@@ -85,20 +85,22 @@
 
     <div class="searchreult" v-if="resData.length > 0">
       <mu-flex class="flex-wrapper" align-items="center" wrap="wrap">
-        <mu-flex v-for="(item,index) in resData" :key="index" class="flex-demo" direction='column' align-items="center" justify-content="center" fill @click="goDetail(item)">
-          <img src="../../../static/img/1.6_03.png" alt="" class="shouimg" />
-          <div class="infobox">
-            <p class="rtitle">{{item.goods_title}}</p>
-            <p class="liang">{{item.goods_price}}斤装</p>
-            <p class="price">￥{{item.goods_price}}</p>
+        <mu-flex v-for="(item,index) in resData" :key="index" class="flex-demo" direction='column' align-items="center" justify-content="center" fill>
+          <div @click="goDetail(item)">
+            <img src="../../../static/img/1.6_03.png" alt="" class="shouimg" />
+            <div class="infobox">
+              <p class="rtitle">{{item.goods_title}}</p>
+              <p class="liang">{{item.goods_price}}斤装</p>
+              <p class="price">￥{{item.goods_price}}</p>
+            </div>
           </div>
           <div style="position: absolute;right: 0;bottom: 0;">
             <div class="saoma">
               <!-- <span class="minus mpsytl" @click="minus(item)" v-if="item.num != 0">-</span>
 							<span>{{item.num}}</span>
 							<span class="plus mpsytl" @click="plus(item)">+</span> -->
-              <span class="minus" @click="minus(item)" v-if="item.num != 0"><img src="../../../static/img/ic_jian.png" alt="" style="width:.5rem;height:.5rem;"></span>
-              <span v-show="item.num != 0">{{item.num}}</span>
+              <span class="minus" @click="minus(item)" v-if="item.count != 0"><img src="../../../static/img/ic_jian.png" alt="" style="width:.5rem;height:.5rem;"></span>
+              <span v-show="item.count != 0">{{item.count}}</span>
               <span class="plus" @click="plus(item)"><img src="../../../static/img/ic_jia.png" alt="" style="width:.5rem;height:.5rem;"></span>
             </div>
           </div>
@@ -180,7 +182,7 @@ export default {
       openJS: false, //结算弹窗
       deleSearch: false, //删除弹窗
       carnum: 0, //购物车数量
-      qigou: 100,
+      qigou: this.$store.state.qigou,
       history: [
         /* {
 			  title:'鸭肠'
@@ -333,7 +335,7 @@ export default {
         }
         for(let i in data){
           data[i].goods_photo = this.host + data[i].goods_photo;
-			    data[i].num = 0;
+			    data[i].count = 0;
         }
         this.resData = data;
       });
@@ -348,19 +350,19 @@ export default {
     },
     /*减少数量值*/
     minus(item) {
-      let amount = item.num;
+      let amount = item.count;
       if (amount > 0) {
-        item.num = amount - 1;
+        item.count = amount - 1;
         this.carnum = this.carnum - 1;
         this.allPrice = this.allPrice - item.goods_price;
       } else {
-        item.num = 0;
+        item.count = 0;
       }
     },
     /*增加数量值*/
     plus(item) {
-      let amount = item.num;
-      item.num = amount + 1;
+      let amount = item.count;
+      item.count = amount + 1;
       this.carnum = this.carnum + 1;
       this.allPrice = this.allPrice + item.goods_price;
     },
@@ -371,7 +373,7 @@ export default {
       for (let item in menu) {
         let list = menu[item].list;
         for (let it in list) {
-          carnum += list[it].num;
+          carnum += list[it].count;
         }
       }
     },
@@ -382,7 +384,17 @@ export default {
         //打开弹窗
         this.openJS = true;
       } else {
-        this.$router.push({ path: "/order" });
+        let data = this.resData;
+        let datas = [];
+         console.log(2222222222222222222222222);
+        for(let item in data){
+          if(data[item].count > 0){
+            datas.push(data[item]);
+          }
+        }
+        console.log(datas);
+        
+        this.$router.push({ path: "/order" ,query:{list:JSON.stringify(datas)}});
       }
     },
     /**打开删除弹窗*/
@@ -605,7 +617,6 @@ export default {
 .price {
   font-size: 0.3rem;
   color: #f24c4c;
-  padding-bottom: 0.8rem;
 }
 .searchreult .flex-column {
   position: relative;
@@ -613,7 +624,7 @@ export default {
   overflow: hidden;
   background: #fff;
   margin-top: 0.14rem;
-  padding-bottom: .3rem;
+  padding-bottom: .8rem;
 }
 .searchreult .flex-column:first-child{
  margin-left:0 !important;

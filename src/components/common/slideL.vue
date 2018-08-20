@@ -24,7 +24,7 @@
                           <img :src="　item.checks ? radioF : radioT " class="radioimg" @click="checkRadio(item)" />
                           <mu-list-item-action>
                             <mu-avatar style="width: 1.4rem;height: 1.4rem;">
-                              <img :src="item.goods_photo">
+                              <img :src="item.goods_photo" :onerror="onerrorimg">
                             </mu-avatar>
                           </mu-list-item-action>
                           <mu-list-item-content>
@@ -75,10 +75,10 @@
               <!--<div>合计：<span style="color: red;">￥{{allPrice}}</span></div>-->
               <div style="position: relative;">合计：
                 <span style="color: red;">￥{{allPrice}}</span>
-                <span class="qigou">满300减20</span>
+                <span class="qigou">{{qigou}}元起购</span>
               </div>
             </div>
-            <div :class="allPrice == 0 ? 'huise settlement': 'settlement'" @click="settlement">
+            <div :class="allPrice < qigou ? 'huise settlement': 'settlement'" @click="settlement">
               结算（{{checkNum}}）
             </div>
           </mu-list-item>
@@ -116,6 +116,8 @@ export default {
       host: this.$store.state.host,
       page: 1,
       limit: 10, //当前页面分页条数
+      qigou:this.$store.state.qigou,//起购价
+      onerrorimg:this.$store.state.onerrorimg,
       loading: false,
       lastinde:0,
       radioF: require("../../../static/img/car/ic_xuanzhong.png"), //选中图片
@@ -339,6 +341,7 @@ export default {
 
     /**减少数量值*/
     minus(item,index) {
+      this.$store.commit("editCarnum", this.$store.state.count - 1);
       let amount = parseInt(item.count);
       let list = this.list;
       if (amount > 0) {
@@ -352,6 +355,7 @@ export default {
 
     /**增加数量值*/
     plus(item,index) {
+      this.$store.commit("editCarnum", this.$store.state.count + 1);
       let amount = parseInt(item.count);
       let list = this.list;
       item.count = amount + 1;
@@ -374,13 +378,13 @@ export default {
         if(item.count == 0){
           this.list.splice(index,1)
         } 
-        //设置导航购物车数量
-        this.$store.commit(
+        //设置导航购物车数量(成功之后在设置，但是在界面上显示有延迟)
+        /* this.$store.commit(
           "editCarnum",
           minusOrPlus == 0
             ? this.$store.state.count - 1
             : this.$store.state.count + 1
-        );
+        ); */
       });
     },
 
@@ -435,7 +439,9 @@ export default {
     touchStart(e) {
       this.startX = e.touches[0].clientX;
       let index = e.currentTarget.dataset.index;
-      this.list[this.lastinde].isslid = false;
+      if(this.list[this.lastinde]){
+        this.list[this.lastinde].isslid = false;
+      }
       this.lastinde = index;
     },
 

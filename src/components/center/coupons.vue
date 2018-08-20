@@ -12,11 +12,13 @@
 				</mu-grid-list>
 			</div>-->
 			<div class="carlistbox">
-				<mu-load-more :loading="loading" @load="load">
+				<mu-load-more :loading="loading" @load="load" style="padding-top:1rem;">
 			<ul>
 					<li class="list-item " v-for="(item,index) in list" :key="index" data-type="0">
 						<!--<div class="list-box" @touchstart.capture="touchStart" @touchend.capture="touchEnd" @click="skip">-->
-							<div class="list-box" @touchstart.capture="touchStart" @touchend.capture="touchEnd">
+							<div class="list-box" @touchstart.capture="touchStart($event,item)" @touchend.capture="touchEnd($event)">
+
+							<!-- <div class="list-box" v-if="item.is_overdue"> -->
 							<div class="list-content">
 								
 								<mu-paper :z-depth="1" class="demo-list-wrap">
@@ -29,19 +31,21 @@
 									        </mu-avatar>
 									      </mu-list-item-action>
 									      <mu-list-item-content>
-									        <mu-list-item-title>{{item.red_packet.red_packet_name}}</mu-list-item-title>
+									        <mu-list-item-title>{{item.red_packet_name}}</mu-list-item-title>
 									        <mu-list-item-sub-title>
 									          <!--<span style="color: #a9a9a9;font-size: 0.2rem;">库存{{item.inventory}}件</span>-->
 												<p style="color: red;">
-									          	￥<span style="font-size: 0.5rem;">{{item.red_packet.red_packet_price}}</span>
-									          	<span style="color: red;background: #ffeaea;padding: .04rem .2rem;">满{{item.red_packet.red_packet_threshold_price}}可用</span>
+									          	￥<span style="font-size: 0.5rem;">{{item.red_packet_price}}</span>
+									          	<span style="color: red;background: #ffeaea;padding: .04rem .2rem;" v-if="item.red_packet_threshold_price!=0">满{{item.red_packet_threshold_price}}可用</span>
 									          </p>
 									        </mu-list-item-sub-title>
 									      </mu-list-item-content>
 									    </mu-list-item>
 									    <div class="usecar">
 									    	<div class="saoma">
-									        	<span :class=" !item.red_packet.is_red_packet_threshold==0 ? 'mpnum usecoupons' : 'mpnum nousecoupons' ">{{!item.red_packet.is_red_packet_threshold==0 ? '去使用'  : '已过期'}}</span>
+												<span v-if="!item.is_overdue" class="mpnum usecoupons" @click="gobuy">去使用</span>
+												<span v-if="item.is_overdue" class="mpnum nousecoupons" >已过期</span>
+									        	<!-- <span :class="!item.is_overdue ? 'mpnum usecoupons' : 'mpnum nousecoupons' " >{{!item.is_overdue ? '去使用'  : '已过期'}}</span> -->
 									        </div>
 									        <div class="yuan garden1"></div>
 									        <div class="yuan garden2"></div>
@@ -73,7 +77,7 @@
 
 <script>
 	import BackBar from '../common/BackBar.vue'
-	import { getCenterCoupons } from "../../http/http.js";
+	import { getCenterCoupons , deletCoupons } from "../../http/http.js";
 	
 	export default {
 		name: 'index',
@@ -246,11 +250,16 @@
 			this.getCoupons(1);
  		},
 		methods: {
-			/*获取个人优惠券*/
+			/**去商品分类使用优惠券*/
+			gobuy(){
+				this.$router.push('/classification')
+			},
+			
+			/**获取个人优惠券*/
 			getCoupons(page){
 				getCenterCoupons(this.limit,page).then(res => {
 					this.page = page + 1;
-					let data = res.data.data;
+					let data = res.data.info.data;
 					if(data && data.length > 0 ){
 						this.list = this.list.concat(data);
 					}else{
@@ -284,7 +293,11 @@
 				}
 			},
 			//滑动开始
-			touchStart(e) {
+			touchStart(e,item) {
+				//如果不是过期优惠券则不能滑动
+				if(!item.is_overdue){
+					return;
+				}
 				this.startX = e.touches[0].clientX;
 			},
 			//滑动结束
@@ -329,8 +342,13 @@
 			deleteItem(index,item) {
 				//let index = e.currentTarget.dataset.index;
 				console.log(item)
-				this.restSlide();
-				this.list.splice(index, 1);
+				deletCoupons(item.id).then(res => {
+					if(res.data.code == 200){
+						this.restSlide();
+						this.list.splice(index, 1);
+					}
+				})
+
 			}
 		}
 	}
