@@ -423,5 +423,5 @@ export default {
   height: 300px;
   position: relative;
 }
-
+.listbox .mu-circular-progress{position: absolute !important;}
 </style>

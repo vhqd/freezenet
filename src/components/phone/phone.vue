@@ -14,7 +14,8 @@
 				<mu-list-item-action>
 					<mu-text-field v-model="phone" placeholder="请输入手机号"></mu-text-field>
 				</mu-list-item-action>
-				<div v-show="!issend" class="sendyzm" @click="snedyzm">发送验证码</div>
+				<div v-if="!issend&&phone != ''" class="sendyzm" @click="snedyzm">发送验证码</div>
+				<div v-else class="sendyzm saveboxhui">发送验证码</div>
 				<div v-show="issend" class="nosendyzm">{{sec}}秒后重发</div>
 			</mu-list-item>
 			<mu-list-item button :ripple="false">
@@ -31,7 +32,12 @@
 			</mu-list-item>
 		</mu-list>
 
-		<div class="savebox">
+		<div v-if="yqm == '' || yzm == '' || phone == ''" class="savebox saveboxhui">
+			<mu-flex class="flex-wrapper" align-items="center">
+				<mu-flex class="flex-demo" justify-content="center" fill>绑定</mu-flex>
+			</mu-flex>
+		</div>
+		<div v-else class="savebox">
 			<mu-flex class="flex-wrapper" align-items="center" @click='bindPone'>
 				<mu-flex class="flex-demo" justify-content="center" fill>绑定</mu-flex>
 			</mu-flex>
@@ -41,7 +47,8 @@
 </template>
 
 <script>
-	import { getToken , getTokentest , getUserWXInfo , sendPhoneYzm } from '../../http/http.js'
+	import { oauth , register , getToken , getTokentest , getUserWXInfo , sendPhoneYzm , test1 } from '../../http/http.js'
+	import { getUrlParms } from '../../common/common.js'
 	import QS from "qs";
 
 	export default {
@@ -50,63 +57,111 @@
 		data() {
 			return {
 				host: this.$store.state.host,
+				basehost:this.$store.state.basehost,
 				dTitle: '绑定手机号',
 				sec:60,//倒计时时间
 				issend:false,//是否已经发送验证码
 				sendtext:'发送验证码',
-				phone: '13881306507',//手机号
-				yzm: '123',//验证码
-				yqm: '321'//邀请码
+				phone: '',//手机号
+				yzm: '',//验证码
+				yqm: '',//邀请码
+				openid:null
 			}
 		},
+		activated(){
+				console.log(this.$route.query.openid)
+				let openid = this.$route.query.openid
+				this.openid = openid
+				let str = sessionStorage.obj
+				console.log('str');
+				console.log(str);
+				
+				if(str){
+					let obj = JSON.parse(str);
+					if(!obj.name || ((openid != obj.name) && openid)){
+						this.setOpenid(openid);
+						/* let obj = { name:this.$route.query.openid };
+						let str = JSON.stringify(obj);
+						sessionStorage.obj = str; */
+					}
+				}else{
+					this.setOpenid(openid);
+					/* let obj = { name:this.$route.query.openid };
+					let str = JSON.stringify(obj);
+					sessionStorage.obj = str; */
+				}
+				let a = sessionStorage.obj
+				let b = JSON.parse(a);
+				console.log(b);
+				
+				
+				this.$store.commit("setOpenId",openid)
+				console.log('store里面的openid');
+				console.log(openid);
+			//window.location.href = this.host + "/oauth"
+
+			/* console.log('jsonp');
+			this.$jsonp(this.host+'/oauth' ).then(json => {
+				console.log(json);
+			　　// 返回数据 json， 返回的数据就是json格式
+			}).catch(err => {
+			　　console.log(err)
+			})  */
+
+
+			/**
+			 * 获取用户openid
+			*/
+			 //oauth().then(res=>{
+				//let data = res.data.info;
+				//console.log('调用oauth接口返回用户信息');
+				//console.log(res);
+				/* if(data){
+					let openid = data.openid;
+					this.$store.cmomit("setOpenId",openid)
+				}else{
+					console.log('获取用户信息失败');
+					console.log(res)
+				} */
+			//}) 
+
+
+		},
 		mounted(){
+			window.location.href = this.basehost + 'phone'
 			/**测试获取登录token（存在跨域问题）*/
-			 getTokentest().then(res=>{
+			/*  getTokentest().then(res=>{
 				 let token = res.data.access_token;
 				console.log('tokentest');
 				console.log(token);
-			})
+			}) */
 
 
 			/**测试获取用户信息（存在跨域问题）*/
-			 getUserWXInfo().then(res=>{
+			/*  getUserWXInfo().then(res=>{
 				console.log('WXuserInfo');
 				console.log(res);
-			})
+			}) */
 		},
 		methods:{
-			getToken(){
-				let data = {
-						username: 'test_01',
-						password: 'admin@'
-					};
-					getToken(data).then(res => {
-						let token = res.data.data.access_token;
-						console.log(token);
-						
-						//设置token
-						this.$store.commit('set_token', token);
-						this.$store.commit('editIsBind');
-						
-						this.$router.push('/') 
-
-
-
-
-						//window.localStorage.setItem('token',tokens);
-						//$store.state.token = tokens;
-						//console.log(this.$store.state.token)
-						//this.$store.state.isbind = true;
-						//console.log(res);
-						//console.log(res.data.data.access_token);
-					})
-	  		},
+			/**保存openid*/
+			setOpenid(openid){
+				let obj = { name:openid };
+				let str = JSON.stringify(obj);
+				sessionStorage.obj = str;
+			},
 	  		/*绑定手机操作*/
 	  		bindPone(){
-	  			if(this.phone == ''){
+				let phone = this.phone
+	  			if(phone == ''){
 	  				this.$toast.error('请输入绑定手机号');
 	  				return;
-	  			}
+				}
+				let telReg = !!phone.match(/^(0|86|17951)?(13[0-9]|15[012356789]|17[0-9]|18[0-9]|14[57])[0-9]{8}$/);
+				if(telReg == false){
+					this.$toast.error('请输正确的手机号');
+	  				return;
+				}
 	  			if(this.yam == ''){
 	  				this.$toast.error('请输入验证码');
 	  				return;
@@ -114,17 +169,45 @@
 	  			if(this.yqm == ''){
 	  				this.$toast.error('请输入邀请码');
 	  				return;
-				  }
-	  			this.getToken();
-	  		},
+				}
+	  			//this.getToken();
+				this.putRegister();
+			},
+			
+			/**提交用户信息*/  
+			putRegister(){
+				let str = sessionStorage.obj
+				let obj = JSON.parse(str);
+				let data = {
+					openid:obj.name,
+					code:this.yzm,
+					invate_code:this.yqm,
+					phone:this.phone
+				}
+				console.log('用户信息');
+				console.log(data);
+				register(QS.stringify(data)).then(res => {
+					this.$store.commit('editIsBind');
+					let token = res.data.info.access_token
+					console.log('token');
+					console.log(token);
+					if(token){
+						this.$store.commit('set_token', token);
+					}
+					this.$router.push('/')
+					console.log('提交用户注册信息后返回的数据');
+					console.log(res);
+				})
+				
+			},
 			/*发送验证码*/
 			snedyzm(){
 				let that = this;
 				let tel = this.phone;
-				let telReg = !!tel.match(/^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/);
+				let telReg = !!tel.match(/^(0|86|17951)?(13[0-9]|15[012356789]|17[0-9]|18[0-9]|14[57])[0-9]{8}$/);
 				if(telReg == false){
-					alert('手机号码格式不正确')
-					return
+					this.$toast.error('手机号码格式不正确');
+	  				return;
 				}else{
 					let timedown = setInterval(function(){
 						let sec = that.sec;
@@ -142,9 +225,25 @@
 					let data = QS.stringify({phone:tel});
 					sendPhoneYzm(data).then(res =>{
 						console.log(res);
-						
 					})
 				}
+			},
+			getToken(){
+				let tok = this.$store.state.token
+				//console.log(tok);
+				let data = {
+					username: 'test_01',
+					password: 'admin@'
+				};
+				getToken(data).then(res => {
+					let token = res.data.data.access_token;
+					console.log('获取到的token');
+					console.log(token);
+					//设置token
+					this.$store.commit('set_token', token);
+					this.$store.commit('editIsBind');
+					this.$router.push('/') 
+				})
 			},
 			back(){
 				this.$router.go('-1');
@@ -173,6 +272,7 @@
 	}
 	
 	.savebox{width:5.05rem;height: 1rem;background: #f45f5f;line-height: 1rem;color: #fff;font-size: 0.32rem;font-weight: bold;margin:1.4rem auto;border-radius: .6rem;}
+	.saveboxhui{background: #bbb !important;}
 	.sendyzm{position: absolute;right: 0.3rem;width: 1.53rem;height: 0.7rem;color: #fff;background: #f45f5f;font-size: 0.22rem;line-height: 0.7rem;border-radius: 0.4rem;}
 	.nosendyzm{position: absolute;right: 0.3rem;width: 1.53rem;height: 0.7rem;background:#c3c3c3;font-size: 0.22rem;line-height: 0.7rem;border-radius: 0.4rem;}
 </style>

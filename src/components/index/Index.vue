@@ -137,10 +137,10 @@ export default {
 				'sum_price':0
 			} ],
       bannerImg: [
+       /*  require("../../../static/img/1-0_02.png"),
         require("../../../static/img/1-0_02.png"),
         require("../../../static/img/1-0_02.png"),
-        require("../../../static/img/1-0_02.png"),
-        require("../../../static/img/1-0_02.png") 
+        require("../../../static/img/1-0_02.png")  */
       ],
       classlist: [
         /*{
@@ -225,13 +225,24 @@ export default {
       ]
     };
   },
+  activated(){
+    let is_phone = this.$route.query.is_phone;
+    if(is_phone == 1){
+      this.$store.commit('editIsBind')
+      console.log(is_phone);
+    }else{
+      console.log('是否绑定手机判断错误');
+      
+    }
+    
+  },
    mounted() {
-     test().then(res => {
+     /* test().then(res => {
        console.log('测试跨域');
        
        console.log(res);
        
-     })
+     }) */
     //this.$store.commit("setLoad",true);
 
     //alert(host);

@@ -60,6 +60,7 @@
         </div>
       </mu-container>
       <!--右边菜单详情列表-->
+      	<mu-load-more :loading="loading" @load="load">
       <div id="homelistbox">
       <mu-container data-mu-loading-color="secondary" data-mu-loading-overlay-color="rgba(0, 0, 0, .7)" v-loading="loading2" class="demo-loading-wrap">
         <mu-paper :z-depth="1" class="demo-list-wrap" id="rightbox">
@@ -111,6 +112,7 @@
 
       </mu-container>
       </div>
+      	</mu-load-more>
     </div>
 
     <!--购物车bar-->
@@ -173,6 +175,7 @@ export default {
       initdata: true, //初始化菜单
       carnum: 0,//分类底部小车数量
       loading2: false,
+      loading: false,
       page:1,
       qigou:this.$store.state.qigou,//起购价
       alldata:[{
@@ -185,6 +188,7 @@ export default {
       openJS: false, //结算弹窗
       position: "left", //菜单显示位置
       amount: 0, //数量
+      itemid:null,//右边菜单加载更多参数
       activeInd: 0, //左边菜单选中背景class数组索引
       leftCaiClass: [], //左边菜单数据
       caiDetailList: [], //右边菜品数据
@@ -258,6 +262,17 @@ export default {
     goShopCar(){
       this.$router.push('/car')
     },
+     /*滚动到底部加载更多*/
+    load() {
+      this.loading = true;
+      setTimeout(() => {
+        this.loading = false;
+        this.getCaiClassChildDetail(this.itemid)
+        //this.list.push(this.list[0]);
+        console.log("成功添加一条数据");
+        //this.num += 10;
+      }, 1000);
+    },
     /*点击切换顶部菜单默认第一个的状态,并且获取数据*/
     removeBg(index, item) {
       let data = this.classification;
@@ -291,7 +306,9 @@ export default {
       this.activeInd = index;
       //let loading = this.$loading();
       this.loading2 = true
-      getCaiClassChildDetail(item.id, this.limit, this.page).then(res => {
+      this.itemid = item.id
+      this.getCaiClassChildDetail(item.id)
+      /* getCaiClassChildDetail(item.id, this.limit, this.page).then(res => {
         let data = res.data.data;
         if (data.length == 0) {
           this.nodata = true;
@@ -305,11 +322,31 @@ export default {
         this.caiDetailList = data;
         this.loading2 = false
         //console.log(data);
-      });
+      }); */
      /*  setTimeout(() => {
         loading.close();
       }, 300); */
       //showList.push(menu[index]);
+    },
+    /**获取右侧数据*/
+    getCaiClassChildDetail(id){
+       getCaiClassChildDetail(id, this.limit, this.page).then(res => {
+        let data = res.data.data;
+        if (data.length == 0) {
+          this.nodata = true;
+          this.caiDetailList = [];
+          return;
+        }
+        for (let item in data) {
+          data[item].goods_photo = this.host + data[item].goods_photo;
+          data[item].num = 0;
+        }
+        //this.caiDetailList = data
+        this.caiDetailList = [this.caiDetailList,...data];
+        this.loading2 = false
+        this.page = this.page + 1
+        //console.log(data);
+      });
     },
     /*结算*/
     settlement() {
@@ -622,8 +659,8 @@ export default {
 .inc-scroll-landscape-container > .inc-scroll-landscape-content {
   height: 100%; /* 当内容宽度小于容器宽度时，会出现横向滚动条。将横向滚动条溢出至容器外，保证横向滚动条不可见 */
   white-space: nowrap;
-  padding-bottom: 50px;
-  margin-right: 0.6rem;
+  padding-bottom: 100px;
+  margin-right: .9rem;
   overflow: hidden;
   overflow-x: scroll; /* 1 */
   -webkit-backface-visibility: hidden;

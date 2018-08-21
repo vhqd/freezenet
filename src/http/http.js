@@ -1,5 +1,6 @@
 import store from "../store/store.js";
 import axios from "axios";
+import jsonp from './jsonp.js'
 const host = store.state.host;
 
 
@@ -8,12 +9,29 @@ const host = store.state.host;
  */
 export const test = () =>{ return axios.get(host + "/api/get-can-use-packet?price=15").then((res) => {return res;}).catch((error) => {return error.response})};
 
+export function test1() {
+    const url = host +'/oauth'
+    const data = Object.assign({})
+    return jsonp(url, data)
+} 
+/**
+ * oauth
+ * 
+ */
+export const oauth = () =>{ return axios.get(host + "/oauth").then((res) => {return res;}).catch((error) => {return error.response})};
+
+
+/**
+ * oauth
+ * 
+ */
+export const register = (data) =>{ return axios.post(host + "/api/register" , data).then((res) => {return res;}).catch((error) => {return error.response})};
 
 /**
  * 获取Token
  * 
  */
-export const getToken = ( data ) =>{ return axios.post(host + "/api/login",data).then((res) => {return res;}).catch((error) => {return error.response})};
+export const getToken = ( data ) =>{ return axios.post(host + "/api/login" , data).then((res) => {return res;}).catch((error) => {return error.response})};
 
 /* 获取Tokentest
 * 

@@ -221,7 +221,7 @@
 .mu-card-sub-titles{text-align: left;color: #f95151;background: #ff9a38;color:#fff;padding: 0.1rem;border-radius: 0.25rem;position: absolute;
     top: 44px;
     left: 140px;}
-.center-top{height: 3.3rem;background: url(../../../static/img/center/centerbg.png) no-repeat center;background-size: 100%;padding-top: 1rem;}
+.center-top{height: 3.3rem;background: url('../../../static/img/center/centerbg.png') no-repeat center;background-size: 100%;padding-top: 1rem;}
 .topboxinfo{width: 93%;margin: auto;background: #fff;border-radius: 10px;box-shadow:0 0px 2px -1px rgba(0,0,0,.1), 0 0px 1px 0 rgba(0,0,0,.1), 0 0px 0px 0 rgba(0,0,0,.1);}
 .ordertopbox{overflow: hidden;padding: 0.3rem;border-bottom: 1px solid #e0e0e0;}
 .myordertext{float: left;font-weight: bold;font-size: .26rem;color: #333;}
