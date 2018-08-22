@@ -65,7 +65,7 @@ html,
   color: red;
 }
 .pricecolor span {
-  font-size: 0.5rem;
+  font-size: .5rem;
 }
 
 .demo-text {
@@ -81,17 +81,17 @@ html,
   height: auto !important;
 }
 .orderstatusbox .infoboxbut .mu-item-title {
-  font-size: 0.26rem;
+  font-size: .26rem;
 }
 
 .dreesMannage .adddress .mu-item {
   height: 1rem !important;
 }
 .dreesMannage .dresslist .mu-item {
-  padding: 0.3rem !important;
+  padding: .3rem !important;
 }
 .editdress .mu-item {
-  padding: 0.15rem !important;
+  padding: .15rem !important;
 }
 .dreesMannage .mu-list-two-line .mu-item {
   height: auto;
@@ -99,28 +99,28 @@ html,
 
 /*顶部导航开始*/
 .topbox {
-  height: 0.9rem;
+  height: .9rem;
   border-bottom: 1px solid #e0e0e0;
   background: #fff;
 }
 .topbox span {
   float: left;
-  padding: 0.2rem;
+  padding: .2rem;
 }
 .topbox img {
-  width: 0.32rem;
-  height: 0.5rem;
+  width: .32rem;
+  height: .5rem;
 }
 .topbox p {
-  line-height: 0.9rem;
-  font-size: 0.32rem;
+  line-height: .9rem;
+  font-size: .32rem;
   color: #333;
 }
 /*顶部导航开始*/
 
 /*弹窗样式修改开始*/
 .mu-dialog {
-  border-radius: 0.3rem !important;
+  border-radius: .3rem !important;
 }
 .mu-dialog {
   position: relative !important;
@@ -128,22 +128,22 @@ html,
 .mu-dialog-title {
   text-align: center !important;
   display: block !important;
-  font-size: 0.32rem !important;
+  font-size: .32rem !important;
   font-weight: bold !important;
 }
 .mu-dialog-body {
   color: #999;
   text-align: center !important;
-  padding-top: 0.35rem !important;
-  font-size: 0.28rem !important;
+  padding-top: .35rem !important;
+  font-size: .28rem !important;
 }
 .mu-flat-button {
   padding: 0 10px !important;
-  border-radius: 0.3rem !important;
+  border-radius: .3rem !important;
   color: #333 !important;
   font-weight: bold !important;
   margin: auto !important;
-  font-size: 0.32rem !important;
+  font-size: .32rem !important;
 }
 .mu-dialog-actions .mu-primary-text-color {
   background: #ffe253 !important;
@@ -161,8 +161,8 @@ html,
 }
 .cancelbox {
   position: absolute;
-  right: 0.3rem;
-  top: 0.3rem;
+  right: .3rem;
+  top: .3rem;
 }
 .cancelbox img {
   width: 65%;
@@ -170,23 +170,23 @@ html,
 /*弹窗样式修改结束*/
 
 .pm input {
-  padding-left: 0.7rem;
+  padding-left: .7rem;
   border-radius: 20px !important;
   color: #333;
 }
 .pm .material-icons {
-  left: 0.2rem !important;
-  top: 0.1rem;
+  left: .2rem !important;
+  top: .1rem;
   color: #c3c3c3;
 }
-/* .minus{background: #c3c3c3;line-height: 0.3rem;box-shadow: 1px 2px 1px rgba(199, 199, 199, 0.5);}
-.plus{background: #f24c4c;line-height: 0.44rem;box-shadow: 1px 2px 1px rgba(199, 49, 49, 0.5);}
-.mpsytl{border-radius: 50%;color: #fff;width: 0.44rem;height: 0.44rem;display: inline-block;font-size: 0.6rem;} */
+/* .minus{background: #c3c3c3;line-height: .3rem;box-shadow: 1px 2px 1px rgba(199, 199, 199, .5);}
+.plus{background: #f24c4c;line-height: .44rem;box-shadow: 1px 2px 1px rgba(199, 49, 49, .5);}
+.mpsytl{border-radius: 50%;color: #fff;width: .44rem;height: .44rem;display: inline-block;font-size: .6rem;} */
 .saoma {
   display: flex;
 }
 .saoma span {
-  margin-left: 0.15rem;
+  margin-left: .15rem;
   color: #333;
 }
 .inputitem {
@@ -197,8 +197,8 @@ html,
 .mu-input {
   padding: 0 !important;
   margin: 0 !important;
-  min-height: 0.66rem !important;
-  background: rgba(255, 255, 255, 0.95);
+  min-height: .66rem !important;
+  background: rgba(255, 255, 255, .95);
 }
 .pm {
   border-bottom: none !important;
@@ -210,8 +210,8 @@ html,
 }
 .mu-select-input {
   font-weight: 100;
-  font-size: 0.14rem;
-  padding-left: 0.1rem;
+  font-size: .14rem;
+  padding-left: .1rem;
 }
 .mu-input-focus-line {
   height: 0 !important;
@@ -232,12 +232,12 @@ html,
   padding-left: 0 !important;
 }
 .mu-text-field-input {
-  padding-left: 0.15rem;
+  padding-left: .15rem;
 }
 .widthstyle {
   float: left;
-  padding-left: 0.1rem;
-  font-size: 0.24rem;
+  padding-left: .1rem;
+  font-size: .24rem;
 }
 .midw {
   width: 75%;
@@ -246,7 +246,7 @@ html,
   width: 55%;
 }
 .mu-raised-button {
-  min-width: 0.65rem !important;
+  min-width: .65rem !important;
 }
 .mu-raised-button .mu-button-wrapper {
   padding: 0;
@@ -254,18 +254,18 @@ html,
 }
 
 .mu-carousel-indicators {
-  margin: 0.2rem auto;
-  height: 0.3rem !important;
+  margin: .2rem auto;
+  height: .3rem !important;
   width: max-content;
-  border-radius: 0.5rem;
+  border-radius: .5rem;
 }
 .adimg .mu-carousel-indicators {
   display: none !important;
 }
 .mu-carousel-indicator-button {
-  margin: 0 0.06rem !important;
-  height: 0.3rem !important;
-  width: 0.3rem !important;
+  margin: 0 .06rem !important;
+  height: .3rem !important;
+  width: .3rem !important;
 }
 .mu-carousel-indicator-icon {
   height: 8px !important;
@@ -308,7 +308,7 @@ textarea:-ms-input-placeholder {
 }
 .mu-appbar-title {
   color: #333;
-  font-size: 0.32rem;
+  font-size: .32rem;
   font-weight: bold;
 }
 /*.mu-primary-color{background:#ffd947 !important;}*/
@@ -322,14 +322,14 @@ textarea:-ms-input-placeholder {
   padding-top: 0 !important;
 }
 .mu-appbar {
-  height: 0.88rem;
+  height: .88rem;
 }
 
 .carbut .mu-item {
-  height: 0.9rem !important;
+  height: .9rem !important;
 }
 .detail .carbut .mu-item {
-  height: 0.98rem !important;
+  height: .98rem !important;
 }
 .detail .settlement {
   height: 50px !important;
@@ -342,14 +342,14 @@ textarea:-ms-input-placeholder {
 }
 
 .orderlistbox .mu-tab-wrapper {
-  font-size: 0.26rem !important;
+  font-size: .26rem !important;
 }
 .orderlistbox .mu-tab-link-highlight {
   height: 0 !important;
 }
 
 .homebanner .mu-carousel-indicators {
-  margin: 0.2rem auto 0.75rem auto !important;
+  margin: .2rem auto .75rem auto !important;
 }
 
 .indexbox .mu-item {
@@ -359,7 +359,7 @@ textarea:-ms-input-placeholder {
 .searchhomebox .pm input {
   background: #f0f0f0;
   border-radius: 20px;
-  height: 0.65rem;
+  height: .65rem;
 }
 
 .searchhomebox input::-webkit-input-placeholder,
@@ -385,7 +385,7 @@ textarea:-ms-input-placeholder {
 
 .qiandan .pm input {
   background: #f0f0f0;
-  border-radius: 0.5rem !important;
+  border-radius: .5rem !important;
 }
 .mu-elevation-1 {
   box-shadow: initial !important;
@@ -413,14 +413,14 @@ textarea:-ms-input-placeholder {
 .pricecarbox > div {
   line-height: 32px;
   text-align: right;
-  padding-right: 0.3rem;
+  padding-right: .3rem;
   font-weight: bold;
-  font-size: 0.32rem;
+  font-size: .32rem;
 }
 .carprice {
   position: absolute;
-  left: 0.8rem;
-  font-size: 0.26rem !important;
+  left: .8rem;
+  font-size: .26rem !important;
   color: #666;
 }
 .settlement {
@@ -433,14 +433,14 @@ textarea:-ms-input-placeholder {
   color: #fff;
 }
 .carlistbox {
-  padding: 0.15rem 0.3rem !important;
+  padding: .15rem .3rem !important;
 }
 .carlistbox > ul {
   overflow: hidden;
 }
 .carimgbox img {
-  width: 0.47rem;
-  height: 0.47rem;
+  width: .47rem;
+  height: .47rem;
 }
 .addToCar .mu-list {
   overflow: initial;
@@ -454,33 +454,33 @@ textarea:-ms-input-placeholder {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, .2);
 }
 .carnum {
   position: absolute;
-  top: -0.1rem;
-  left: 0.5rem;
+  top: -.1rem;
+  left: .5rem;
   color: #fff;
   background: red;
-  line-height: 0.25rem;
-  border-radius: 0.2rem;
-  min-width: 0.25rem;
-  height: 0.25rem;
+  line-height: .25rem;
+  border-radius: .2rem;
+  min-width: .25rem;
+  height: .25rem;
   padding: 1px 5px;
   text-align: center;
 }
 .qigou {
   position: absolute;
-  right: 0.3rem;
-  bottom: -0.36rem;
-  font-size: 0.22rem;
+  right: .3rem;
+  bottom: -.36rem;
+  font-size: .22rem;
   color: #999;
 }
 .opentab {
   width: 100%;
   background: #fff;
   border-bottom: 1px solid #e0e0e0;
-  padding: 0.1rem;
+  padding: .1rem;
 }
 .detail .addToCar .mu-item {
   padding: 0 !important;
@@ -491,25 +491,25 @@ textarea:-ms-input-placeholder {
 
 .fanallcar {
   position: absolute;
-  top: 0.1rem;
-  left: 0.8rem;
-  letter-spacing: -1px;
+  top: .1rem;
+  left: .8rem;
+  letter-spacing: 0;
   color: #fff;
   background: red;
-  line-height: 0.25rem;
-  border-radius: 0.2rem;
-  min-width: 0.25rem;
-  height: 0.25rem;
-  padding: 0 3px;
+  line-height: .28rem;
+  border-radius: .2rem;
+  min-width: .25rem;
+  height: .28rem;
+  padding: 1px 4px;
   text-align: center;
 }
 .detail .fanallcar {
-	top: 0.05rem;
+	top: .05rem;
     left: .35rem;
   }
 .imgsearch {
   position: absolute;
-  left: 0.4rem;
+  left: .4rem;
   top: 16px;
   z-index: 9;
   width: 20px;
@@ -524,12 +524,13 @@ textarea:-ms-input-placeholder {
 
 .kcstyle {
   color: #a9a9a9;
-  font-size: 0.2rem;
-  /* padding-left: 0.2rem; */
+  font-size: .2rem;
+  /* padding-left: .2rem; */
 }
 .oftenbuy .kcstyle {
-	padding-left: 0.2rem;
+	padding-left: .2rem;
   }
+.orderlistbox .listbox .mu-circular-progress{position: absolute !important;}
 @media screen and (max-width: 325px) {
   .orderlistbox li {
     font-size: 12px;
@@ -538,3 +539,5 @@ textarea:-ms-input-placeholder {
     padding: 7px;
   }
 }
+
+

@@ -229,12 +229,13 @@ export default {
     let is_phone = this.$route.query.is_phone;
     if(is_phone == 1){
       this.$store.commit('editIsBind')
+      sessionStorage.isbind = is_phone
       console.log(is_phone);
     }else{
+      //sessionStorage.isbind = false
       console.log('是否绑定手机判断错误');
-      
     }
-    
+    this.getOfenBuyList()
   },
    mounted() {
      /* test().then(res => {
@@ -243,7 +244,7 @@ export default {
        console.log(res);
        
      }) */
-    //this.$store.commit("setLoad",true);
+    this.$store.commit("setLoad",true);
 
     //alert(host);
     /*if(!window.localStorage.getItem('token')){
@@ -290,16 +291,8 @@ export default {
       }
     });
 
-    /**获取常购清单列表*/
-    getOfenBuyList(2,1).then(res => {
-      let data = res.data.info.data;
-      for(let item in data){
-        data[item].goods_photo = this.host + data[item].goods_photo
-        data[item].num = 0
-      }
-      this.showlist = data;
-    })
-
+    
+    
 
     /**
      * 获取首页分类专区(废弃)
@@ -325,7 +318,19 @@ export default {
     /* window.addEventListener('scroll', this.menuScrollTopStop)*/
   },
   methods: {
-
+    /**获取常购清单列表*/
+    getOfenBuyList(){
+      getOfenBuyList(2,1).then(res => {
+          let data = res.data.info.data;
+          for(let item in data){
+            data[item].goods_photo = this.host + data[item].goods_photo
+            data[item].num = 0
+          }
+          this.showlist = data;
+          
+          this.$store.commit("setLoad",false);
+        })
+    },
     getClassList() {
       let that = this;
       this.$http
@@ -605,4 +610,6 @@ export default {
 .mu-list .li-box:not(:last-child){border-bottom: 1px solid #e0e0e0;}
 .adimg .mu-carousel{height: 103px;}
 .toptab .fqtitle{max-width: 130px;overflow: hidden;text-overflow: ellipsis;}
+.iddexcontent .kcstyle{padding-left: .2rem}
+
 </style>

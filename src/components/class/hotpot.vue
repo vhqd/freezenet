@@ -15,7 +15,8 @@
 								<img v-bind:src="item.goods_photo" alt=""  :onerror="onerrorimg"/>
 								<p class="rtitle">{{item.goods_title}}</p>
 								<p class="liang">{{item.weight}}斤装</p>
-								<p class="price">￥{{item.goods_price}}</p>
+								<p v-show="!isbind" class="price">绑定手机号才能查看价格</p>
+								<p v-show="isbind" class="price">￥{{item.goods_price}}</p>
 							</router-link>
 					    	<div style="position: absolute;right:0;bottom: -.2rem;">
 						    	<div class="saoma">
@@ -67,6 +68,7 @@
 </template>
 
 <script>
+	import { mapState } from 'vuex'
 	import BackBar from '../common/BackBar.vue'
 	
 	export default{
@@ -98,6 +100,11 @@
 		},
 		mounted(){
 			
+		},
+		computed:{
+			...mapState({ // mapState相当于映射
+		        isbind: 'isbind',
+		    })
 		},
 		methods:{
 			/*获取分类商品列表*/

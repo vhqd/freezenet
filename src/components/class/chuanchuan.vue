@@ -21,8 +21,8 @@
 					      </mu-list-item-action>
 					      <mu-list-item-content>
 					        <mu-list-item-title>{{item.goods_title}}</mu-list-item-title>
+					        <span style="color: #666;font-size: 0.2rem;padding-left:.2rem">库存{{item.goods_count}}件</span>
 					        <mu-list-item-sub-title>
-					          <span style="color: #666;font-size: 0.2rem;">库存{{item.goods_count}}件</span>
 					          <p style="color: red;">
 					          	<span v-show="!isbind" style="color: #a9a9a9;">绑定手机号才能查看价格</span>
 					          	<span v-show="isbind">￥<span style="font-size: 0.5rem;">{{item.goods_price}}</span></span>

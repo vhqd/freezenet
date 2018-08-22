@@ -20,6 +20,11 @@ export function test1() {
  */
 export const oauth = () =>{ return axios.get(host + "/oauth").then((res) => {return res;}).catch((error) => {return error.response})};
 
+/**
+ * wxpay
+ * 
+ */
+export const getWXPayInfo = id =>{ return axios.get(host + "/wechat/pay?id="+ id).then((res) => {return res;}).catch((error) => {return error.response})};
 
 /**
  * oauth
@@ -59,6 +64,11 @@ export const getIndexBanner = (limit , page) =>{ return axios.get(host + "/api/b
  * 获取首页分类专区1
  */
 export const getIndexTopClass = () =>{ return axios.get(host + "/api/get-second-type-lists").then((res) => {return res;}).catch((error) => {return error.response})};
+
+/**
+ * 获取首页热销榜
+ */
+export const getHotList = () =>{ return axios.get(host + "/api/hot-list").then((res) => {return res;}).catch((error) => {return error.response})};
 
 /**
  * 获取首页分类专区(废弃)

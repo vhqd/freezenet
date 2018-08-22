@@ -1,13 +1,13 @@
 <template>
 	<div class="oftenbuy">
-		 <!-- 搜索区 -->
-     	<Search  :ishome='true'></Search>
+		<!-- 搜索区 -->
+		<Search :ishome='true'></Search>
 		<div style="padding-top: 1rem;padding-bottom: 1rem;">
 			<mu-paper :z-depth="1" class="demo-list-wrap">
-			  <mu-list textline="three-line">
-			  	
-			  	<!--type==1没有多重量选择的列表-->
-			  	<!--<div v-for="(item,index) in showlist" v-if="item.type == 1" :key="index" class="li-box">
+				<mu-list textline="three-line">
+
+					<!--type==1没有多重量选择的列表-->
+					<!--<div v-for="(item,index) in showlist" v-if="item.type == 1" :key="index" class="li-box">
 				    <router-link to="/detail">
 					    <mu-list-item avatar :ripple="false" button>
 					      <mu-list-item-action>
@@ -38,114 +38,116 @@
 				    	<img src="../../../static/img/ic-del.png"/>
 				    </div>
 			  	</div>-->
-			  	
-			  	<!--type==2的是可选择重量的列表-->
-			  	<div v-for="(item,index) in showlist" :key="index" class="li-box">
-				    <router-link :to="{path:'/detail',query: {id: item.id}}">
-					    <mu-list-item avatar :ripple="false" button>
-					      <mu-list-item-action>
-					        <mu-avatar style="min-width: 1.42rem;height: 1.4rem;">
-					          <img :src="item.goods_photo" :onerror="onerrorimg">
-					        </mu-avatar>
-					      </mu-list-item-action>
-					      <mu-list-item-content>
-					        <mu-list-item-title>{{item.goods_title}}</mu-list-item-title>
-					        <span class="kcstyle">库存{{item.goods_count}}件</span>
-					        <mu-list-item-sub-title>
-					          <div style="color: red;">
-					          		<span v-show="!isbind" style="color: #a9a9a9;">绑定手机号才能查看价格</span>
-					          		<div v-show="isbind">￥<span style="font-size: 0.5rem;">{{item.goods_price}}</span></div>
-					          	<!--<span style="color: #ccc;text-decoration: line-through;">￥{{item.oldPrice}}</span>-->
-					          </div>
-					        </mu-list-item-sub-title>
-					      </mu-list-item-content>
-					    </mu-list-item>
-					</router-link>
-				    <mu-divider></mu-divider>
-				    <div style="position: absolute;right: 0.3rem;top: 1.32rem;">
-				    	<div class="saoma">
-				    		<div v-if="item.type == 1">
-					        	<!-- <span class="minus mpsytl" @click="minus(item)" v-if="item.num != 0">-</span>
+
+					<!--type==2的是可选择重量的列表-->
+					<div v-for="(item,index) in showlist" :key="index" class="li-box">
+						<router-link :to="{path:'/detail',query: {id: item.id}}">
+							<mu-list-item avatar :ripple="false" button>
+								<mu-list-item-action>
+									<mu-avatar style="min-width: 1.42rem;height: 1.4rem;">
+										<img :src="item.goods_photo" :onerror="onerrorimg">
+									</mu-avatar>
+								</mu-list-item-action>
+								<mu-list-item-content>
+									<mu-list-item-title>{{item.goods_title}}</mu-list-item-title>
+									<span class="kcstyle">库存{{item.goods_count}}件</span>
+									<mu-list-item-sub-title>
+										<div style="color: red;">
+											<span v-show="!isbind" style="color: #a9a9a9;">绑定手机号才能查看价格</span>
+											<div v-show="isbind">￥
+												<span style="font-size: 0.5rem;">{{item.goods_price}}</span>
+											</div>
+											<!--<span style="color: #ccc;text-decoration: line-through;">￥{{item.oldPrice}}</span>-->
+										</div>
+									</mu-list-item-sub-title>
+								</mu-list-item-content>
+							</mu-list-item>
+						</router-link>
+						<mu-divider></mu-divider>
+						<div style="position: absolute;right: 0.3rem;top: 1.32rem;">
+							<div class="saoma">
+								<div v-if="item.type == 1">
+									<!-- <span class="minus mpsytl" @click="minus(item)" v-if="item.num != 0">-</span>
 					        	<span>{{item.num}}</span>
 					        	<span class="plus mpsytl" @click="plus(item)">+</span> -->
-								<span class="minus" @click="minus(item)" v-if="item.num != 0"><img src="../../../static/img/ic_jian.png" alt=""></span>
-								<span v-show="item.num != 0">{{item.num}}</span>
-								<span class="plus" @click="plus(item)"><img src="../../../static/img/ic_jia.png" alt=""></span>
-				        	</div>
-				        	<div v-if="item.type == 2">
-					        	<span class="mpsytl" @click="typeo2show(item , 1)" v-if="!item.show"><img src="../../../static/img/often/down.png"/></span>
-					        	<span class="mpsytl" @click="typeo2show(item), 2" v-if="item.show"><img src="../../../static/img/often/up.png"/></span>
-				        	</div>
-				        </div>
-				    </div>
-				    <div class="dele" @click="deletOfenBuy(item)">
-				    	<img src="../../../static/img/ic-del.png"/>
-				    </div>
-				    
-				    <mu-expand-transition>
-				    <div class="type2list" v-show="item.type == 2 && item.show">
-				    <!--下拉的重量列表-->
-					    <mu-list textline="two-line">
-						    <mu-list-item avatar button :ripple="false" v-for="(ite , ind) in item.weights" :key="ind">
-						      <mu-list-item-content>
-						        <mu-list-item-title>{{ite.weight}}斤装</mu-list-item-title>
-						        <mu-list-item-sub-title>￥{{ite.price}}</mu-list-item-sub-title>
-						      </mu-list-item-content>
-						      <mu-list-item-action>
-						        <div class="saoma">
-						        	<div>
-							        	<!-- <span class="minus mpsytl" @click="minus(ite)" v-if="ite.num != 0">-</span>
+									<span class="minus" @click="minus(item)" v-if="item.num != 0"><img src="../../../static/img/ic_jian.png" alt=""></span>
+									<span v-show="item.num != 0">{{item.num}}</span>
+									<span class="plus" @click="plus(item)"><img src="../../../static/img/ic_jia.png" alt=""></span>
+								</div>
+								<div v-if="item.type == 2">
+									<span class="mpsytl" @click="typeo2show(item , 1)" v-if="!item.show"><img src="../../../static/img/often/down.png" /></span>
+									<span class="mpsytl" @click="typeo2show(item), 2" v-if="item.show"><img src="../../../static/img/often/up.png" /></span>
+								</div>
+							</div>
+						</div>
+						<div class="dele" @click="deletOfenBuy(item)">
+							<img src="../../../static/img/ic-del.png" />
+						</div>
+
+						<mu-expand-transition>
+							<div class="type2list" v-show="item.type == 2 && item.show">
+								<!--下拉的重量列表-->
+								<mu-list textline="two-line">
+									<mu-list-item avatar button :ripple="false" v-for="(ite , ind) in item.weights" :key="ind">
+										<mu-list-item-content>
+											<mu-list-item-title>{{ite.weight}}斤装</mu-list-item-title>
+											<mu-list-item-sub-title>￥{{ite.price}}</mu-list-item-sub-title>
+										</mu-list-item-content>
+										<mu-list-item-action>
+											<div class="saoma">
+												<div>
+													<!-- <span class="minus mpsytl" @click="minus(ite)" v-if="ite.num != 0">-</span>
 							        	<span>{{ite.num}}</span>
 							        	<span class="plus mpsytl" @click="plus(ite)">+</span> -->
-										<span class="minus" @click="minus(item,ind)" v-if="ite.num != 0" :data-index="ind"><img src="../../../static/img/ic_jian.png" alt=""></span>
-										<span v-show="ite.num != 0">{{ite.num}}</span>
-										<span class="plus" @click="plus(item,ind)" :data-index="ind"><img src="../../../static/img/ic_jia.png" alt=""></span>
-						        	</div>
-						        </div>
-						      </mu-list-item-action>
-						    </mu-list-item>
-						  </mu-list>
+													<span class="minus" @click="minus(item,ind)" v-if="ite.num != 0" :data-index="ind"><img src="../../../static/img/ic_jian.png" alt=""></span>
+													<span v-show="ite.num != 0">{{ite.num}}</span>
+													<span class="plus" @click="plus(item,ind)" :data-index="ind"><img src="../../../static/img/ic_jia.png" alt=""></span>
+												</div>
+											</div>
+										</mu-list-item-action>
+									</mu-list-item>
+								</mu-list>
+							</div>
+						</mu-expand-transition>
+
 					</div>
-					</mu-expand-transition>
-					  
-					  
-			  	</div>
-			  	
-			  	
-			  </mu-list>
+
+				</mu-list>
 			</mu-paper>
-			
+
 		</div>
 		<Footer tagNum='2'></Footer>
 	</div>
 </template>
 
 <script>
-	import Search from '../common/Search.vue'
-	import Footer from '../common/Footer.vue';
-	import { mapState } from 'vuex'
-	import { getOfenBuyList , AddCarShop , deletOfenBuy } from '../../http/http.js'
-	import { removeOfenBuyData , setOfenBuyData } from '../../common/common.js'
-	import QS from 'qs'
-	
-	export default {
-	  components:{
-	  	Search,
-	    Footer
-	   },
-	  data () {
-	    return {
-			limit:15,
-			page:1,
-			onerrorimg:this.$store.state.onerrorimg,
-			alldata:[{
-				'goods_id':[],
-				'single_price':[],
-				'count':[],
-				'sum_price':0
-			} ],
-	    	showlist:[
-      			/* {
+import Search from "../common/Search.vue";
+import Footer from "../common/Footer.vue";
+import { mapState } from "vuex";
+import { getOfenBuyList, AddCarShop, deletOfenBuy } from "../../http/http.js";
+import { removeOfenBuyData, setOfenBuyData } from "../../common/common.js";
+import QS from "qs";
+
+export default {
+  components: {
+    Search,
+    Footer
+  },
+  data() {
+    return {
+      limit: 99,
+      page: 1,
+      onerrorimg: this.$store.state.onerrorimg,
+      alldata: [
+        {
+          goods_id: [],
+          single_price: [],
+          count: [],
+          sum_price: 0
+        }
+      ],
+      showlist: [
+        /* {
       				id:1,
       				type:1,
       				show:false,
@@ -179,108 +181,149 @@
       				oldPrice:'50',//旧的价格
       				inventory:'5'//库存
       			} */
-      		],
-	    }
-	  },
-		computed:{
-			...mapState({ // mapState相当于映射
-		        isbind: 'isbind',
-		    })
-		}, 
-		activated(){
-			
-		},
-		mounted(){
-			this.getOfenBuyList()
-		},
-	  methods: {
-		  /**获取常购清单*/
-		  getOfenBuyList(){
-			getOfenBuyList(this.limit,this.page).then(res => {
-			let data = res.data.info.data;
-			for(let item in data){
-				data[item].goods_photo = this.host + data[item].goods_photo
-				data[item].num = 0
-				data[item].type = 1//type-1（没有分重量的） type-2（分了重量的）
-			}
-			this.showlist = data;
-			console.log('+++++++++++++++++++++');
-			
-			console.log(data);
-			
-			})
-		  },
+      ]
+    };
+  },
+  computed: {
+    ...mapState({
+      // mapState相当于映射
+      isbind: "isbind"
+    })
+  },
+  activated() {
+		this.showlist = []
+ 		this.getOfenBuyList();
+	},
+  mounted() {
+    this.$store.commit("setLoad", true);
+  },
+  methods: {
+    /**获取常购清单*/
+    getOfenBuyList() {
+      getOfenBuyList(this.limit, this.page).then(res => {
+        let data = res.data.info.data;
+        for (let item in data) {
+          data[item].goods_photo = this.host + data[item].goods_photo;
+          data[item].num = 0;
+          data[item].type = 1; //type-1（没有分重量的） type-2（分了重量的）
+        }
+        this.showlist = data;
+        this.$store.commit("setLoad", false);
+        console.log("+++++++++++++++++++++");
+        console.log(data);
+      });
+    },
 
-		/**删除常购清单*/
-		deletOfenBuy(item){
-			deletOfenBuy(item.oftenBrowseId).then(res => {
-				
-			})
-			let data = this.showlist;
-			console.log(data);
-			console.log(item);
-			
-			for(let ite in data){
-				if(parseInt(data[ite].oftenBrowseId) == parseInt(item.oftenBrowseId)){
-					this.showlist.splice(ite,1);
-				}
-			}
-		},
+    /**删除常购清单*/
+    deletOfenBuy(item) {
+      deletOfenBuy(item.oftenBrowseId).then(res => {});
+      let data = this.showlist;
+      console.log(data);
+      console.log(item);
 
-	  	/*切换显示重量选择*/
-	  	typeo2show(item , ind){
-	  		if(ind == 1)
-	  			item.show = true
-	  		else
-	  			item.show = false
-	  	},
-	  	/*减少数量值*/
-    	minus(item,ind){
-			
-    		let amount = item.num;
-    		if(amount>0){
-    			item.num = amount - 1;
-    		}else{
-    			item.num = 0;
-			}
-			 removeOfenBuyData(item,this.alldata);
+      for (let ite in data) {
+        if (parseInt(data[ite].oftenBrowseId) == parseInt(item.oftenBrowseId)) {
+          this.showlist.splice(ite, 1);
+        }
+      }
+    },
 
-    	},
-    	/*增加数量值*/
-		plus(item,ind){
-    		let amount = item.num;
-			item.num = amount + 1
-			setOfenBuyData(item,this.alldata);
-		},
-
-	  }
-	}
-	
+    /*切换显示重量选择*/
+    typeo2show(item, ind) {
+      if (ind == 1) item.show = true;
+      else item.show = false;
+    },
+    /*减少数量值*/
+    minus(item, ind) {
+      let amount = item.num;
+      if (amount > 0) {
+        item.num = amount - 1;
+      } else {
+        item.num = 0;
+      }
+      removeOfenBuyData(item, this.alldata);
+    },
+    /*增加数量值*/
+    plus(item, ind) {
+      let amount = item.num;
+      item.num = amount + 1;
+      setOfenBuyData(item, this.alldata);
+    }
+  }
+};
 </script>
 
 <style scoped>
-	
-.mu-list{padding: 8px 0 0 0;/*margin-bottom: 1rem;*/}
-.mu-avatar{background: initial}
-.li-box .mu-item-title{font-size: 0.24rem;padding-right: .3rem;}
-.mu-item-action{padding-top: .1rem;}
-.mu-avatar img{border-radius: initial;}
-.li-box{position: relative;}
-.mu-item-sub-title,.mu-item-title{padding-left: 0.2rem;}
-.mu-item-content{max-width: 75% !important;}
-.mu-item-title{height: auto;overflow: initial;text-overflow:initial;white-space:initial}
-.mu-list{padding: 0;}
-.li-box li{padding: 6px 0;}
-.mu-item-title{line-height: 0.36rem;}
+.mu-list {
+  padding: 8px 0 0 0; /*margin-bottom: 1rem;*/
+}
+.mu-avatar {
+  background: initial;
+}
+.li-box .mu-item-title {
+  font-size: 0.24rem;
+  padding-right: 0.3rem;
+}
+.mu-item-action {
+  padding-top: 0.1rem;
+}
+.mu-avatar img {
+  border-radius: initial;
+}
+.li-box {
+  position: relative;
+}
+.mu-item-sub-title,
+.mu-item-title {
+  padding-left: 0.2rem;
+}
+.mu-item-content {
+  max-width: 75% !important;
+}
+.mu-item-title {
+  height: auto;
+  overflow: initial;
+  text-overflow: initial;
+  white-space: initial;
+}
+.mu-list {
+  padding: 0;
+}
+.li-box li {
+  padding: 6px 0;
+}
+.mu-item-title {
+  line-height: 0.36rem;
+}
 
-.type2list .mu-item-content{max-width: 85% !important;}
-.type2list li{padding: 0;}
+.type2list .mu-item-content {
+  max-width: 85% !important;
+}
+.type2list li {
+  padding: 0;
+}
 
-
-.dele{position: absolute;right: 0.3rem;top: 0.18rem;}
-.dele img{width: 0.35rem;height: 0.35rem;}
-.saoma img{width: 0.5rem;height: 0.5rem;}
-.saoma>div{display: flex;}
-.type2list .mu-item-title{font-size: 0.24rem;color: #333;}
-.mu-item-sub-title{color: red;}
+.dele {
+  position: absolute;
+  right: 0.3rem;
+  top: 0.18rem;
+}
+.dele img {
+  width: 0.35rem;
+  height: 0.35rem;
+}
+.saoma img {
+  width: 0.5rem;
+  height: 0.5rem;
+}
+.saoma > div {
+  display: flex;
+}
+.type2list .mu-item-title {
+  font-size: 0.24rem;
+  color: #333;
+}
+.mu-item-sub-title {
+  color: red;
+}
 </style>

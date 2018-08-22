@@ -10,8 +10,8 @@
 				<mu-list-item avatar :ripple="false" button>
 					<mu-list-item-content>
 						<mu-list-item-title>{{contentinfo[0].goods_title}}</mu-list-item-title>
+						<span style="color: #a9a9a9;font-size: 0.2rem;">{{contentinfo[0].goods_count}}斤装</span>
 						<mu-list-item-sub-title>
-							<span style="color: #a9a9a9;font-size: 0.2rem;">{{contentinfo[0].goods_count}}斤装</span>
 							<p style="color: red;">
 								￥
 								<span style="font-size: 0.5rem;">{{contentinfo[0].goods_price}}</span>
@@ -24,7 +24,7 @@
 					</mu-list-item-content>
 				</mu-list-item>
 				<mu-divider></mu-divider>
-				<div style="position: absolute;right:0.28rem;bottom: 0.36rem;color: red;">
+				<div style="position: absolute;right:0.28rem;bottom: 0;color: red;">
 					<div class="saoma">
 						<span class="minus" @click="minus()" v-if="contentinfo[0].num != 0"><img src="../../../static/img/ic_jian.png" alt="" style="width:.5rem;height:.5rem;"></span>
 						<span v-show="contentinfo[0].num != 0">{{contentinfo[0].num}}</span>
@@ -259,7 +259,7 @@ export default {
 .carprice {
   position: absolute;
   left: 0;
-  top: 0;
+  top: 4px;
 }
 .carimgboxs {
   width: 100%;

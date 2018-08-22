@@ -44,6 +44,12 @@ const store = new Vuex.Store({
 		editIsBind(state){
 			state.isbind = true
 		},
+		/**
+		 * 未绑定手机号
+		 */
+		editIsBindFalse(state){
+			state.isbind = false
+		},
 		
 		/**
 		 * 修改购物车数量

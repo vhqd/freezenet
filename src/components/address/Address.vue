@@ -72,6 +72,7 @@ export default {
       open: false, //这个值判断是否是编辑地址默认false编辑过来传true
       city: "", //所在地区
       item: {}, //传递过来编辑的数据
+      order:null,
       isedit: false,
       form: {
         name: "", //联系人
@@ -84,6 +85,11 @@ export default {
   },
   activated(){
     let add = this.$route.query.status;
+    let order = this.$route.query.order
+    /**这里是从提交订单过来的添加地址，添加成功需要返回订单页面*/
+    if(order == 1){
+      this.order = order
+    }
     if(add == 1){//防止缓存
       this.city= "", //所在地区
       this.item= {}, //传递过来编辑的数据
@@ -148,7 +154,6 @@ export default {
       let state = this.$route.query.status;
       let isedit = this.$route.query.isedit;
       if (isedit || (state && state != 1)) {
-        alert(2)
         /*编辑地址*/
         console.log(this.item.id);
          EditDress(this.item,upData).then(res => {
@@ -157,9 +162,13 @@ export default {
         })
       } else {
         /*新增地址*/
-        alert(1)
         AddDress(upData).then(res => {
+          if(this.order == 1){//提交订单添加地址返回订单页面
+            this.$router.go(-1)
+          }else{
             this.$router.replace("/dressmanagement");
+          }
+           
             console.log(res);
             console.log(res.data.message);
         })

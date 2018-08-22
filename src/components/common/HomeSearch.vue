@@ -43,7 +43,7 @@
 </script>
 <style scoped>
 	/* @import 'http://cdn.bootcss.com/material-design-icons/3.0.1/iconfont/material-icons.css'; */
-	.home_h{position: absolute;top: 0;left:50%;margin-left: -172px;width: 90%;z-index: 9999;}
+	.home_h{position: absolute;width: 100%;z-index: 9999;}
 	.m_header{height: 0.9rem;}
 	.mu-input.has-icon{border-radius: 0.3rem;}
 	.pm{padding: 0.2rem;}

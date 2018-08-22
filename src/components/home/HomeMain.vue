@@ -60,7 +60,7 @@
         </div>
       </mu-container>
       <!--右边菜单详情列表-->
-      	<mu-load-more :loading="loading" @load="load">
+      	<!-- <mu-load-more :loading="loading" @load="load"> -->
       <div id="homelistbox">
       <mu-container data-mu-loading-color="secondary" data-mu-loading-overlay-color="rgba(0, 0, 0, .7)" v-loading="loading2" class="demo-loading-wrap">
         <mu-paper :z-depth="1" class="demo-list-wrap" id="rightbox">
@@ -112,7 +112,7 @@
 
       </mu-container>
       </div>
-      	</mu-load-more>
+      	<!-- </mu-load-more> -->
     </div>
 
     <!--购物车bar-->
@@ -169,7 +169,7 @@ export default {
       host: this.$store.state.host,
       onerrorimg:this.$store.state.onerrorimg,
       page: 1,
-      limit: 15, //当前页面分页条数
+      limit: 99, //当前页面分页条数
       docked: true, //是否显示遮罩
       open: true, //默认菜单栏显示
       initdata: true, //初始化菜单
@@ -226,7 +226,7 @@ export default {
   },
    mounted() {
 
-     //this.$store.commit("setLoad",true);
+     this.$store.commit("setLoad",true);
     /*获取顶部菜单*/
     getCaiClassOne(this.limit, this.page).then(res => {
      
@@ -239,7 +239,7 @@ export default {
       this.classification = this.classification.concat(data);
       /*初始化二级默认菜单和菜品*/
       this.getChildList(this.classification[0]);
-     // this.$store.commit("setLoad",false);
+      this.$store.commit("setLoad",false);
     });
 
     //this.getMenuListOne();
@@ -307,12 +307,13 @@ export default {
       //let loading = this.$loading();
       this.loading2 = true
       this.itemid = item.id
-      this.getCaiClassChildDetail(item.id)
-      /* getCaiClassChildDetail(item.id, this.limit, this.page).then(res => {
+      //this.getCaiClassChildDetail(item.id)
+       getCaiClassChildDetail(item.id, this.limit, this.page).then(res => {
         let data = res.data.data;
         if (data.length == 0) {
           this.nodata = true;
           this.caiDetailList = [];
+           this.loading2 = false
           return;
         }
         for (let item in data) {
@@ -322,7 +323,7 @@ export default {
         this.caiDetailList = data;
         this.loading2 = false
         //console.log(data);
-      }); */
+      });
      /*  setTimeout(() => {
         loading.close();
       }, 300); */
@@ -341,8 +342,8 @@ export default {
           data[item].goods_photo = this.host + data[item].goods_photo;
           data[item].num = 0;
         }
-        //this.caiDetailList = data
-        this.caiDetailList = [this.caiDetailList,...data];
+        this.caiDetailList = this.caiDetailList.concat(data)
+        //this.caiDetailList = [this.caiDetailList,...data];
         this.loading2 = false
         this.page = this.page + 1
         //console.log(data);

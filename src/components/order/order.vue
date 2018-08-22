@@ -55,7 +55,7 @@
 						<mu-list-item avatar :ripple="false" button>
 							<mu-list-item-action>
 								<mu-avatar style="width: 1.4rem;height: 1.4rem;">
-									<img :src="item.goods_photo">
+									<img :src="item.goods_photo" :onerror='onerrorimg'>
 								</mu-avatar>
 							</mu-list-item-action>
 							<mu-list-item-content>
@@ -132,7 +132,7 @@
 					<div class="pricecarbox">
 						<div>合计：<span style="color: red;">￥{{payprice}}</span></div>
 					</div>
-					<div class="settlement" @click="toPay1">
+					<div class="settlement" @click="toPay">
 						提交订单
 					</div>
 				</mu-list-item>
@@ -251,8 +251,10 @@
 	import {
 	getDress,
 	AddOrder,
-	getCenterCoupons
+	getCenterCoupons,
+	getWXPayInfo
 	} from "../../http/http.js";
+	import wx from 'weixin-js-sdk'
 
 	export default {
 		data() {
@@ -264,6 +266,7 @@
       			limit: 99, //当前页面分页条数
 				active1: 0,
 				dress:null,//默认地址
+				onerrorimg:this.$store.state.onerrorimg,
 				paydata:{
 					goods:'',
 					sum_price:0,
@@ -319,12 +322,24 @@
 			BackBar
 		},
 		activated(){
+			this.paydata = {
+				goods:'',
+				sum_price:0,
+				red_packet_id:0,
+				real_pay_price:0,
+				transport_id:0,
+				pay_way:0,
+				distribution_fee:0,
+				distribution_id:0
+			}
+
 			console.log('22222222222222222222222');
 			console.log(JSON.parse(this.$route.query.list));
+
 			this.yhj = 0;
 			this.red_packet_id = 0;
 			this.calculate();
-
+			this.getDress()
 			//获取优惠券
 			this.getCoupons(this.page)
 		},
@@ -332,15 +347,7 @@
 			
 		
 			
-			/**获取收货地址*/
-			getDress(this.limit , this.page).then(res => {
-				let data = res.data.data.data;
-				for(let item in data){
-					if(data[item].is_default == 1){
-						this.dress = data[item]
-					}
-				}
-    		});
+			
 		},
 		watch:{
 			yhj:function(a,b){
@@ -348,6 +355,18 @@
 			}
 		},
 		methods: {
+
+			/**获取收货地址*/
+			getDress(){
+				getDress(this.limit , this.page).then(res => {
+					let data = res.data.data.data;
+					for(let item in data){
+						if(data[item].is_default == 1){
+							this.dress = data[item]
+						}
+					}
+				});
+			},
 			/**
 			 * 计算商品信息
 			*/
@@ -389,14 +408,14 @@
 			*/
 
 			/**提交订单*/
-			toPay1() {
+			toPay() {
 				let alldata = JSON.parse(this.$route.query.list);
 				let goods = [];
 				for(let ite in alldata){
 					let obj = {};
 					obj.goods_id = alldata[ite].goods_id;
 					obj.count = alldata[ite].count;
-					obj.single_price = alldata[ite].single_price;
+					obj.single_price = alldata[ite].goods_price;
 					//this.paydata.goods.push(obj);
 					goods.push(obj);
 				}
@@ -413,16 +432,142 @@
 				this.paydata.real_pay_price = this.payprice;//'实际付款价格'
 				this.paydata.transport_id = this.dress.id;//配送地址id
 				this.paydata.pay_way = payway;//'付款方式,1=>在线支付,0=>货到付款',
-				this.paydata.distribution_fee = 20;//'配送费'
-				this.paydata.distribution_id = 20;//'配送方式id'
+				/* this.paydata.distribution_fee = 20;//'配送费'
+				this.paydata.distribution_id = 20;//'配送方式id' */
 				console.log('重新组合的订单数据');
 				console.log(this.paydata);
+
+				/**提交订单数据*/
 				AddOrder(this.paydata).then(res =>{
-				}) 
+					//订单id
+					let id = res.data.info.id
+					if(id){
+						//唤起微信支付
+						this.WXPay(id)
+					}
+				})  
+			},
+			onBridgeReady (params) {
+				window.WeixinJSBridge.invoke(
+					'getBrandWCPayRequest', {
+						'appId': params.appId, // 公众号名称，由商户传入
+						'timeStamp': params.timeStamp, // 时间戳，自1970年以来的秒数
+						'nonceStr': params.nonceStr, // 随机串
+						'package': params.package,
+						'signType': params.signType, // 微信签名方式：
+						'paySign': params.paySign // 微信签名
+					},
+					function (res) {
+						//location.href = params.Url
+					}
+				)
+			},
+			/**微信支付*/
+			WXPay(id){
+				getWXPayInfo(id).then(res => {
+					console.log('微信订单提交获取支付参数');
+					console.log(res);
+					let opthions = {
+						appId: res.data.data.info.appId,
+						timeStamp: res.data.data.info.timeStamp,
+						nonceStr: res.data.data.info.nonceStr,
+						package: res.data.data.info.package,
+						signType: res.data.data.info.signType,
+						paySign: res.data.data.info.paySign
+					}
+					 if (typeof window.WeixinJSBridge === 'undefined') {
+						if (document.addEventListener) {
+						document.addEventListener('WeixinJSBridgeReady', function () { this.onBridgeReady(opthions) }, false)
+						} else if (document.attachEvent) {
+						document.attachEvent('WeixinJSBridgeReady', function () { this.onBridgeReady(opthions) })
+						document.attachEvent('onWeixinJSBridgeReady', function () { this.onBridgeReady(opthions) })
+						}
+					} else {
+						this.onBridgeReady(opthions)
+					}
+				})
+				/*  if (response && response.data.data.info && response.data.data.code === 200) {
+					let data = response.data.data.info
+					let appId = data.appId
+					let timeStamp = data.timeStamp
+					let nonceStr = data.nonceStr
+					let signature = data.paySign
+					let packages = data.package
+					let signType = data.signType
+					wx.config({
+						debug: true,
+						appId: response.data.data.info.appId,
+						timestamp: response.data.data.info.timestamp,
+						nonceStr: response.data.data.info.nonceStr,
+						signature: response.data.data.info.signature,
+						jsApiList: [
+							'checkJsApi',
+							'translateVoice',
+							'chooseWXPay'
+						]
+					});
+					wx.ready(function() {
+						wx.chooseWXPay({
+							timestamp: response.data.data.info.timestamp,
+							nonceStr: response.data.data.info.nonceStr,
+							signature: response.data.data.info.signature,
+							package: response.data.data.info.package,
+							signType: response.data.data.info.signType,
+							paySign: response.data.data.info.paySign,
+							//回调成功
+							success:function(res){
+								if(res.errMsg == 'chooseWXPay:ok'){
+									alert('支付成功')
+								}else{
+									alert("失败")
+								}
+							},
+							//回调失败
+							fail:function(res){
+
+							},
+							//取消支付
+							cancel:function(res){
+								alert("用户取消支付")
+							}
+						});
+					})
+				}  */
 			},
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 			/**提交订单(废弃)*/
-			toPay() {
+			toPay1() {
 				let alldata = JSON.parse(this.$route.query.list);
 				for(let ite in alldata){
 					let item = alldata[ite];
@@ -512,7 +657,8 @@
 				//
 			},
 			goAddDress() {
-				this.$router.push('/address')
+				/* this.$router.push('/address') */
+				this.$router.push({path:'/address',query:{order:1}})
 			},
 			
 			closeBottomSheet() {

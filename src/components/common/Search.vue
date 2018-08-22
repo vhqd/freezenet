@@ -4,7 +4,7 @@
 		<header class="m_header">
             <div class="inputitem pm">
 				<img src="../../../static/img/ic-search@2x.png" alt="" class="imgsearch">
-		    	<mu-text-field v-model="keyword" @focus="goSearch" class="widthstyle midm" id="searchIn" placeholder="您想要111..."></mu-text-field>
+		    	<mu-text-field v-model="keyword" @focus="goSearch" class="widthstyle midm" id="searchIn" placeholder="您想要..."></mu-text-field>
 		    	<div class="guanbi" @click="clearinput"><img src="../../../static/img/ic_remove.png"/></div>
 		    	<div class="cancel" @click="cancelClick">取消</div>
 	    	</div>
@@ -78,6 +78,6 @@
 	.mu-input{width: 85%;}
 	.guanbi{position: absolute;right: 18%;top: 0.28rem;}
 	.guanbi img{width: 0.3rem;height: 0.3rem;}
-	.imgsearch{top: 12px;}
+	.imgsearch{top: 8px;left: .3rem;}
 
 </style>

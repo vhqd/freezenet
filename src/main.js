@@ -41,6 +41,17 @@ axios.defaults.headers.common['Authorization'] = store.state.token;
 
 axios.interceptors.request.use(
     config => {
+        let isbind = sessionStorage.isbind
+        console.log('是否绑定手机');
+        console.log(isbind);
+        if(isbind == 1){
+            store.commit('editIsBind')
+        }else{
+            store.commit('editIsBindFalse')
+            /* router.replace({
+                path: '/login'
+            }) */
+        }
         if (store.state.token) {  // 判断是否存在token，如果存在的话，则每个http header都加上token
             config.headers.Authorization = `Bearer ${store.state.token}`;
         }

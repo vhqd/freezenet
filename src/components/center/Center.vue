@@ -56,16 +56,16 @@
 			</div>
 				<div class="listcenterbox">
 					<mu-list>
-						<mu-list-item button :ripple="false" @click="goCoupons">
+						<mu-list-item class="relabox" button :ripple="false" @click="goCoupons">
 						<mu-list-item-title>我的优惠券</mu-list-item-title>
 						<mu-list-item-action>
-						<div class="arrbox"><span class="yhjnum" v-if="couponsnum > 0">{{couponsnum}}张</span><img class="rightarr" src="../../../static/img/ic_jump.png"/></div>
+						<div class="arrbox"><span class="yhjnum" v-if="couponsnum > 0">{{couponsnum}}张</span><img class="rightarrr" src="../../../static/img/ic_jump.png"/></div>
 						</mu-list-item-action>
 						</mu-list-item>
-						<mu-list-item button :ripple="false" @click="goDressManage">
+						<mu-list-item class="relabox" button :ripple="false" @click="goDressManage">
 						<mu-list-item-title>地址管理</mu-list-item-title>
 						<mu-list-item-action>
-						<div class="arrbox"><img class="rightarr" src="../../../static/img/ic_jump.png"/></div>
+						<div class="arrbox"><img class="rightarrr" src="../../../static/img/ic_jump.png"/></div>
 						</mu-list-item-action>
 						</mu-list-item>
 					</mu-list>
@@ -218,16 +218,18 @@
 .mu-avatar{width: 1.24rem !important;height: 1.24rem !important;}  
 .center-title{height: 0.88rem;font-size: 0.32rem;color: #333;line-height: 0.88rem;background: #fff;position: fixed;width: 100%;z-index: 9;}
 .mu-card-header-title{margin-top: 0.1rem;}
-.mu-card-sub-titles{text-align: left;color: #f95151;background: #ff9a38;color:#fff;padding: 0.1rem;border-radius: 0.25rem;position: absolute;
+.mu-card-sub-titles{text-align: left;background: #ff9a38;color:#fff;padding: 0.1rem;border-radius: 0.25rem;position: absolute;
     top: 44px;
-    left: 140px;}
-.center-top{height: 3.3rem;background: url('../../../static/img/center/centerbg.png') no-repeat center;background-size: 100%;padding-top: 1rem;}
+    left: 132px;}
+.center-top{height: 3.3rem;background: url(./../../../static/img/center/centerbg.png) no-repeat center;background-size: 100%;padding-top: 1rem;}
 .topboxinfo{width: 93%;margin: auto;background: #fff;border-radius: 10px;box-shadow:0 0px 2px -1px rgba(0,0,0,.1), 0 0px 1px 0 rgba(0,0,0,.1), 0 0px 0px 0 rgba(0,0,0,.1);}
 .ordertopbox{overflow: hidden;padding: 0.3rem;border-bottom: 1px solid #e0e0e0;}
 .myordertext{float: left;font-weight: bold;font-size: .26rem;color: #333;}
 .goordertex{color:#999;float: right;font-size: .24rem;position: relative;padding-right: .4rem}
 .rightarr{position: absolute;width: .13rem;right:0;top:4px;}
-.arrbox{position: relative;}
+.rightarrr{position: absolute;width: .13rem;right:13px;top:17px;}
+.relabox{position: relative;}
+/* .arrbox{position: relative;} */
 .listcenterbox .mu-item-title{font-size: .26rem}
 
 .topboxinfo ul{overflow: hidden;padding: 0.4rem 0;}
@@ -249,4 +251,13 @@
 .hlepbox{margin-top: 0.2rem;}
 .fanallcar{top: 0;left: .8rem;}
 .yhjnum{padding-right: 20px;}
+ @media screen and (max-width: 325px) {
+  .center-top .mu-card-sub-titles{left: 110px}
+}
+ @media screen and (min-width: 338px) {
+  .center-top .mu-card-sub-titles{left: 120px}
+}
+ @media screen and (min-width: 350px) {
+  .center-top .mu-card-sub-titles{left: 132px}
+}
 </style>

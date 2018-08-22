@@ -29,20 +29,20 @@
                           </mu-list-item-action>
                           <mu-list-item-content>
                             <mu-list-item-title>{{item.goods_title}}</mu-list-item-title>
+                            <span style="color: #a9a9a9;font-size: .2rem;padding-left:.2rem;" v-show="isbind">{{item.goods_count}}斤</span>
                             <mu-list-item-sub-title>
-                              <span style="color: #a9a9a9;font-size: 0.2rem;">{{item.goods_count}}斤</span>
                               <div>
                                 <span v-show="!isbind" style="color: #a9a9a9;">绑定手机号才能查看价格</span>
                                 <div v-show="isbind" style="color: red;">
                                   ￥
-                                  <span style="font-size: 0.5rem;">{{item.goods_price}}</span>
+                                  <span style="font-size: .5rem;">{{item.goods_price}}</span>
                                   <span style="color: #ccc;text-decoration: line-through;">￥{{item.single_price}}</span>
                                 </div>
                               </div>
                             </mu-list-item-sub-title>
                           </mu-list-item-content>
                         </mu-list-item>
-                        <div style="position: absolute;right: 0.2rem;bottom: 0.34rem;" v-show="isbind">
+                        <div style="position: absolute;right: .2rem;bottom: .34rem;" v-show="isbind">
                           <div class="saoma">
                             <!-- <span class="minus mpsytl" @click="minus(item)" v-if="item.num != 0">-</span>
                             <span class="mpnum">{{item.num}}</span>
@@ -525,7 +525,7 @@ export default {
 .mu-grid-tile-subtitle span {
   text-align: left;
   display: block;
-  font-size: 0.26rem;
+  font-size: .26rem;
   color: #666;
 }
 
@@ -540,15 +540,15 @@ export default {
   color: #ccc;
   -webkit-transform-origin: 0 100%;
   transform-origin: 0 100%;
-  -webkit-transform: scaleY(0.5);
-  transform: scaleY(0.5);
+  -webkit-transform: scaleY(.5);
+  transform: scaleY(.5);
   z-index: 2;
 }
 
 .list-item {
   position: relative;
-  -webkit-transition: all 0.2s;
-  transition: all 0.2s;
+  -webkit-transition: all .2s;
+  transition: all .2s;
 }
 
 .list-item[data-type="0"] {
@@ -562,7 +562,7 @@ export default {
 .list-item:after {
   content: " ";
   position: absolute;
-  left: 0.2rem;
+  left: .2rem;
   bottom: 0;
   right: 0;
   height: 1px;
@@ -570,8 +570,8 @@ export default {
   color: #ccc;
   -webkit-transform-origin: 0 100%;
   transform-origin: 0 100%;
-  -webkit-transform: scaleY(0.5);
-  transform: scaleY(0.5);
+  -webkit-transform: scaleY(.5);
+  transform: scaleY(.5);
   z-index: 2;
 }
 
@@ -591,7 +591,7 @@ export default {
 }
 
 .list-item .list-content {
-  padding: 0 0 0.1rem 0;
+  padding: 0 0 .1rem 0;
   position: relative;
   flex: 1;
   flex-direction: column;
@@ -602,7 +602,7 @@ export default {
 }
 
 .list-item  .isslid{
-  padding: 0 0 0.1rem 0;
+  padding: 0 0 .1rem 0;
   position: relative;
   flex: 1;
   flex-direction: column;
@@ -617,7 +617,7 @@ export default {
   color: #333;
   text-align: left;
   overflow: hidden;
-  font-size: 0.26rem;
+  font-size: .26rem;
   font-weight: bold;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -638,7 +638,7 @@ export default {
   font-size: 12px;
   position: absolute;
   right: 0;
-  top: 0.1rem;
+  top: .1rem;
   color: #666;
 }
 
@@ -668,23 +668,23 @@ export default {
   overflow: hidden !important;
 }
 .list-item {
-  margin-top: 0.1rem;
+  margin-top: .1rem;
 }
 
 .mpnum {
-  font-size: 0.3rem;
+  font-size: .3rem;
 }
 .mu-item-sub-title,
 .mu-item-title {
-  padding-left: 0.2rem;
+  padding-left: .2rem;
 }
 .carMbox .mu-avatar img {
-  border-radius: 0.2rem;
+  border-radius: .2rem;
 }
 
 .radioimg {
-  width: 0.3rem;
-  height: 0.3rem;
+  width: .3rem;
+  height: .3rem;
 }
 
 .mu-item-action {
@@ -693,7 +693,7 @@ export default {
 
 .addToCar {
   position: fixed;
-  bottom: 0.84rem;
+  bottom: .84rem;
   width: 100%;
 }
 .pricecarbox {
@@ -705,9 +705,9 @@ export default {
 }
 .pricecarbox div {
   text-align: right;
-  padding-right: 0.3rem;
+  padding-right: .3rem;
   font-weight: bold;
-  font-size: 0.32rem;
+  font-size: .32rem;
 }
 .pricecarbox div:first-child {
   line-height: 45px;
@@ -717,8 +717,8 @@ export default {
 }
 .carprice {
   position: absolute;
-  left: 0.8rem;
-  font-size: 0.26rem !important;
+  left: .5rem;
+  font-size: .26rem !important;
   color: #666;
   z-index: 9;
 }
@@ -732,16 +732,16 @@ export default {
   color: #fff;
 }
 .carlistbox {
-  padding: 0.15rem 0.3rem !important;
+  padding: .15rem .3rem !important;
 }
 .carlistbox > ul {
   overflow-x: hidden;
 }
 .qigou {
   position: absolute;
-  right: 0.3rem;
-  bottom: -0.36rem;
-  font-size: 0.22rem;
+  right: .3rem;
+  bottom: -.36rem;
+  font-size: .22rem;
   color: #999;
 }
 </style>
