@@ -6,7 +6,7 @@
 			<!--<span style="position: absolute;right: 10px;top: 0.2rem;">地址管理</span>-->
 			<mu-container>
 				<mu-card style="width: 100%; max-width: 375px; margin: 0 auto;">
-				  <mu-card-header :title="username">
+				  <mu-card-header :title="username" style="text-align:left;padding:16px 42px;">
 				    <mu-avatar slot="avatar">
 				      <img :src="photo" :onerror='onerrorimg'>
 				    </mu-avatar>
@@ -297,6 +297,7 @@
 .yhjnum{padding-right: 20px;}
 
  @media screen and (max-width: 325px) {
+	  .fanallcar{line-height: .3rem}
   .center-top .mu-card-sub-titles{left: 110px}
 }
  @media screen and (min-width: 338px) {

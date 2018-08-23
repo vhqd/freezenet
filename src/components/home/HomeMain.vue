@@ -366,8 +366,10 @@ export default {
     /*结算*/
     settlement() {
       AddCarShop(QS.stringify(this.alldata[0])).then(res=>{
+        this.$store.commit('setShowText',this.$store.state.addcar);
+        this.$store.commit('showInfo');
+
         //设置导航购物车数量
-        this.$store.commit('showCarInfo')
         this.$store.commit('editCarnum', this.$store.state.count + this.alldata[0].goods_id.length);
         this.$router.push('/car')
       })

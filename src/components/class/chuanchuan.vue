@@ -102,7 +102,7 @@
   import {
     getCaiClassChild
   } from "../../http/http.js";
-  import { removeOfenBuyData, setOfenBuyData } from "../../common/common.js";
+  import { jiancar, setOfenBuyData } from "../../common/common.js";
 
   export default {
     data() {
@@ -226,7 +226,15 @@
         } else {
           item.num = 0;
         }
-        //removeOfenBuyData(item, this.list);
+        let data = {
+          goods_id: item.id,
+          single_price: item.goods_price,
+          count: item.num,
+          isadd:0
+        };
+        console.log('减少购物车');
+        console.log(data);
+        jiancar(item.id, data);
       },
       /*增加数量值*/
       plus(item) {

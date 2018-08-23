@@ -48,7 +48,7 @@
 								<mu-list textline="two-line" class="jcg" style="margin-left:.2rem;" @click="addOfenBuy()">
 									<mu-list-item avatar button :ripple="false">
 										<mu-list-item-content>
-											<mu-list-item-title><img v-if="!isOfen" :src="jcg1" /><img v-if="isOfen" :src="jcg2" /></mu-list-item-title>
+											<mu-list-item-title><img v-if="!contentinfo[0].is_often_browse" :src="jcg1" /><img v-if="contentinfo[0].is_often_browse" :src="jcg2" /></mu-list-item-title>
 											<mu-list-item-sub-title>加常购</mu-list-item-sub-title>
 										</mu-list-item-content>
 									</mu-list-item>
@@ -113,7 +113,8 @@
 <script>
 import HomeBannerView from "../home/HomeBanner.vue";
 import BackBar from "../common/BackBar.vue";
-import { getProductInfos , AddCarShop , addOfenBuy } from '../../http/http.js'
+import { getProductInfos , AddCarShop , addOfenBuy , deletOfenBuy } from '../../http/http.js'
+import { jiancar , addcar } from "../../common/common.js";
 import QS from "qs";
 import carouselImg1 from "../../../static/img/1-0_02.png";
 import carouselImg2 from "../../../static/img/1-0_02.png";
@@ -160,6 +161,7 @@ export default {
 		//this.contentinfo = [];//防止缓存
 		this.id = this.$route.query.id;
 		this.isOfen = false
+		this.allPrice = 0
 		let data = {"id":[this.id]}
 
 		getProductInfos(JSON.stringify(data)).then(res => {
@@ -173,13 +175,25 @@ export default {
 		
 	},
   methods: {
-		/**添加常购*/
+		/**添加常购或者取消常购*/
 		addOfenBuy(){
+			let is_often_browse = this.contentinfo[0].is_often_browse
+			if(!is_often_browse){
+				addOfenBuy(this.contentinfo[0].id).then(res => {
+					console.log(res);
+					this.$store.commit('setShowText',this.$store.state.changgou);
+					this.$store.commit('showInfo');
+					this.contentinfo[0].is_often_browse = true;
+				})
+			}else{
+				let often_browse_id = this.contentinfo[0].often_browse_id
+				deletOfenBuy(often_browse_id).then(res => {
+					this.$store.commit('setShowText',this.$store.state.qxchanggou);
+					this.$store.commit('showInfo');
+					this.contentinfo[0].is_often_browse = false;
+				});
+			}
 			
-			addOfenBuy(this.contentinfo[0].id).then(res => {
-				console.log(res);
-				this.isOfen = true;
-			})
 		},
 	 /**点击底部购物车图标到购物车*/
       goShopCar(){
@@ -200,19 +214,40 @@ export default {
 		},
     /*减少数量值*/
     minus() {
+			let shopdata = this.contentinfo[0]
       let amount = this.contentinfo[0].num;
       if (amount > 0) {
-        this.contentinfo[0].num = amount - 1;
+        shopdata.num = amount - 1;
       } else {
-        this.contentinfo[0].num = 0;
+        shopdata.num = 0;
 			}
-			this.allPrice = parseInt(this.contentinfo[0].num)*parseFloat(this.contentinfo[0].goods_price)
+			this.allPrice = parseInt(shopdata.num)*parseFloat(shopdata.goods_price)
+			let data = {
+          goods_id: shopdata.id,
+          single_price: shopdata.goods_price,
+          count: shopdata.num,
+          isadd:0
+        };
+        console.log('减少购物车');
+        console.log(data);
+        jiancar(shopdata.id, data);
     },
     /*增加数量值*/
     plus() {
-      let amount = this.contentinfo[0].num;
-			this.contentinfo[0].num = amount + 1;
-			this.allPrice =parseInt(this.contentinfo[0].num)*parseFloat(this.contentinfo[0].goods_price)
+			let shopdata = this.contentinfo[0]
+      let amount = shopdata.num;
+			shopdata.num = amount + 1;
+			this.allPrice =parseInt(shopdata.num)*parseFloat(shopdata.goods_price)
+			shopdata
+			let data = {
+				goods_id:[shopdata.id],
+				single_price:[shopdata.goods_price],
+				count:[1],
+				sum_price : shopdata.num * shopdata.goods_price
+			}
+			console.log('添加的数据');
+			console.log(data);
+			addcar(data, 2);
     },
     /*关闭弹窗*/
     closeJSDialog() {

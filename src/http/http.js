@@ -193,7 +193,7 @@ export const getOrders = (limit , page , status) =>{ return axios.get(host + "/a
 /**
  *删除个人订单
  */
-export const deleteOrder = ( id , redPacketId ) =>{ return axios.post(host + "/api/delete-order?id="+id+"&redPacketId=" + redPacketId).then((res) => {return res;}).catch((error) => {return error.response})};
+export const deleteOrder = ( id , redPacketId ) =>{ return axios.get(host + "/api/delete-order?id="+id+"&redPacketId=" + redPacketId).then((res) => {return res;}).catch((error) => {return error.response})};
 
 /**
  *取消个人订单

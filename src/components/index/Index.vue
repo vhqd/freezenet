@@ -214,6 +214,9 @@ export default {
       this.$store.commit('editIsBindFalse')
       console.log("用户没有绑定手机，不能显示商品价格");
     }
+    if(this.$store.state.token){
+      this.getOfenBuyList();
+    }
   },
   methods: {
      /*删除一条常购清单记录*/
@@ -259,10 +262,10 @@ export default {
         //设置token
         this.$store.commit("set_token", token);
         //获取token成功后初始化数据
-        this.getOfenBuyList();
         this.getIndexBanner();
         this.getCarList();
         this.getIndexTopClass();
+        this.getOfenBuyList();
       });
     },
 

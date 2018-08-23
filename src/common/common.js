@@ -3,6 +3,7 @@ import {
   AddCarShop,
   getOrders,
   getWXPayInfo,
+  EditCarShop,
   deleteOrder,
   cancelOrder
 } from "../http/http.js";
@@ -113,20 +114,32 @@ export function setOfenBuyData(item, data) {
   data[0].single_price.push(item.goods_price);
   data[0].count.push(1); //这里只能push=>1个数量
   data[0].sum_price = item.num * item.goods_price + sum_price;
+  console.log('添加到购物车的数据');
+  console.log(data[0]);
+  
   addcar(data[0], 2);
 }
 
 /*添加购物车*/
-function addcar(data, minusORplus) {
+export function addcar(data, minusORplus) {
   AddCarShop(QS.stringify(data)).then(res => {
     //设置导航购物车数量
     if (minusORplus == 1) {
       store.commit("editCarnum", store.state.count - 1);
     } else {
-      store.commit('showCarInfo')
+      
+      store.commit('setShowText',store.state.addcar);
+      store.commit('showInfo');
+
       store.commit("editCarnum", store.state.count + 1);
     }
   });
+}
+
+export function jiancar(id,data){
+  EditCarShop(id , data).then(res => {
+    store.commit("editCarnum", store.state.count - 1);
+  })
 }
 
 /**获取所有订单*/

@@ -323,8 +323,8 @@ export default {
 
       console.log('++++++++++++');
       console.log(this.Delitem);
-      let id = this.item.id
-      let redPacketId = this.item.red_packet_id
+      let id = this.Delitem.id
+      let redPacketId = this.Delitem.red_packet_id
       deleteOrder( id , redPacketId ).then(res => {
         console.log(res);
       }) 

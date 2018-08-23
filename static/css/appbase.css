@@ -547,7 +547,7 @@ textarea:-ms-input-placeholder {
   padding: 9px 15px 0px 5px !important;
 }
 .center-top .mu-card-title{min-width: 2rem;}
-
+.mu-list-three-line .mu-item-action .mu-avatar{margin-top: 0;}
 @media screen and (max-width: 325px) {
   .orderlistbox li {
     font-size: 12px;

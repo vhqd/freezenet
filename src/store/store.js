@@ -11,11 +11,14 @@ const store = new Vuex.Store({
 		host:'http://SW2018001.trg7.cn/eNet/public/index.php', //线上
 		basehost:'http://SW2018001.trg7.cn/#/', //线上
 		baseimg:'http://SW2018001.trg7.cn//eNet/public/banner', //线上
+		changgou:'已添加常购',
+		qxchanggou:'已取消常购',
+		addcar:'已添加到购物车',
 		load:false,//全局loading
 		showerror:false,//全局错误提示
-		showcarinfo:false,//全局添加购物车提示
+		showinfo:false,//全局信息提示
 		showtext:'',
-		token:'',
+		token:null,
 		openid:null,//用户openid
 		userid:null,//用户id
 		userinfo:{},
@@ -32,7 +35,7 @@ const store = new Vuex.Store({
 	mutations:{
 		
 		/**
-		 * 设置500错误问题提示（用于错误提示）
+		 * 设置提示文字
 		 * @param {} state 
 		 * @param {*} text 
 		 */
@@ -75,10 +78,10 @@ const store = new Vuex.Store({
 		},
 
 		/**
-		 * 显示加入购物车信息
+		 * 显示提示信息
 		 */
-		showCarInfo(state){
-			state.showcarinfo = !state.showcarinfo
+		showInfo(state){
+			state.showinfo = !state.showinfo
 		},
 
 		/**

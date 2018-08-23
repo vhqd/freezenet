@@ -21,14 +21,17 @@ export default {
     }
   },
   computed:{
+    /**全局loading*/
     load(){
       return this.$store.state.load;
     },
+    /**全局错误提示*/
     showerror(){
       return this.$store.state.showerror
     },
-    shoucarinfo(){
-      return this.$store.state.showcarinfo
+    /**全局信息提示*/
+    showinfo(){
+      return this.$store.state.showinfo
     }
   },
   watch:{
@@ -42,8 +45,8 @@ export default {
     showerror(a,b){
         this.$toast.error(this.$store.state.showtext);
     },
-    shoucarinfo(a,b){
-        this.$toast.message('成功加入购物车');
+    showinfo(a,b){
+        this.$toast.message(this.$store.state.showtext);
     }
   }
 }

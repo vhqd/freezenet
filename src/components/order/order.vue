@@ -507,7 +507,8 @@
 					if(data && data.length > 0 ){
 						this.coupons = data;
 						for(let i in this.coupons){
-							if(!this.coupons[i].is_overdue && i.is_lock==0){
+							//is_overdue=>false 没有过期   islock=>0 没有锁定（使用过的红包会被锁定）
+							if(!this.coupons[i].is_overdue && this.coupons[i].is_lock ==0){
 								this.couponsnum ++ 
 							}else{
 								this.nocouponsnum ++

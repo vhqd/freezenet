@@ -38,8 +38,8 @@
 								<!-- <span class="minus mpsytl" @click="minus(item)" v-if="item.num != 0">-</span>
 				        	<span>{{item.num}}</span>
 				        	<span class="plus mpsytl" @click="plus(item)">+</span> -->
-								<span class="minus" @click="minus(item)" v-if="item.count != 0"><img src="../../../static/img/ic_jian.png" alt="" style="width:.5rem;height:.5rem;"></span>
-								<span v-show="item.count != 0">{{item.count}}</span>
+								<span class="minus" @click="minus(item)" v-if="item.num != 0"><img src="../../../static/img/ic_jian.png" alt="" style="width:.5rem;height:.5rem;"></span>
+								<span v-show="item.num != 0">{{item.num}}</span>
 								<span class="plus" @click="plus(item)"><img src="../../../static/img/ic_jia.png" alt="" style="width:.5rem;height:.5rem;"></span>
 							</div>
 						</div>
@@ -87,6 +87,7 @@
 import { mapState } from "vuex";
 import BackBar from "../common/BackBar.vue";
 import { getHotList } from "../../http/http.js";
+import { jiancar, setOfenBuyData } from "../../common/common.js";
 
 export default {
   data() {
@@ -186,7 +187,7 @@ export default {
 		getHotList().then(res => {
 			let data = res.data.info
 			for(let item in data){
-				data[item].count = 0
+				data[item].num = 0
 				data[item].type = 1
 			}
 			console.log(data);
@@ -204,7 +205,7 @@ export default {
 		let datas = [];
 		console.log(2222222222222222222222222);
 		for(let item in data){
-		if(data[item].count > 0){
+		if(data[item].num > 0){
 			datas.push(data[item]);
 		}
 		}
@@ -223,21 +224,31 @@ export default {
     },
     /*减少数量值*/
     minus(item) {
-      let amount = item.count;
+      let amount = item.num;
       if (amount > 0) {
-        item.count = amount - 1;
+        item.num = amount - 1;
         this.carnum = this.carnum - 1;
         this.allPrice = this.allPrice - item.goods_price;
       } else {
-        item.count = 0;
+        item.num = 0;
       }
+      let data = {
+          goods_id: item.id,
+          single_price: item.goods_price,
+          count: item.num,
+          isadd:0
+        };
+      console.log('减少购物车');
+      console.log(data);
+      jiancar(item.id, data);
     },
     /*增加数量值*/
     plus(item) {
-      let amount = item.count;
-      item.count = amount + 1;
+      let amount = item.num;
+      item.num = amount + 1;
       this.carnum = this.carnum + 1;
       this.allPrice = this.allPrice + item.goods_price;
+       setOfenBuyData(item, this.list);
     }
   },
   computed: {

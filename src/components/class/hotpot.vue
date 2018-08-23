@@ -83,7 +83,7 @@
     mapState
   } from 'vuex'
   import BackBar from '../common/BackBar.vue'
-  import { removeOfenBuyData, setOfenBuyData } from "../../common/common.js";
+  import { jiancar, setOfenBuyData } from "../../common/common.js";
 
   export default {
     data() {
@@ -144,7 +144,7 @@
               that.nomore = true
               console.log('没有更多数据')
             }
-            this.typeid = this.$route.query.typeid
+            this.typeid = that.$route.query.typeid
             console.log('商品类别详情数据')
             console.log(res);
             console.log(res.data.data)
@@ -176,7 +176,15 @@
         } else {
           item.num = 0;
         }
-        //removeOfenBuyData(item, this.list);
+        let data = {
+          goods_id: item.id,
+          single_price: item.goods_price,
+          count: item.num,
+          isadd:0
+        };
+        console.log('减少购物车');
+        console.log(data);
+        jiancar(item.id, data);
       },
       /*增加数量值*/
       plus(item) {
