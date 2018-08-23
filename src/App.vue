@@ -39,12 +39,6 @@ export default {
     showerror(a,b){
         this.$toast.error(this.$store.state.showtext);
     }
-  },
-  mounted(){
-    //this.showLoad();
-    /* setTimeout(()=>{
-      this.a.close();
-    },1000) */
   }
 }
 </script>

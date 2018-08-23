@@ -28,17 +28,26 @@ const store = new Vuex.Store({
     },
     
 	mutations:{
+		
+		/**
+		 * 设置500错误问题提示（用于错误提示）
+		 * @param {} state 
+		 * @param {*} text 
+		 */
 		setShowText(state,text){
 			state.showtext = text
 		},
+
 		/**设置用户id*/
 		setUserid(state,userid){
 			state.userid = userid
 		},
+
 		/**设置用户信息*/
 		setUserInfo(state,userinfo){
 			state.userinfo = userinfo
 		},
+
 		/**
 		 * 设置用户openid
 		*/
@@ -46,9 +55,14 @@ const store = new Vuex.Store({
 			state.openid = openid
 		},
 
+		/**
+		 * 设置全部错误提示
+		 * @param {*} state 
+		 */
 		seterror(state){
 			state.showerror = !state.showerror;
 		},
+
 		/**
 		 * loading控制
 		 * @param {state} state 
@@ -57,12 +71,14 @@ const store = new Vuex.Store({
 		setLoad(state,value){
 			state.load = value;
 		},
+
 		/**
 		 * 已经绑定手机号
 		 */
 		editIsBind(state){
 			state.isbind = true
 		},
+
 		/**
 		 * 未绑定手机号
 		 */
@@ -84,7 +100,6 @@ const store = new Vuex.Store({
 			state.order = obj
 		},
 
-
 		/**
 		 * 设置token到sessionStorage
 		 */
@@ -92,7 +107,11 @@ const store = new Vuex.Store({
 			state.token = token
 			sessionStorage.token = token
 		},
-	
+
+		/**
+		 * 删除token
+		 * @param {*} state 
+		 */
 		del_token(state) {
 			state.token = ''
 			sessionStorage.removeItem('token')

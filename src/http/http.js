@@ -78,11 +78,6 @@ export const getIndexTopClass = () =>{ return axios.get(host + "/api/get-second-
  */
 export const getHotList = () =>{ return axios.get(host + "/api/hot-list").then((res) => {return res;}).catch((error) => {return error.response})};
 
-/**
- * 获取首页分类专区(废弃)
- */
-export const getIndexClass = (limit , page) =>{ return axios.get(host + "/api/goods_type?limit=" + limit + "&page=" + page).then((res) => {return res;}).catch((error) => {return error.response})};
-
 
 
 /**

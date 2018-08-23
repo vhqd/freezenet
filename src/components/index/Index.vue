@@ -114,7 +114,6 @@ import { mapState } from "vuex";
 import QS from "qs";
 import {
   getToken,
-  getIndexClass,
   getIndexBanner,
   getCarList,
   getIndexTopClass,
@@ -179,7 +178,14 @@ export default {
       ]
     };
   },
+  mounted() {
+
+    this.$store.commit("setLoad", true);
+    this.initData();
+
+  },
   activated() {
+
     let is_phone = this.$route.query.is_phone;
     let userid = this.$route.query.userid;
     console.log("userid");
@@ -188,27 +194,25 @@ export default {
       this.$store.commit("setUserid", userid);
       sessionStorage.userid = userid;
     }
+    /**通过判断用户是否绑定手机控制是否能看到商品价格以及后续操作*/
     if (is_phone == 1) {
       this.$store.commit("editIsBind");
       sessionStorage.isbind = is_phone;
       console.log(is_phone);
     } else {
-      //sessionStorage.isbind = false
-      console.log("是否绑定手机判断错误");
+      this.$store.commit('editIsBindFalse')
+      console.log("用户没有绑定手机，不能显示商品价格");
     }
   },
-  mounted() {
-    this.initData();
-
-    this.$store.commit("setLoad", true);
-  },
   methods: {
+    
     /**保存openid*/
     setOpenid(openid) {
       let obj = { name: openid };
       let str = JSON.stringify(obj);
       localStorage.obj = str;
     },
+
     initData() {
       let openid = this.$route.query.openid;
       if (openid) {
@@ -235,6 +239,7 @@ export default {
         this.getIndexTopClass();
       });
     },
+
     /**
      * 获取首页banner
      */
@@ -252,6 +257,7 @@ export default {
         }
       });
     },
+
     /**获取购物车数量显示到底部 */
     getCarList() {
       getCarList(999, 1).then(res => {
@@ -262,6 +268,7 @@ export default {
         this.$store.commit("editCarnum", parseInt(this.carnum));
       });
     },
+
     /**获取首页专区九宫格和列表数据*/
     getIndexTopClass() {
       getIndexTopClass().then(res => {
@@ -284,6 +291,7 @@ export default {
         }
       });
     },
+
     /**获取常购清单列表*/
     getOfenBuyList() {
       getOfenBuyList(2, 1).then(res => {
@@ -296,20 +304,6 @@ export default {
 
         this.$store.commit("setLoad", false);
       });
-    },
-    getClassList() {
-      let that = this;
-      this.$http
-        .get(that.host + "/api/goods_type?limit=10&page=1")
-        .then(function(res) {
-          that.classlist = res.data.data.data;
-          console.log("商品类别专区数据");
-          console.log(res);
-          console.log(res.data.data.data);
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
     },
 
     /*首页顶部热销榜、常购清单、领券优惠、我的订单router*/
@@ -327,21 +321,25 @@ export default {
         this.$router.push({ path: "/orderlist", query: { id: 0 } });
       }
     },
+
     /*删除一条常购清单记录*/
     deleList(index, item) {
       this.showlist.splice(index, 1);
       this.deletOfenBuy(item);
     },
+
     /**专区商品1*/
     goClasstopDetail(item) {
       this.$router.push({ path: "/chuanchuan", query: { typeid: item.id } });
       //this.$router.push({ path: "/hotpot", query: { typeid: item.id } });
     },
+
     /**专区商品2*/
     goDetail(item) {
       this.$router.push({ path: "/hotpot", query: { typeid: item.id } });
       //this.$router.push({ path: "/hotpot", query: { typeid: item.id } });
     },
+
     /*减少数量值*/
     minus(item) {
       let amount = item.num;
@@ -352,6 +350,7 @@ export default {
       }
       removeOfenBuyData(item, this.alldata);
     },
+
     /*增加数量值*/
     plus(item) {
       let amount = item.num;
@@ -363,6 +362,7 @@ export default {
     deletOfenBuy(item) {
       deletOfenBuy(item.oftenBrowseId).then(res => {});
     }
+    
   },
   computed: {
     ...mapState({
@@ -371,6 +371,7 @@ export default {
       isbind: "isbind"
     })
   }
+
 };
 </script>
 
