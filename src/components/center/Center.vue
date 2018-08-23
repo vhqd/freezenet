@@ -1,6 +1,7 @@
 <template>
 	<div class="centerbox">
 		<p class="center-title">个人中心 </p>
+		<div id="real-9height"></div>
 		<div class="center-top">
 			<!--<span style="position: absolute;right: 10px;top: 0.2rem;">地址管理</span>-->
 			<mu-container>
@@ -70,8 +71,8 @@
 						</mu-list-item>
 					</mu-list>
 				</div>
+			<div id="realheight"></div>
 		</div>
-		
 		
 		
 		<Footer tagNum='4'></Footer>
@@ -264,7 +265,7 @@
 .mu-card-sub-titles{text-align: left;background: #ff9a38;color:#fff;padding: 0.1rem;border-radius: 0.25rem;position: absolute;
     top: 44px;
     left: 132px;}
-.center-top{height: 3.3rem;background: url(./../../../static/img/center/centerbg.png) no-repeat center;background-size: 100%;padding-top: 1rem;}
+.center-top{height: 3.3rem;background: url(./../../../static/img/center/centerbg.png) no-repeat center;background-size: 100%;}
 .topboxinfo{width: 93%;margin: auto;background: #fff;border-radius: 10px;box-shadow:0 0px 2px -1px rgba(0,0,0,.1), 0 0px 1px 0 rgba(0,0,0,.1), 0 0px 0px 0 rgba(0,0,0,.1);}
 .ordertopbox{overflow: hidden;padding: 0.3rem;border-bottom: 1px solid #e0e0e0;}
 .myordertext{float: left;font-weight: bold;font-size: .26rem;color: #333;}
@@ -279,7 +280,7 @@
 .topboxinfo ul li{float: left;width: 20%;color: #8e8e8e;position: relative;}
 .topboxinfo ul li p{font-size: 0.24rem;color: #8e8e8e;}
 .topboxinfo ul li img{width: 0.55rem;height: 0.55rem;}
-.listcenterbox{background: #fff;width: 93%;border-radius: 10px;margin: .2rem auto 1.5rem auto}
+.listcenterbox{background: #fff;width: 93%;border-radius: 10px;margin: .2rem auto 0rem auto}
 .listcenterbox li:not(:last-child){border-bottom: 1px solid #e0e0e0;}
 .mu-item-action{min-width: 2.4rem;}
 
@@ -294,6 +295,7 @@
 .hlepbox{margin-top: 0.2rem;}
 .fanallcar{top: 0;left: .8rem;}
 .yhjnum{padding-right: 20px;}
+
  @media screen and (max-width: 325px) {
   .center-top .mu-card-sub-titles{left: 110px}
 }

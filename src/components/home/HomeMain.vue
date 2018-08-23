@@ -82,8 +82,8 @@
                         <span v-show="!isbind" style="color: #a9a9a9;">绑定手机号才能查看价格</span>
                         <div v-show="isbind" style="color: red;">
                           ￥
-                          <span style="font-size: 24px;">{{item.goods_price}}</span>
-                          <span style="color: #ccc;text-decoration: line-through;">￥{{item.goods_original_price}}</span>
+                          <span style="font-size: .38rem;">{{item.goods_price}}</span>
+                          <span style="color: #ccc;text-decoration: line-through;font-size:12px;">￥{{item.goods_original_price}}</span>
                         </div>
                       </div>
                     </mu-list-item-sub-title>
@@ -104,8 +104,8 @@
             </div>
           </mu-list>
           <p v-else class="nodata">暂时没有商品哦</p>
+          <div id="real2height"></div>
         </mu-paper>
-
         <!--    <mu-container data-mu-loading-color="secondary" data-mu-loading-overlay-color="rgba(0, 0, 0, .7)" v-loading="loading2" class="demo-loading-wrap">
          <mu-button color="teal" @click="fullscreen()">全屏加载</mu-button>
 </mu-container> -->
@@ -167,6 +167,7 @@ export default {
   data() {
     return {
       host: this.$store.state.host,
+      baseimg:this.$store.state.baseimg,
       onerrorimg:this.$store.state.onerrorimg,
       page: 1,
       limit: 99, //当前页面分页条数
@@ -177,6 +178,7 @@ export default {
       loading2: false,
       loading: false,
       page:1,
+      isSwitch:true,//用于防止快速点击顶部菜单出现数据错误问题
       qigou:this.$store.state.qigou,//起购价
       alldata:[{
         'goods_id':[],
@@ -275,17 +277,24 @@ export default {
     },
     /*点击切换顶部菜单默认第一个的状态,并且获取数据*/
     removeBg(index, item) {
-      let data = this.classification;
-      /*修改选择状态*/
-      for (let i = 0; i < data.length; i++) {
-        if (i == index) {
-          data[i].isCheck = true;
-        } else {
-          data[i].isCheck = false;
-        }
+      if(!this.isSwitch){
+        return;
       }
-      /*获取二级菜单数据以及菜品数据*/
-      this.getChildList(item);
+      if(this.isSwitch){
+        this.isSwitch = false
+        let data = this.classification;
+        /*修改选择状态*/
+        for (let i = 0; i < data.length; i++) {
+          if (i == index) {
+            data[i].isCheck = true;
+          } else {
+            data[i].isCheck = false;
+          }
+        }
+        /*获取二级菜单数据以及菜品数据*/
+        this.getChildList(item);
+      }
+      
     },
     getChildList(item) {
       if (item) {
@@ -300,8 +309,11 @@ export default {
     },
     /**菜单切换方法*/
     switchMenu(index, item) {
-      if(!item)
+      
+      if(!item){
+        this.isSwitch = true
         return;
+      }
       /*二级菜单背景色class*/
       this.activeInd = index;
       //let loading = this.$loading();
@@ -310,18 +322,20 @@ export default {
       //this.getCaiClassChildDetail(item.id)
        getCaiClassChildDetail(item.id, this.limit, this.page).then(res => {
         let data = res.data.data;
+        this.isSwitch = true
         if (data.length == 0) {
           this.nodata = true;
           this.caiDetailList = [];
-           this.loading2 = false
+          this.loading2 = false
           return;
         }
         for (let item in data) {
-          data[item].goods_photo = this.host + data[item].goods_photo;
+          data[item].goods_photo = this.baseimg + data[item].goods_photo;
           data[item].num = 0;
         }
         this.caiDetailList = data;
         this.loading2 = false
+        this.isSwitch = true
         //console.log(data);
       });
      /*  setTimeout(() => {
@@ -339,7 +353,7 @@ export default {
           return;
         }
         for (let item in data) {
-          data[item].goods_photo = this.host + data[item].goods_photo;
+          data[item].goods_photo = this.baseimg + data[item].goods_photo;
           data[item].num = 0;
         }
         this.caiDetailList = this.caiDetailList.concat(data)
@@ -353,6 +367,7 @@ export default {
     settlement() {
       AddCarShop(QS.stringify(this.alldata[0])).then(res=>{
         //设置导航购物车数量
+        this.$store.commit('showCarInfo')
         this.$store.commit('editCarnum', this.$store.state.count + this.alldata[0].goods_id.length);
         this.$router.push('/car')
       })
@@ -615,7 +630,6 @@ export default {
 }
 #homelistbox .mu-list {
   padding: 8px 0 0 0;
-  margin-bottom: 2rem;
   background: #fff;
 }
 .mu-elevation-1 {
@@ -755,7 +769,7 @@ export default {
 }
 
 
-
+#scrollbox .mu-item{height: 38px;}
 
 /*.opentab .toptab:not(:first-child){
     	background: #f0f0f0;

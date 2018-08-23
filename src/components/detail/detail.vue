@@ -125,6 +125,7 @@ export default {
   },
   data() {
     return {
+			baseimg:this.$store.state.baseimg,
 			dTitle: "商品详情", //详情标题
 			host:this.$store.state.host,
 			id:0,//商品id
@@ -163,7 +164,7 @@ export default {
 
 		getProductInfos(JSON.stringify(data)).then(res => {
 			let data = res.data.data;
-			data[0].goods_photo = this.host + data[0].goods_photo;
+			data[0].goods_photo = this.baseimg + data[0].goods_photo;
 			data[0].num = 0;
 			this.contentinfo = data;
 		})
@@ -262,7 +263,8 @@ export default {
 .carprice {
   position: absolute;
   left: 0;
-  top: 4px;
+	top: 4px;
+	z-index: 9;
 }
 .carimgboxs {
   width: 100%;

@@ -26,6 +26,9 @@ export default {
     },
     showerror(){
       return this.$store.state.showerror
+    },
+    shoucarinfo(){
+      return this.$store.state.showcarinfo
     }
   },
   watch:{
@@ -38,6 +41,9 @@ export default {
     },
     showerror(a,b){
         this.$toast.error(this.$store.state.showtext);
+    },
+    shoucarinfo(a,b){
+        this.$toast.message('成功加入购物车');
     }
   }
 }

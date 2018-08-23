@@ -264,7 +264,7 @@
 			        <span style="color: #f95151;font-weight: bold;font-size:0.32rem;">￥{{datainfo.real_pay_price}}</span>
 			      </mu-list-item-action>
 			    </mu-list-item>
-			    
+			    <div id="realheight"></div>
 			  </mu-list>
 			  
 			  
@@ -477,13 +477,13 @@
 	.mu-drawer{position: fixed;top: 4.3rem;} 
 	
 	
-	.addToCar{position: fixed;bottom: 0;width: 100%;}
+	.addToCar{position: fixed;bottom: 0;width: 100%;left: 0;}
 	.pricebox{width: 100%; background:#fff;left: 0; position: absolute;height: 100%;}
 	.pricebox li{font-size: 0.32rem;font-weight: bold;border-radius: 0.4rem;padding: 0.06rem 0.3rem;float: right;margin-top: 0.13rem;margin-right: 20px;}
 	.pricebox .cancelorder{border:1px solid #c6c6c6; color: #666;}
 	.pricebox .payorder{border:1px solid #f95151;color: #f95151;}
 	
-	.carprice{position: absolute;left: 0.8rem;font-size: 0.26rem !important;color: #666;}
+	.carprice{position: absolute;left: 0.8rem;font-size: 0.26rem !important;color: #666;z-index: 9;}
 	.settlement{position: absolute;right: 0px;background: #ffe253;width: 33%;height: 45px;line-height: 45px;}
 	.carlistbox{padding: 0.15rem 0.3rem !important;}
 	.carlistbox>ul{overflow: hidden;}

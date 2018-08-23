@@ -12,7 +12,7 @@
 		</mu-tabs>
 
 		<div class="listbox">
-      <p v-show="noorder">没有订单哦！</p>
+      <p v-show="noorder">没有更多的订单了！</p>
 			<mu-load-more :loading="loading" @load="load">
         <mu-container data-mu-loading-color="secondary" v-if="list" data-mu-loading-overlay-color="rgba(0, 0, 0, .7)" v-loading="loading2" class="demo-loading-wrap">
 				<div class="onelistbox" v-for="(item,index) in list" :key="index">
@@ -90,8 +90,8 @@
 
 				</div>
         </mu-container>
+        <p v-show="nomoreorder" style="margin-top:10px;">没有更多的订单了！</p>
 			</mu-load-more>
-      <p v-show="nomoreorder">没有更多的订单了！</p>
 		</div>
     
 		<mu-dialog title="温馨提示" width="360" :open.sync="openJS">
@@ -121,6 +121,7 @@ import { WXPay } from '../../common/common.js'
 export default {
   data() {
     return {
+      baseimg:this.$store.state.baseimg,
       host:this.$store.state.host,
       num: 10,
       refreshing: false,
@@ -221,6 +222,7 @@ export default {
         this.limit = 15;
         this.page = 1;
         this.list = [];
+        this.nomoreorder = false
       }
       //this.order_status = order_status;
       getOrders(this.limit, this.page,order_status).then(res => {
@@ -234,7 +236,7 @@ export default {
         for(let item in data){
           let img = data[item].goodsInfo;
           for(let ite in img){
-            img[ite].goods_photo = this.host + img[ite].goods_photo;
+            img[ite].goods_photo = this.baseimg + img[ite].goods_photo;
           }
         }
         
@@ -246,11 +248,11 @@ export default {
         if(isloadmore){
           this.list = this.list.concat(data)
           if(data.length == 0){
+            this.loading = false;
             this.nomoreorder = true
-          }else{
-            this.nomoreorder = false
           }
         }else{
+         
           if(data.length == 0){
             this.noorder = true
           }else{
@@ -264,17 +266,13 @@ export default {
 
     /*滚动到底部加载更多*/
     load() {
-      this.loading = true;
-      setTimeout(() => {
-        this.loading = false;
-        if(this.nomoreorder){
-         this.getOrders(this.order_status,true)
+      if(!this.nomoreorder){
+        this.loading = true;
+        this.nomoreorder = false
+        this.getOrders(this.order_status,true)
+        }else{
+          this.nomoreorder = true
         }
-       
-        //this.list.push(this.list[0]);
-        console.log("成功添加一条数据");
-        //this.num += 10;
-      }, 1000);
     },
     /*查看详情*/
     goDetail(item) {

@@ -101,4 +101,8 @@
 	.mu-button-wrapper{flex-direction: column !important;}
 	.tabimgbox{width: 100%;}
 	.router-link-exact-active p{color: #f24c4c;}
+	.fanallcar{font-size: 12px}
+	@media screen and (max-width: 325px) {
+		.fanallcar{padding:0 2px;}
+	}
 </style>

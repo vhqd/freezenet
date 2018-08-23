@@ -55,7 +55,7 @@
 										<div style="color: red;">
 											<span v-show="!isbind" style="color: #a9a9a9;">绑定手机号才能查看价格</span>
 											<div v-show="isbind">￥
-												<span style="font-size: 0.5rem;">{{item.goods_price}}</span>
+												<span style="font-size: .38rem;">{{item.goods_price}}</span>
 											</div>
 											<!--<span style="color: #ccc;text-decoration: line-through;">￥{{item.oldPrice}}</span>-->
 										</div>
@@ -80,7 +80,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="dele" @click="deletOfenBuy(item)">
+						<div class="dele" @click="deleList(index,item)">
 							<img src="../../../static/img/ic-del.png" />
 						</div>
 
@@ -115,7 +115,13 @@
 
 				</mu-list>
 			</mu-paper>
-
+			<div id="realheight"></div>
+	<mu-dialog title="温馨提示" width="360" :open.sync="openJS">
+        <span class="cancelbox" @click="closeJSDialog"><img src="../../../static/img/ic_Shut .png" /></span>
+        您确认要删除该常购清单吗?<br />
+        <mu-button slot="actions" flat color="primary" @click="sureClick(index)">确定</mu-button>
+        <mu-button slot="actions" flat color="secondary" @click="closeJSDialog">取消</mu-button>
+      </mu-dialog>
 		</div>
 		<Footer tagNum='2'></Footer>
 	</div>
@@ -136,8 +142,12 @@ export default {
   },
   data() {
     return {
+			baseimg:this.$store.state.baseimg,
       limit: 99,
-      page: 1,
+			page: 1,
+			openJS: false, //取消弹窗
+      item:null,
+      index:null,
       onerrorimg: this.$store.state.onerrorimg,
       alldata: [
         {
@@ -199,12 +209,28 @@ export default {
     this.$store.commit("setLoad", true);
   },
   methods: {
+		 /*删除一条常购清单记录*/
+    deleList(index, item) {
+      this.openJS = true;
+      this.item = item;
+      this.index = index;
+    },
+    /*取消订单*/
+    sureClick(index) {
+      this.openJS = false;
+      this.showlist.splice(this.index, 1);
+      this.deletOfenBuy(this.item);
+    },
+    /*关闭取消弹窗*/
+    closeJSDialog() {
+      this.openJS = false;
+    },
     /**获取常购清单*/
     getOfenBuyList() {
       getOfenBuyList(this.limit, this.page).then(res => {
         let data = res.data.info.data;
         for (let item in data) {
-          data[item].goods_photo = this.host + data[item].goods_photo;
+          data[item].goods_photo = this.baseimg + data[item].goods_photo;
           data[item].num = 0;
           data[item].type = 1; //type-1（没有分重量的） type-2（分了重量的）
         }
@@ -314,8 +340,8 @@ export default {
   height: 0.35rem;
 }
 .saoma img {
-  width: 0.5rem;
-  height: 0.5rem;
+  width: .6rem;
+  height: .6rem;
 }
 .saoma > div {
   display: flex;

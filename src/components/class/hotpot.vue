@@ -24,10 +24,10 @@
                   <!-- <span class="minus mpsytl" @click="minus(item)" v-if="item.num != 0">-</span>
 						        	<span>{{item.num}}</span>
 						        	<span class="plus mpsytl" @click="plus(item)">+</span> -->
-                  <span class="minus" @click="minus(item)" v-if="item.count != 0">
+                  <span class="minus" @click="minus(item)" v-if="item.num != 0">
                     <img src="../../../static/img/ic_jian.png" alt="" style="width:.5rem;height:.5rem;">
                   </span>
-                  <span v-show="item.count != 0">{{item.count}}</span>
+                  <span v-show="item.num != 0" style="margin-top:-.15rem;">{{item.num}}</span>
                   <span class="plus" @click="plus(item)">
                     <img src="../../../static/img/ic_jia.png" alt="" style="width:.5rem;height:.5rem;">
                   </span>
@@ -83,10 +83,12 @@
     mapState
   } from 'vuex'
   import BackBar from '../common/BackBar.vue'
+  import { removeOfenBuyData, setOfenBuyData } from "../../common/common.js";
 
   export default {
     data() {
       return {
+        baseimg:this.$store.state.baseimg,
         typeid: null, //分类id
         onerrorimg: this.$store.state.onerrorimg,
         host: this.$store.state.host,
@@ -106,13 +108,17 @@
       BackBar
     },
     activated() {
-      this.page = 1;
-      this.list = [];
-      this.typeid = this.$route.query.typeid
-      this.getListDetail(this.page);
+      this.page = 1
+      this.list = []
+      let typeid = this.$route.query.typeid
+      if(this.typeid != typeid){
+        this.getListDetail(this.page);
+      }
     },
     mounted() {
-
+      /* this.list = [];
+      this.typeid = this.$route.query.typeid
+      this.getListDetail(this.page); */
     },
     computed: {
       ...mapState({ // mapState相当于映射
@@ -123,13 +129,13 @@
       /*获取分类商品列表*/
       getListDetail(page) {
         let that = this;
-        this.$http.get(that.host + 　'/api/goods-list?typeid=' + this.typeid + '&limit=' + this.limit + '&page=' + page)
+        this.$http.get(that.host + 　'/api/goods-list?typeid=' + this.$route.query.typeid + '&limit=' + this.limit + '&page=' + page)
           .then(function (res) {
             that.page = that.page + 1;
             let data = res.data.data;
             for (let item in data) {
-              data[item].count = 0
-              data[item].goods_photo = that.host + data[item].goods_photo
+              data[item].num = 0
+              data[item].goods_photo = that.baseimg + data[item].goods_photo
               data[item].weight = 5
             }
             if (data.length > 0) {
@@ -138,6 +144,7 @@
               that.nomore = true
               console.log('没有更多数据')
             }
+            this.typeid = this.$route.query.typeid
             console.log('商品类别详情数据')
             console.log(res);
             console.log(res.data.data)
@@ -161,21 +168,23 @@
       },
       /*减少数量值*/
       minus(item) {
-        let amount = item.count;
+        let amount = item.num;
         if (amount > 0) {
-          item.count = amount - 1;
+          item.num = amount - 1;
           this.carnum = this.carnum - 1
           this.allPrice = this.allPrice - item.goods_price
         } else {
-          item.count = 0;
+          item.num = 0;
         }
+        //removeOfenBuyData(item, this.list);
       },
       /*增加数量值*/
       plus(item) {
-        let amount = item.count;
-        item.count = amount + 1
+        let amount = item.num;
+        item.num = amount + 1
         this.carnum = this.carnum + 1
         this.allPrice = parseFloat(this.allPrice) + parseFloat(item.goods_price)
+        setOfenBuyData(item, this.list);
       },
       /*获取购物车数量*/
       getCarNum() {
@@ -184,7 +193,7 @@
         for (let item in menu) {
           let list = menu[item].list;
           for (let it in list) {
-            carnum += list[it].count;
+            carnum += list[it].num;
           }
         }
       },
@@ -199,7 +208,7 @@
           let datas = [];
           console.log(2222222222222222222222222);
           for (let item in data) {
-            if (data[item].count > 0) {
+            if (data[item].num > 0) {
               datas.push(data[item]);
             }
           }
@@ -322,9 +331,10 @@
 
   .carprice {
     position: absolute;
-    left: 0.8rem;
+    left: .3rem;
     font-size: 0.26rem !important;
     color: #666;
+    z-index: 9;
   }
 
   .settlement {

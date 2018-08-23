@@ -11,7 +11,7 @@
         <li v-for="(item , index) in resData" :key="index" @click="goDetail(item)">{{item.goods_title}}</li>
       </ul>
       <!--暂无历史-->
-      <mu-paper v-if="history.length == 0 && hothistory.length == 0 && !searchshow">
+      <mu-paper v-if="history.length == 0 && hothistory.length == 0 && searchshow">
         <mu-list>
           <mu-list-item avatar button :ripple="false">
             <mu-list-item-title>搜索历史</mu-list-item-title>
@@ -24,7 +24,7 @@
       <p class="noneHis" v-if="history.length == 0 && !searchshow">暂无搜索历史</p>
 
       <!--历史记录-->
-      <mu-container class="demo-chip-wrapper" v-if="history.length>0 && !searchshow">
+      <mu-container class="demo-chip-wrapper" v-if="history.length>0 && searchshow&&resData.length == 0">
         <div class="historybox">
           <span>历史搜索</span>
           <div class="dele" @click="openDeleWin">
@@ -39,7 +39,7 @@
 
     </div>
     <!--热门搜索-->
-    <mu-container class="demo-chip-wrapper hotsearchbox" v-if="hothistory.length>0 && !searchshow">
+    <mu-container class="demo-chip-wrapper hotsearchbox" v-if="hothistory.length>0 && searchshow&&resData.length == 0">
       <p class="historybox">热门搜索</p>
       <mu-chip class="demo-chip" v-for="(item , index) in hothistory" :key="index" @click="searchAWord(item)">
         {{item.key_word}}
@@ -107,7 +107,8 @@
         </mu-flex>
       </mu-flex>
     </div>
-    <div v-else-if="searchshow&&resshow" style="position: absolute;left: 50%;top: 35%;margin-left: -96px;">
+    <!-- <div v-else-if="searchshow&&resshow" style="position: absolute;left: 50%;top: 35%;margin-left: -96px;"> -->
+      <div v-else-if="!searchshow&&resshow">
       <img src="../../../static/img/img_wujieguo@2x.png" style="width: 3.9rem;height: 3.3rem;" />
       <p style="color: #999;">没有找到相关商品</p>
     </div>
@@ -329,13 +330,15 @@ export default {
     showword(data) {
       SearchWord(data).then(res => {
         let data = res.data.data;
+        //刷新获取的搜索词
+        this.GetKeyWord()
         if(data.length == 0 ){
             this.resData = []
-            this.searchshow = true;
+            this.searchshow = false;
             return;
         }
         if(data.length > 0){
-          this.searchshow = true;
+          this.searchshow = false;
           this.resshow = false//如果有搜索结果，不显示没有搜索结果的界面
         }
         for(let i in data){
@@ -425,12 +428,12 @@ export default {
     },
     /**获取搜索词和热门搜索词*/
     getSWords(){
+      this.$store.commit("setLoad",true);
       this.GetKeyWord()
       this.GetKeyHotWord()
     },
      /*获取搜索历史*/
     GetKeyWord(){
-      this.$store.commit("setLoad",true);
       GetKeyWord().then(res => {
           let data = res.data.data;
           data = this.setSearchData(data)
@@ -696,6 +699,7 @@ export default {
   left: 0.8rem;
   font-size: 0.26rem !important;
   color: #666;
+  z-index: 9;
 }
 .settlement {
   position: absolute;

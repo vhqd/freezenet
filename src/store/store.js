@@ -7,11 +7,13 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
     state: {
 		 /* host:'http://enet.api.gg',  //刘强本地  */
-		host1:'http://enet.com/eNet/public/index.php',//李琦本地 
+		host1:'http://enet.com/eNet/public',//李琦本地 
 		host:'http://SW2018001.trg7.cn/eNet/public/index.php', //线上
 		basehost:'http://SW2018001.trg7.cn/#/', //线上
+		baseimg:'http://SW2018001.trg7.cn//eNet/public/banner', //线上
 		load:false,//全局loading
 		showerror:false,//全局错误提示
+		showcarinfo:false,//全局添加购物车提示
 		showtext:'',
 		token:'',
 		openid:null,//用户openid
@@ -70,6 +72,13 @@ const store = new Vuex.Store({
 		 */
 		setLoad(state,value){
 			state.load = value;
+		},
+
+		/**
+		 * 显示加入购物车信息
+		 */
+		showCarInfo(state){
+			state.showcarinfo = !state.showcarinfo
 		},
 
 		/**

@@ -150,7 +150,7 @@
 				<div class="demo-text" v-if="active1 === 0">
 					<div class="carlistbox">
 						<ul>
-							<li class="list-item " v-for="(item,index) in coupons" :key="index" data-type="0" v-if="!item.is_overdue && couponsnum != 0" @click='useCoupons(item)'>
+							<li class="list-item " v-for="(item,index) in coupons" :key="index" data-type="0" v-if="!item.is_overdue && couponsnum != 0&&item.is_lock==0" @click='useCoupons(item)'>
 								<!--<div class="list-box" @touchstart.capture="touchStart" @touchend.capture="touchEnd" @click="skip">-->
 								<div class="list-box">
 									<div class="list-content">
@@ -175,8 +175,8 @@
 													</mu-list-item>
 													<div class="usecar">
 														<div class="saoma" style="color: #fff;">
-															<p style="font-size: 0.52rem;">￥{{item.red_packet_price}}</p>
-															<p>满{{item.red_packet_threshold_price}}可用</p>
+															<p style="font-size: 0.52rem;"><span style="font-size:12px;color:#fff;">￥</span>{{item.red_packet_price}}</p>
+															<p style="font-size:12px">满{{item.red_packet_threshold_price}}可用</p>
 														</div>
 													</div>
 												</div>
@@ -196,7 +196,7 @@
 				<div class="demo-text" v-if="active1 === 1">
 					<div class="carlistbox">
 						<ul>
-							<li class="list-item " v-for="(item,index) in coupons" :key="index" data-type="0" v-if="item.is_overdue && nocouponsnum != 0">
+							<li class="list-item " v-for="(item,index) in coupons" :key="index" data-type="0" v-if="(item.is_overdue && nocouponsnum != 0) || item.is_lock == 1">
 								<!--<div class="list-box" @touchstart.capture="touchStart" @touchend.capture="touchEnd" @click="skip">-->
 								<div class="list-box">
 									<div class="list-content">
@@ -206,7 +206,7 @@
 													<mu-list-item avatar :ripple="false" button>
 														<mu-list-item-action>
 															<mu-avatar style="width: 1.4rem;height: 1.4rem;">
-																<img src="../../../static/img/center/img_youhuiquan @3x.png">
+																<img src="../../../static/img/center/img_youhuiquanno @3x_.png">
 															</mu-avatar>
 														</mu-list-item-action>
 														<mu-list-item-content>
@@ -221,8 +221,8 @@
 													</mu-list-item>
 													<div class="usecar">
 														<div class="saoma" style="color: #fff;">
-															<p style="font-size: 0.52rem;">￥{{item.red_packet_price}}</p>
-															<p>满{{item.red_packet_threshold_price}}可用</p>
+															<p style="font-size: 0.52rem;"><span style="font-size:12px;color:#fff;">￥</span>{{item.red_packet_price}}</p>
+															<p style="font-size:12px">满{{item.red_packet_threshold_price}}可用</p>
 														</div>
 													</div>
 												</div>
@@ -413,6 +413,12 @@
 
 			/**提交订单*/
 			toPay() {
+				
+				if(!this.dress){
+					this.$store.commit('setShowText','请添加收货地址')
+					this.$store.commit('seterror');
+					return;
+				}
 				let alldata = JSON.parse(this.$route.query.list);
 				let goods = [];
 				for(let ite in alldata){
@@ -501,7 +507,7 @@
 					if(data && data.length > 0 ){
 						this.coupons = data;
 						for(let i in this.coupons){
-							if(!this.coupons[i].is_overdue){
+							if(!this.coupons[i].is_overdue && i.is_lock==0){
 								this.couponsnum ++ 
 							}else{
 								this.nocouponsnum ++
@@ -514,7 +520,7 @@
 			/**使用优惠券*/
 			useCoupons(item){
 				this.yhj = item.red_packet_price;
-				this.red_packet_id = item.id;
+				this.red_packet_id = item.red_packet_id;
 				this.open = false;
 			},
 			
@@ -643,6 +649,7 @@
 	.mu-list-three-line .mu-item-action .mu-avatar {
 		margin-top: 0;
 		margin-right: 0.09rem;
+		background: initial;
 	}
 	
 	.mu-avatar img {
@@ -699,6 +706,7 @@
 		left: 0.8rem;
 		font-size: 0.26rem !important;
 		color: #666;
+		z-index: 9;
 	}
 	
 	.settlement {
@@ -752,8 +760,8 @@
 	
 	.usecar .saoma {
 		position: absolute;
-		top: 5px;
-		left: .2rem;
+		top: 13px;
+		left: 0rem;
 		height: 1.3rem;
 		width: 1.75rem;
 		flex-direction: column;

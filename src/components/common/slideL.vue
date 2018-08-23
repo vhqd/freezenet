@@ -35,8 +35,8 @@
                                 <span v-show="!isbind" style="color: #a9a9a9;">绑定手机号才能查看价格</span>
                                 <div v-show="isbind" style="color: red;">
                                   ￥
-                                  <span style="font-size: .5rem;">{{item.goods_price}}</span>
-                                  <span style="color: #ccc;text-decoration: line-through;">￥{{item.single_price}}</span>
+                                  <span style="font-size: .38rem;">{{item.goods_price}}</span>
+                                  <span style="color: #ccc;text-decoration: line-through;">￥{{item.goods_original_price}}</span>
                                 </div>
                               </div>
                             </mu-list-item-sub-title>
@@ -69,8 +69,8 @@
         <mu-list class="carbut">
           <mu-list-item avatar button :ripple="false">
             <div class="pricecarbox">
-              <div class="carprice">
-                <img :src="checkAll ? radioF : radioT " class="radioimg" @click="checkAllMeth" /> 全选
+              <div class="carprice" @click="checkAllMeth" style="display:flex;align-items:center;">
+                <img :src="checkAll ? radioF : radioT " class="radioimg" style="margin-right:5px;"/> 全选
               </div>
               <!--<div>合计：<span style="color: red;">￥{{allPrice}}</span></div>-->
               <div style="position: relative;">合计：
@@ -114,6 +114,7 @@ export default {
   data() {
     return {
       host: this.$store.state.host,
+      baseimg:this.$store.state.baseimg,
       page: 1,
       limit: 10, //当前页面分页条数
       qigou:this.$store.state.qigou,//起购价
@@ -126,6 +127,7 @@ export default {
       checkAll: false, //全选（默认不选）
       allPrice: 0, //总价
       checkNum: 0, //选中的条数
+      checkslist:0,
       nomore: false, //没有更多显示
       list: [
         /*  {
@@ -153,7 +155,7 @@ export default {
     this.checkAll =false;
     this.checkNum = 0;
     this.allPrice = 0;
-
+    this.list = [] 
 
     //this.$store.commit("setLoad",true);
 
@@ -162,6 +164,18 @@ export default {
      this.getCarList(this.limit, 1);
      // this.$store.commit("setLoad",false);
   },
+    watch: {
+      checkslist(a,b){
+        if(a == 0){
+          this.checkslist = 0
+        }
+        if(a == this.list.length){
+          this.checkAll = true
+        }else{
+          this.checkAll = false
+        }
+      }
+    },
   mounted() {
    /*  this.$store.commit("setLoad",true);
      //let loadings = this.$loading();
@@ -183,12 +197,12 @@ export default {
         
         let data = res.data.shopInfo.data;
         for(let item in data){
-          data[item].goods_photo = this.host + data[item].goods_photo;
+          data[item].goods_photo = this.baseimg + data[item].goods_photo;
           data[item].isslid = false;
         }
         console.log('返回的购物车list');
         console.log(data);
-        this.list = data;
+        this.list = [...this.list, ...data];
         this.getCarNum(this.list);
 
       });
@@ -231,10 +245,12 @@ export default {
       this.loading = true;
       setTimeout(() => {
         this.loading = false;
-        if (!this.nomore) {
+        this.getCarList(this.limit, this.page);
+       /*  if (!this.nomore) {
           this.getCarList(this.limit, this.page).then(res => {
-            if (res.length > 0) {
-              this.list = [...this.list, ...res];
+            let data = res.data.shopInfo.data
+            if (data.length > 0) {
+              this.list = [...this.list, ...data];
               this.getCarNum(this.list);
               //console.log('****************************');
               //console.log(this.list);
@@ -242,7 +258,7 @@ export default {
               this.nomore = true;
             }
           });
-        }
+        } */
         //this.getCarList(this.limit,this.page);
         // console.log("成功数据");
         //this.num += 10;
@@ -297,6 +313,15 @@ export default {
     /**单选按钮*/
     checkRadio(item) {
       item.checks = !item.checks;
+      console.log(item.checks);
+      
+      if(item.checks){
+        this.checkslist = this.checkslist + 1
+      }else{
+        this.checkslist = this.checkslist - 1
+      }
+      console.log(this.checkslist);
+      
       this.getAllPrice(this.list);
     },
 
@@ -341,6 +366,9 @@ export default {
 
     /**减少数量值*/
     minus(item,index) {
+      if(item.count == 1){
+        return;
+      }
       this.$store.commit("editCarnum", this.$store.state.count - 1);
       let amount = parseInt(item.count);
       let list = this.list;

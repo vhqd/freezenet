@@ -95,6 +95,8 @@
 		  console.log(self);
 		},*/
 		activated(){
+			this.page = 1
+			this.list = []
 			this.getDress(this.page);
 		},
 		mounted(){

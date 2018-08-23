@@ -403,4 +403,5 @@ export default {
 .list-item:after {
   border: none;
 }
+.carlistbox>ul{overflow: auto !important}
 </style>

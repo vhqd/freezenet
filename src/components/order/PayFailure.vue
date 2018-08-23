@@ -10,8 +10,8 @@
 				<p>请在<span style="color: #f95151;">30分钟内</span>完成支付</p>
 				<p>逾期支付订单将自动取消</p>
 				<div class="tipbox">
-					<div class="goHome">继续逛逛</div>
-					<div class="goOrder">查看订单</div>
+					<div class="goHome" @click="gohome">继续逛逛</div>
+					<div class="goOrder" @click="goorder">查看订单</div>
 				</div>
 			</div>
 		</div>
@@ -33,6 +33,12 @@
 	    }
 	  },
 	  methods:{
+		gohome(){
+			this.$router.push({path:'/'})
+		},
+		goorder(){
+			this.$router.push({path:'/orderlist',query:{id:1}})
+		},
 	  }
 	}
 </script>

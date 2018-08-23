@@ -21,7 +21,7 @@
       <div class="adimg">
         <mu-carousel hide-controls>
           <mu-carousel-item v-for="(item , index) in topclass" :key="index">
-            <img :src="item.img" @click="goClasstopDetail(item)" :onerror="onerrorimg">
+            <img :src="item.img" @click="goClasstopDetail(item)" :onerror="onerrorimglong">
           </mu-carousel-item>
         </mu-carousel>
         <!-- <img src="../../../static/img/1.0_02.png" /> -->
@@ -34,7 +34,7 @@
               <li class="toptab" v-for="(item , index) in classlist" :key='index' @click="goDetail(item)">
                 <p class="fqtitle">{{item.goods_type_second_name}}</p>
                 <p class="stip">{{item.goods_type_second_desc}}</p>
-                <img :src="item.img" />
+                <img :src="item.img" :onerror="onerrorimg"/>
               </li>
             </ul>
           </div>
@@ -98,8 +98,14 @@
           <img src="../../../static/img/home/img_meiyoutuihuodan@2x.png" style="width: 2rem;height: 2rem;" />
           <p style="color: #999;">你还没有清单哦</p>
         </div>
+        <div id="realheight"></div>
       </div>
-
+      	<mu-dialog title="温馨提示" width="360" :open.sync="openJS">
+        <span class="cancelbox" @click="closeJSDialog"><img src="../../../static/img/ic_Shut .png" /></span>
+        您确认要删除该常购清单吗?<br />
+        <mu-button slot="actions" flat color="primary" @click="sureClick(index)">确定</mu-button>
+        <mu-button slot="actions" flat color="secondary" @click="closeJSDialog">取消</mu-button>
+      </mu-dialog>
     </div>
 
     <!--底部导航-->
@@ -137,8 +143,13 @@ export default {
   data() {
     return {
       host: this.$store.state.host,
+      host1: this.$store.state.host1,
+      baseimg:this.$store.state.baseimg,
       limit: 10,
       page: 1,
+      openJS: false, //取消弹窗
+      item:null,
+      index:null,
       carnum: 0, //购物车数量
       topclass: [],
       onerrorimg: this.$store.state.onerrorimg,
@@ -186,7 +197,7 @@ export default {
   },
   activated() {
 
-    let is_phone = this.$route.query.is_phone;
+    let is_phone = this.$route.query.is_phone || sessionStorage.isbind;
     let userid = this.$route.query.userid;
     console.log("userid");
     console.log(userid);
@@ -205,7 +216,22 @@ export default {
     }
   },
   methods: {
-    
+     /*删除一条常购清单记录*/
+    deleList(index, item) {
+      this.openJS = true;
+      this.item = item;
+      this.index = index;
+    },
+    /*取消订单*/
+    sureClick(index) {
+      this.openJS = false;
+      this.showlist.splice(this.index, 1);
+      this.deletOfenBuy(this.item);
+    },
+    /*关闭取消弹窗*/
+    closeJSDialog() {
+      this.openJS = false;
+    },
     /**保存openid*/
     setOpenid(openid) {
       let obj = { name: openid };
@@ -214,13 +240,13 @@ export default {
     },
 
     initData() {
-      let openid = this.$route.query.openid;
+      let openid = this.$route.query.openid || JSON.parse(localStorage.obj).name;
       if (openid) {
         let str = localStorage.obj;
         this.setOpenid(openid);
       }
       this.$store.commit("setOpenId", openid);
-      let username = openid || JSON.parse(localStorage.obj).name
+      let username = openid
       let data = {
         username: openid,
         password: "123456"
@@ -249,7 +275,7 @@ export default {
           let data = res.data.data.data;
           for (let item in data) {
             data[item].banner_image_address =
-              this.host + data[item].banner_image_address;
+              this.host1 + data[item].banner_image_address;
           }
           this.bannerImg = data;
           console.log("banner");
@@ -297,7 +323,7 @@ export default {
       getOfenBuyList(99, 1).then(res => {
         let data = res.data.info.data;
         for (let item in data) {
-          data[item].goods_photo = this.host + data[item].goods_photo;
+          data[item].goods_photo = this.host1 + data[item].goods_photo;
           data[item].num = 0;
         }
         this.showlist = data;
@@ -322,11 +348,7 @@ export default {
       }
     },
 
-    /*删除一条常购清单记录*/
-    deleList(index, item) {
-      this.showlist.splice(index, 1);
-      this.deletOfenBuy(item);
-    },
+   
 
     /**专区商品1*/
     goClasstopDetail(item) {
@@ -470,7 +492,6 @@ export default {
 
 .mu-list {
   padding: 8px 0 0 0;
-  margin-bottom: 1.1rem;
 }
 .li-box .mu-item-title {
   font-size: 0.24rem;
@@ -559,7 +580,7 @@ export default {
 }
 .stip {
   font-size: 0.22rem;
-  color: #999 !important;
+  color: #a9a9a9 !important;
   font-weight: 100;
 }
 .inc-scroll-landscape-container > .inc-scroll-landscape-content > ul > li img {

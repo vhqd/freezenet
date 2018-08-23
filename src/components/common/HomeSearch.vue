@@ -4,8 +4,10 @@
 		<header class="m_header">
             <div class="inputitem pm">
 				<img src="../../../static/img/ic-search@2x.png" alt="" class="imgsearch">
-		    	<mu-text-field class="widthstyle midm" id="searchIn" @focus="goSearch" placeholder="您想要..."></mu-text-field>
-		    	<div class="guanbi"><img src="../../../static/img/ic_remove.png"/></div>
+		    	<mu-text-field class="widthstyle midm" id="searchIn" @focus="goSearch" placeholder="您想要...">
+					<div class="guanbi"><img src="../../../static/img/ic_remove.png"/></div>
+				</mu-text-field>
+		    	
 		    	<!--<div class="cancel" @click="cancelClick">取消</div>-->
 	    	</div>
         </header>
@@ -43,7 +45,7 @@
 </script>
 <style scoped>
 	/* @import 'http://cdn.bootcss.com/material-design-icons/3.0.1/iconfont/material-icons.css'; */
-	.home_h{position: absolute;width: 100%;z-index: 9999;}
+	.home_h{position: absolute;width: 86%;left:7%;z-index: 9999;}
 	.m_header{height: 0.9rem;}
 	.mu-input.has-icon{border-radius: 0.3rem;}
 	.pm{padding: 0.2rem;}

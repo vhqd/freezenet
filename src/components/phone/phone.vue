@@ -196,6 +196,7 @@
 				console.log(data);
 				register(QS.stringify(data)).then(res => {
 					this.$store.commit('editIsBind');
+					sessionStorage.isbind = 1;//首次注册绑定手机成功设置已经绑定手机
 					let token = res.data.info.access_token
 					console.log('token');
 					console.log(token);

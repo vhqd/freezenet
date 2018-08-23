@@ -8,7 +8,7 @@
 				<p style="color: #999;">更多活动</p>
 				<p style="color: #f95151;">请关注首页轮播图</p>
 				<p><span style="color: #f95151;">{{timeDown}}</span>秒后条转到订单列表</p>
-				<div class="goHome">去首页</div>
+				<div class="goHome" @click="gohome">去首页</div>
 			</div>
 		</div>
 	</div>
@@ -29,12 +29,16 @@
 	    }
 	  },
 	  methods:{
+		gohome(){
+			this.$router.push({path:'/'})
+		},
 	  	timeDownMeth(){
 	  		let that = this;
-	  		this.SI = setInterval(function(){
+	  		this.SI = setInterval(() => {
 	  			console.log(that.timeDown)
 	  			if(that.timeDown <=　0){
-	  				clearInterval(that.SI);
+					clearInterval(that.SI);
+					this.$router.push({path:'/orderlist',query:{id:2}})  
 	  			}else{
 	  				that.timeDown = that.timeDown - 1
 	  			}
