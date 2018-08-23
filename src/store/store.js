@@ -17,6 +17,7 @@ const store = new Vuex.Store({
 		load:false,//全局loading
 		showerror:false,//全局错误提示
 		showinfo:false,//全局信息提示
+		openwin:false,//全局弹窗
 		showtext:'',
 		token:null,
 		openid:null,//用户openid
@@ -82,6 +83,13 @@ const store = new Vuex.Store({
 		 */
 		showInfo(state){
 			state.showinfo = !state.showinfo
+		},
+
+		/**
+		 * 全局弹窗
+		 */
+		setOpenWin(state,value){
+			state.openwin = value
 		},
 
 		/**

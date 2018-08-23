@@ -122,6 +122,12 @@
         <mu-button slot="actions" flat color="primary" @click="sureClick(index)">确定</mu-button>
         <mu-button slot="actions" flat color="secondary" @click="closeJSDialog">取消</mu-button>
       </mu-dialog>
+			<mu-dialog title="温馨提示" width="360" :open.sync="openwins">
+        <span class="cancelbox" @click="cancel"><img src="../../../static/img/ic_Shut .png" /></span>
+        绑定手机才可以下单呦~<br />
+        <mu-button slot="actions" flat color="primary" @click="sure">确定</mu-button>
+        <mu-button slot="actions" flat color="secondary" @click="cancel">取消</mu-button>
+      </mu-dialog>
 		</div>
 		<Footer tagNum='2'></Footer>
 	</div>
@@ -146,6 +152,7 @@ export default {
       limit: 99,
 			page: 1,
 			openJS: false, //取消弹窗
+			openwins:false,
       item:null,
       index:null,
       onerrorimg: this.$store.state.onerrorimg,
@@ -280,10 +287,22 @@ export default {
     },
     /*增加数量值*/
     plus(item, ind) {
-      let amount = item.num;
-      item.num = amount + 1;
-      setOfenBuyData(item, this.alldata);
-    }
+			let isbind = sessionStorage.isbind
+      if(isbind != 1){
+        this.openwins = true
+      }else{
+				let amount = item.num;
+				item.num = amount + 1;
+				setOfenBuyData(item, this.alldata);
+      }
+    },
+		sure(){
+			this.openwins = false
+			this.$router.push('/phone')
+		},
+		cancel(){
+			this.openwins = false
+		}
   }
 };
 </script>
@@ -340,8 +359,8 @@ export default {
 
 .dele {
   position: absolute;
-  right: 0.3rem;
-  top: 0.18rem;
+  right: .4rem;
+  top: .18rem;
 }
 .dele img {
   width: 0.35rem;

@@ -127,7 +127,7 @@
 				      		<span class="carnum">{{carnum}}</span>
 				      	</div>
 				      </div>
-				      <div style="position: relative;">合计：<span style="color: red;">￥{{allPrice}}</span><span class="qigou">{{qigou}}元起购</span></div>
+				      <div style="position: relative;">合计：<span style="color: red;" v-show="!isbind">￥{{allPrice}}</span><span class="qigou">{{qigou}}元起购</span></div>
 			      </div>
             <!-- 
               <div :class="carnum == 0 || allPrice < qigou ? 'huise settlement': 'settlement'">

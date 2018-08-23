@@ -62,8 +62,10 @@
 								<mu-list-item-title>{{item.goods_title}}</mu-list-item-title>
 								<mu-list-item-sub-title>
 									<!--<span style="color: #a9a9a9;font-size: 0.2rem;">库存{{item.inventory}}件</span>-->
-									<p style="color: red;">
-										￥<span style="font-size: 0.5rem;">{{item.goods_price}}</span>
+									<span v-show="!isbind" style="color: #a9a9a9;">绑定手机号才能查看价格</span>
+									<p style="color: red;" v-show="isbind">
+										￥
+										<span style="font-size: 0.5rem;">{{item.goods_price}}</span>
 										<span style="color: #ccc;text-decoration: line-through;">￥{{item.goods_original_price}}</span>
 									</p>
 								</mu-list-item-sub-title>
@@ -110,7 +112,7 @@
 					<mu-list-item button :ripple="false">
 						<mu-list-item-title>应付款</mu-list-item-title>
 						<mu-list-item-action>
-							<span>￥{{allprice}}</span>
+							<span v-show="isbind">￥{{allprice}}</span>
 						</mu-list-item-action>
 					</mu-list-item>
 				</mu-list>
@@ -118,7 +120,7 @@
 			</mu-paper>
 
 			<div class="total">
-				<span class="xj" style="font-size: 0.26rem;font-weight: bold;">小计：<span style="color: red;">￥{{payprice}}</span></span>
+				<span class="xj" style="font-size: 0.26rem;font-weight: bold;">小计：<span style="color: red;" v-show="isbind">￥{{payprice}}</span></span>
 				<span class="xj">
 					共{{alllistlength}}件商品
 				</span>
@@ -130,7 +132,7 @@
 			<mu-list class="carbut">
 				<mu-list-item avatar button :ripple="false">
 					<div class="pricecarbox">
-						<div>合计：<span style="color: red;">￥{{payprice}}</span></div>
+						<div>合计：<span style="color: red;" v-show="isbind">￥{{payprice}}</span></div>
 					</div>
 					<div class="settlement" @click="toPay">
 						提交订单
@@ -248,6 +250,7 @@
 <script>
 	import BackBar from '../common/BackBar.vue'
 	import QS from "qs";
+	import { mapState } from "vuex";
 	import {
 	getDress,
 	AddOrder,
@@ -349,6 +352,12 @@
 		
 			
 			
+		},
+		 computed: {
+			...mapState({
+			// mapState相当于映射
+			isbind: "isbind"
+			})
 		},
 		watch:{
 			yhj:function(a,b){

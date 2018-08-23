@@ -74,7 +74,7 @@
               </div>
               <!--<div>合计：<span style="color: red;">￥{{allPrice}}</span></div>-->
               <div style="position: relative;">合计：
-                <span style="color: red;">￥{{allPrice}}</span>
+                <span style="color: red;" v-show="isbind">￥{{allPrice}}</span>
                 <span class="qigou">{{qigou}}元起购</span>
               </div>
             </div>
@@ -95,7 +95,12 @@
       <img src="../../../static/img/car/img_konggouwuche.png" style="width: 3.9rem;height: 3.3rem;" />
       <p style="color: #999;">购物车还没有商品呦</p>
     </div>
-
+<mu-dialog title="温馨提示" width="360" :open.sync="openwins">
+        <span class="cancelbox" @click="cancel"><img src="../../../static/img/ic_Shut .png" /></span>
+        绑定手机才可以下单呦~<br />
+        <mu-button slot="actions" flat color="primary" @click="sure">确定</mu-button>
+        <mu-button slot="actions" flat color="secondary" @click="cancel">取消</mu-button>
+      </mu-dialog>
   </div>
 </template>
 
@@ -120,6 +125,7 @@ export default {
       qigou:this.$store.state.qigou,//起购价
       onerrorimg:this.$store.state.onerrorimg,
       loading: false,
+      openwins:false,
       lastinde:0,
       radioF: require("../../../static/img/car/ic_xuanzhong.png"), //选中图片
       radioT: require("../../../static/img/car/ic_weixuan.png"), //未选图片
@@ -383,12 +389,17 @@ export default {
 
     /**增加数量值*/
     plus(item,index) {
-      this.$store.commit("editCarnum", this.$store.state.count + 1);
-      let amount = parseInt(item.count);
-      let list = this.list;
-      item.count = amount + 1;
-      this.getAllPrice(list);
-      this.eidtCar(item, 1,index);
+      let isbind = sessionStorage.isbind
+      if(isbind != 1){
+        this.openwins = true
+      }else{
+        this.$store.commit("editCarnum", this.$store.state.count + 1);
+        let amount = parseInt(item.count);
+        let list = this.list;
+        item.count = amount + 1;
+        this.getAllPrice(list);
+        this.eidtCar(item, 1,index);
+      }
     },
 
     /**编辑购物车数量*/
@@ -521,6 +532,13 @@ export default {
       for (let i = 0; i < listItems.length; i++) {
         listItems[i].dataset.type = 0;
       }
+    },
+    sure(){
+      this.openwins = false
+      this.$router.push('/phone')
+    },
+    cancel(){
+      this.openwins = false
     }
 
   }

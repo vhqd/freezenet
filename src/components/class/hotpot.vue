@@ -74,7 +74,12 @@
         <mu-button slot="actions" flat color="primary" @click="closeJSDialog">确定</mu-button>
       </mu-dialog>
     </div>
-
+    <mu-dialog title="温馨提示" width="360" :open.sync="openwins">
+        <span class="cancelbox" @click="cancel"><img src="../../../static/img/ic_Shut .png" /></span>
+        绑定手机才可以下单呦~<br />
+        <mu-button slot="actions" flat color="primary" @click="sure">确定</mu-button>
+        <mu-button slot="actions" flat color="secondary" @click="cancel">取消</mu-button>
+      </mu-dialog>
   </div>
 </template>
 
@@ -96,6 +101,7 @@
         limit: 10, //分页条数
         page: 1, //当前页
         nomore: false,
+        openwins:false,
         openJS: false, //结算弹窗
         carnum: 0, //购物车数量
         loading: false,
@@ -188,11 +194,16 @@
       },
       /*增加数量值*/
       plus(item) {
+        let isbind = sessionStorage.isbind
+      if(isbind != 1){
+        this.openwins = true
+      }else{
         let amount = item.num;
         item.num = amount + 1
         this.carnum = this.carnum + 1
         this.allPrice = parseFloat(this.allPrice) + parseFloat(item.goods_price)
         setOfenBuyData(item, this.list);
+      }
       },
       /*获取购物车数量*/
       getCarNum() {
@@ -238,6 +249,13 @@
       /*关闭弹窗*/
       closeJSDialog() {
         this.openJS = false;
+      },
+      sure(){
+        this.openwins = false
+        this.$router.push('/phone')
+      },
+      cancel(){
+        this.openwins = false
       }
     }
   }

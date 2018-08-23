@@ -14,7 +14,8 @@
 						<mu-list-item-sub-title>
 							<p style="color: red;">
 								￥
-								<span style="font-size: 0.5rem;">{{contentinfo[0].goods_price}}</span>
+								<span v-show="!isbind" style="color: #a9a9a9;">绑定手机号才能查看价格</span>
+								<span  v-show="isbind" style="font-size: 0.5rem;">{{contentinfo[0].goods_price}}</span>
 								<!-- <span style="color: #ccc;text-decoration: line-through;">￥{{data.oldPrice}}</span> -->
 							</p>
 						</mu-list-item-sub-title>
@@ -89,6 +90,12 @@
 				<mu-button slot="actions" flat color="primary" @click="closeJSDialog">确定</mu-button>
 			</mu-dialog>
 		</div>
+		<mu-dialog title="温馨提示" width="360" :open.sync="openwins">
+        <span class="cancelbox" @click="cancel"><img src="../../../static/img/ic_Shut .png" /></span>
+        绑定手机才可以下单呦~<br />
+        <mu-button slot="actions" flat color="primary" @click="sure">确定</mu-button>
+        <mu-button slot="actions" flat color="secondary" @click="cancel">取消</mu-button>
+      </mu-dialog>
 		<!--  <div class="addToCar">
 		  	<mu-list class="carbut">
 			   <mu-list-item avatar button :ripple="false">
@@ -113,6 +120,7 @@
 <script>
 import HomeBannerView from "../home/HomeBanner.vue";
 import BackBar from "../common/BackBar.vue";
+import { mapState } from "vuex";
 import { getProductInfos , AddCarShop , addOfenBuy , deletOfenBuy } from '../../http/http.js'
 import { jiancar , addcar } from "../../common/common.js";
 import QS from "qs";
@@ -135,7 +143,8 @@ export default {
 			manjian:this.$store.state.manjian,//满减
 			jian:this.$store.state.jian,//免减价格
 			onerrorimglong:this.$store.state.onerrorimglong,
-      openJS: false, //结算弹窗
+			openJS: false, //结算弹窗
+			openwins:false,
 			allPrice: 0,
 			isOfen:false,
       jcg1: require("../../../static/img/home/ic_jiachanggou_moren@3x.png"),
@@ -174,6 +183,12 @@ export default {
 	mounted(){
 		
 	},
+  computed: {
+    ...mapState({
+      // mapState相当于映射
+      isbind: "isbind"
+    })
+  },
   methods: {
 		/**添加常购或者取消常购*/
 		addOfenBuy(){
@@ -234,25 +249,37 @@ export default {
     },
     /*增加数量值*/
     plus() {
-			let shopdata = this.contentinfo[0]
-      let amount = shopdata.num;
-			shopdata.num = amount + 1;
-			this.allPrice =parseInt(shopdata.num)*parseFloat(shopdata.goods_price)
-			shopdata
-			let data = {
-				goods_id:[shopdata.id],
-				single_price:[shopdata.goods_price],
-				count:[1],
-				sum_price : shopdata.num * shopdata.goods_price
-			}
-			console.log('添加的数据');
-			console.log(data);
-			addcar(data, 2);
+			let isbind = sessionStorage.isbind
+      if(isbind != 1){
+        this.openwins = true
+      }else{
+				let shopdata = this.contentinfo[0]
+				let amount = shopdata.num;
+				shopdata.num = amount + 1;
+				this.allPrice =parseInt(shopdata.num)*parseFloat(shopdata.goods_price)
+				shopdata
+				let data = {
+					goods_id:[shopdata.id],
+					single_price:[shopdata.goods_price],
+					count:[1],
+					sum_price : shopdata.num * shopdata.goods_price
+				}
+				console.log('添加的数据');
+				console.log(data);
+				addcar(data, 2);
+      }
     },
     /*关闭弹窗*/
     closeJSDialog() {
       this.openJS = false;
-    }
+		},
+		sure(){
+			this.openwins = false
+			this.$router.push('/phone')
+		},
+		cancel(){
+			this.openwins = false
+		}
   }
 };
 </script>

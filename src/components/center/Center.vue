@@ -236,6 +236,7 @@
 		},
 
 		goBindPhone(){
+			this.openwins = false
 			this.$router.push('/phone')
 			
 		},

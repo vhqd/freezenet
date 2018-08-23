@@ -12,11 +12,11 @@ import store from "../store/store.js";
 import QS from "qs";
 
 /**获取token*/
-export function getTokens() {
-  let str = localStorage.obj;
-  let obj = JSON.parse(str);
+export function getTokens(openid) {
+ /*  let str = localStorage.obj;
+  let obj = JSON.parse(str); */
   let data = {
-    username: obj.name,
+    username: openid,
     password: "123456"
   };
   console.log("获取token需要的默认用户信息");

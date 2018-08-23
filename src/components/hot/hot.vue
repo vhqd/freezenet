@@ -79,7 +79,12 @@
 				<mu-button slot="actions" flat color="primary" @click="closeJSDialog">确定</mu-button>
 			</mu-dialog>
 		</div>
-
+<mu-dialog title="温馨提示" width="360" :open.sync="openwins">
+        <span class="cancelbox" @click="cancel"><img src="../../../static/img/ic_Shut .png" /></span>
+        绑定手机才可以下单呦~<br />
+        <mu-button slot="actions" flat color="primary" @click="sure">确定</mu-button>
+        <mu-button slot="actions" flat color="secondary" @click="cancel">取消</mu-button>
+      </mu-dialog>
 	</div>
 </template>
 
@@ -96,7 +101,8 @@ export default {
 	  allPrice: 0,
 	  host:this.$store.state.host,
 	  qigou: this.$store.state.qigou,
-	  onerrorimg:this.$store.state.onerrorimg,
+    onerrorimg:this.$store.state.onerrorimg,
+     openwins:false,
       openJS: false, //结算弹窗
       list: [
       /*   {
@@ -244,11 +250,23 @@ export default {
     },
     /*增加数量值*/
     plus(item) {
-      let amount = item.num;
-      item.num = amount + 1;
-      this.carnum = this.carnum + 1;
-      this.allPrice = this.allPrice + item.goods_price;
-       setOfenBuyData(item, this.list);
+      let isbind = sessionStorage.isbind
+      if(isbind != 1){
+        this.openwins = true
+      }else{
+        let amount = item.num;
+        item.num = amount + 1;
+        this.carnum = this.carnum + 1;
+        this.allPrice = this.allPrice + item.goods_price;
+         setOfenBuyData(item, this.list);
+      }
+    },
+    sure(){
+      this.openwins = false
+      this.$router.push('/phone')
+    },
+    cancel(){
+      this.openwins = false
     }
   },
   computed: {

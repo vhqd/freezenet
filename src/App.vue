@@ -2,6 +2,12 @@
   <div id="app">
     <keep-alive>
     	<router-view/>
+     <!--  <mu-dialog title="温馨提示" width="360" :open.sync="openwins">
+        <span class="cancelbox" @click="cancel"><img src="../static/img/ic_Shut .png" /></span>
+        绑定手机才可以下单呦~<br />
+        <mu-button slot="actions" flat color="primary" @click="sure">确定</mu-button>
+        <mu-button slot="actions" flat color="secondary" @click="cancel">取消</mu-button>
+      </mu-dialog> -->
     </keep-alive>
   </div>
 </template>
@@ -12,12 +18,23 @@ export default {
   data(){
     return{
       loads:null,
+      openwins: null, //全局弹窗
     }
   },
   methods:{
     /**全局loading*/
     showLoad(){
        this.loads = this.$loading();
+    },
+    sure(){
+      this.openwins = false
+      this.$router.push('/phone')
+    },
+    cancel(){
+      this.openwins = false
+    },
+    showwinds(){
+      this.openwins = true
     }
   },
   computed:{
@@ -32,6 +49,10 @@ export default {
     /**全局信息提示*/
     showinfo(){
       return this.$store.state.showinfo
+    },
+    /**全局弹窗*/
+    openwin(){
+      return this.$store.state.openwin
     }
   },
   watch:{
@@ -47,6 +68,13 @@ export default {
     },
     showinfo(a,b){
         this.$toast.message(this.$store.state.showtext);
+    },
+    openwin(a,b){
+        if(a){
+          this.showwinds()
+        }else{
+          this.cancel()
+        }
     }
   }
 }

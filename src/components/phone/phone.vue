@@ -1,9 +1,9 @@
 <template>
 	<div class="address">
 		<mu-appbar style="width: 100%;" color="primary">
-			<!-- <mu-button icon slot="left" @click="back">
+			<mu-button icon slot="left" @click="back">
 				<img src="../../../static/img/back.png"/>
-			</mu-button> -->
+			</mu-button>
 			绑定手机号
 			<!--<span v-if="isshow" style="position: absolute;right: .2rem;top: -.1rem;" @click="goEditDress">管理</span>-->
 		</mu-appbar>
@@ -58,25 +58,33 @@
 			return {
 				host: this.$store.state.host,
 				basehost:this.$store.state.basehost,
+				openid:null,
+				userid:null,
+				is_phone:null,
 				dTitle: '绑定手机号',
 				sec:60,//倒计时时间
 				issend:false,//是否已经发送验证码
 				sendtext:'发送验证码',
 				phone: '',//手机号
 				yzm: '',//验证码
-				yqm: '',//邀请码
-				openid:null
+				yqm: ''//邀请码
 			}
 		},
 		activated(){
-				console.log(this.$route.query.openid)
 				let openid = this.$route.query.openid
+				this.openid = openid
+				this.is_phone = this.$route.query.is_phone
+				this.userid = this.$route.query.userid
 				if(openid){
-					this.openid = openid
-					let str = localStorage.obj
-					console.log('str');
-					console.log(str);
+					//this.openid = openid
+					//let str = localStorage.obj
+					//console.log('str');
+					//console.log(str);
 					this.setOpenid(openid);
+					this.$store.commit("setOpenId",openid)
+					console.log('store里面的openid');
+					console.log(openid);
+					this.gettoken(openid);
 				}
 				/* if(str){
 					let obj = JSON.parse(str);
@@ -87,10 +95,7 @@
 					this.setOpenid(openid);
 				} */
 				
-				this.$store.commit("setOpenId",openid)
-				console.log('store里面的openid');
-				console.log(openid);
-				this.gettoken();
+				
 			//window.location.href = this.host + "/oauth"
 
 			/* console.log('jsonp');
@@ -148,8 +153,8 @@
 			}
 		},
 		methods:{
-			gettoken(){
-				getTokens();
+			gettoken(openid){
+				getTokens(openid);
 			},
 			/**保存openid*/
 			setOpenid(openid){
@@ -239,7 +244,7 @@
 			},
 			
 			back(){
-				this.$router.go('-1');
+				this.$router.replace('/?openid='+this.openid+'&is_phone='+this.is_phone+'&userid='+this.userid);
 			}
 		}
 	}

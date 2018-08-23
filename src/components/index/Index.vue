@@ -106,6 +106,12 @@
         <mu-button slot="actions" flat color="primary" @click="sureClick(index)">确定</mu-button>
         <mu-button slot="actions" flat color="secondary" @click="closeJSDialog">取消</mu-button>
       </mu-dialog>
+       <mu-dialog title="温馨提示" width="360" :open.sync="openwins">
+        <span class="cancelbox" @click="cancel"><img src="../../../static/img/ic_Shut .png" /></span>
+        绑定手机才可以下单呦~<br />
+        <mu-button slot="actions" flat color="primary" @click="sure">确定</mu-button>
+        <mu-button slot="actions" flat color="secondary" @click="cancel">取消</mu-button>
+      </mu-dialog>
     </div>
 
     <!--底部导航-->
@@ -148,6 +154,7 @@ export default {
       limit: 10,
       page: 1,
       openJS: false, //取消弹窗
+      openwins: false, //全局弹窗
       item:null,
       index:null,
       carnum: 0, //购物车数量
@@ -212,11 +219,13 @@ export default {
       console.log(is_phone);
     } else {
       this.$store.commit('editIsBindFalse')
+      sessionStorage.isbind = is_phone;
       console.log("用户没有绑定手机，不能显示商品价格");
     }
     if(this.$store.state.token){
       this.getOfenBuyList();
     }
+    //window.location.href = '/'
   },
   methods: {
      /*删除一条常购清单记录*/
@@ -243,6 +252,7 @@ export default {
     },
 
     initData() {
+    
       let openid = this.$route.query.openid || JSON.parse(localStorage.obj).name;
       if (openid) {
         let str = localStorage.obj;
@@ -378,16 +388,31 @@ export default {
 
     /*增加数量值*/
     plus(item) {
-      let amount = item.num;
-      item.num = amount + 1;
-      setOfenBuyData(item, this.alldata);
+      let isbind = sessionStorage.isbind
+      console.log(isbind);
+      if(isbind != 1){
+        //this.$store.commit("setLoad", true);
+        this.openwins = true
+      }else{
+        let amount = item.num;
+        item.num = amount + 1;
+        setOfenBuyData(item, this.alldata);
+      }
+      
     },
 
     /**删除常购清单*/
     deletOfenBuy(item) {
       deletOfenBuy(item.oftenBrowseId).then(res => {});
+    },
+    sure(){
+      this.openwins = false
+      this.$router.push('/phone')
+    },
+    cancel(){
+      this.openwins = false
     }
-    
+
   },
   computed: {
     ...mapState({
