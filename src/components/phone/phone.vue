@@ -121,7 +121,7 @@
 
 		},
 		mounted(){
-			//window.location.href = this.basehost + 'phone'
+			window.location.href = this.basehost + 'phone'
 
 
 

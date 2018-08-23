@@ -152,71 +152,9 @@ export default {
           sum_price: 0
         }
       ],
-      bannerImg: [
-        /*  require("../../../static/img/1-0_02.png"),
-        require("../../../static/img/1-0_02.png"),
-        require("../../../static/img/1-0_02.png"),
-        require("../../../static/img/1-0_02.png")  */
-      ],
-      classlist: [
-        /*{
-      		id:1,
-      		name:'串串专区',
-      		introduce:'样样都是精选',
-      		img:require('../../../static/img/1-0_03.png')
-      	},
-      	{
-      		id:2,
-      		name:'中餐专区',
-      		introduce:'专区内任选5样送一样',
-      		img:require('../../../static/img/1-0_03.png')
-      	},
-      	{
-      		id:3,
-      		name:'火锅专区',
-      		introduce:'专区内满300减20',
-      		img:require('../../../static/img/1-0_03.png')
-      	},
-      	{
-      		id:4,
-      		name:'火锅专区',
-      		introduce:'专区内满300减20',
-      		img:require('../../../static/img/1-0_03.png')
-      	},
-      	{
-      		id:32,
-      		name:'火锅专区',
-      		introduce:'专区内满300减20',
-      		img:require('../../../static/img/1-0_03.png')
-      	},
-      	{
-      		id:32,
-      		name:'火锅专区',
-      		introduce:'专区内满300减20',
-      		img:require('../../../static/img/1-0_03.png')
-      	}*/
-      ],
-      showlist: [
-        /*  {
-          id: 1,
-          img: require("../../../static/img/1-0_03.png"), //图片
-          title: "青岛大牡蛎  鲜活贝类海鲜烧烤食材带壳水产", //标题
-          num: 0, //数量
-          price: "20", //单价
-          oldPrice: "50", //旧的价格
-          inventory: "5" //库存
-        },
-        {
-          id: 2,
-          img: require("../../../static/img/1-0_03.png"), //图片
-          title:
-            "青岛大牡蛎  鲜活贝类海鲜烧烤食材带壳水产青岛大牡蛎  鲜活贝类海鲜烧烤食材带壳水产", //标题
-          num: 0, //数量
-          price: "20", //单价
-          oldPrice: "50", //旧的价格
-          inventory: "5" //库存
-        } */
-      ],
+      bannerImg: [],
+      classlist: [],
+      showlist: [],
       orderlist: [
         {
           id: 1,
