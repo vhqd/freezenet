@@ -33,7 +33,7 @@
 							</mu-list-item>
 						</router-link>
 						<mu-divider></mu-divider>
-						<div style="position: absolute;right: 0.3rem;bottom: 0.12rem;">
+						<div style="position: absolute;right: 0.3rem;bottom: 0.12rem;min-width:80px;">
 							<div class="saoma">
 								<!-- <span class="minus mpsytl" @click="minus(item)" v-if="item.num != 0">-</span>
 				        	<span>{{item.num}}</span>
@@ -54,7 +54,7 @@
 			<mu-list class="carbut">
 				<mu-list-item avatar button :ripple="false">
 					<div class="pricecarbox">
-						<div class="carprice">
+						<div class="carprice" @click="goShopCar">
 							<div class="carimgbox">
 								<img src="../../../static/img/car/car.png" />
 								<span class="carnum">{{carnum}}</span>
@@ -172,10 +172,13 @@ export default {
   components: {
     BackBar
   },
-  activated(){
-	  this.carnum = 0
+  mounted() {
+    this.carnum = 0
 	  this.allPrice = 0
 	  this.getHotLists()
+  },
+  activated(){
+	  
   },
   methods: {
 	/**获取热销榜列表*/
@@ -209,6 +212,10 @@ export default {
 		
 		this.$router.push({ path: "/order" ,query:{list:JSON.stringify(datas)}});
       }
+    },
+    /**点击底部购物车图标到购物车*/
+    goShopCar(){
+      this.$router.push('/car')
     },
     /*关闭弹窗*/
     closeJSDialog() {

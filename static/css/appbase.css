@@ -184,6 +184,8 @@ html,
 .mpsytl{border-radius: 50%;color: #fff;width: .44rem;height: .44rem;display: inline-block;font-size: .6rem;} */
 .saoma {
   display: flex;
+  justify-content: flex-end !important;
+  min-width:80px;
 }
 .saoma span {
   margin-left: .15rem;
@@ -419,9 +421,12 @@ textarea:-ms-input-placeholder {
 }
 .carprice {
   position: absolute;
-  left: .8rem;
+  left: .3rem;
   font-size: .26rem !important;
   color: #666;
+}
+.chuanchuan .carprice {
+  left: .3rem !important;
 }
 .settlement {
   position: absolute;
@@ -530,6 +535,7 @@ textarea:-ms-input-placeholder {
 .oftenbuy .kcstyle {
 	padding-left: .2rem;
   }
+  .indexbox .guanbi{right: 3% !important;top: .2rem !important;padding: 9px 15px 0px 5px !important;}
 @media screen and (max-width: 325px) {
   .orderlistbox li {
     font-size: 12px;
@@ -544,6 +550,11 @@ textarea:-ms-input-placeholder {
     height: 40px;
     line-height: 40px;
   }
+  .carMbox .list-item .delete{
+    height: 2.43rem;
+    line-height: 2.43rem;
+  }
+  .coupons .mu-item-sub-title{font-size: 12px}
 }
 
 

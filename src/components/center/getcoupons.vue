@@ -42,7 +42,7 @@
 											<div class="usecar">
 												<div class="saoma">
 													<span class="mpnum nousecoupons" v-if="!item.user_is_recive" @click="getCoupons(item)">立即领取</span>
-													<span class="mpnum usecoupons" v-if="item.user_is_recive">去使用</span>
+													<span class="mpnum usecoupons" v-if="item.user_is_recive" @click="gobuy">去使用</span>
 												</div>
 												<div class="yuan garden1"></div>
 												<div class="yuan garden2"></div>
@@ -95,6 +95,10 @@ export default {
 	  this.getCouponsList();
   },
   methods: {
+    /**去商品分类使用优惠券*/
+    gobuy() {
+      this.$router.push("/classification");
+    },
     /**获取优惠券列表*/
     getCouponsList(){
       getCouponsList(this.limit).then(res => {

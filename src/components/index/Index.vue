@@ -95,7 +95,7 @@
           </mu-list>
         </mu-paper>
         <div v-else style="position: absolute;left: 50%;top: 50%;margin-top: -1.8rem;margin-left: -1rem;">
-          <img src="../../../static/img/car/img_konggouwuche.png" style="width: 2rem;height: 2rem;" />
+          <img src="../../../static/img/home/img_meiyoutuihuodan@2x.png" style="width: 2rem;height: 2rem;" />
           <p style="color: #999;">你还没有清单哦</p>
         </div>
       </div>
@@ -220,7 +220,7 @@ export default {
         this.setOpenid(openid);
       }
       this.$store.commit("setOpenId", openid);
-
+      let username = openid || JSON.parse(localStorage.obj).name
       let data = {
         username: openid,
         password: "123456"
@@ -294,7 +294,7 @@ export default {
 
     /**获取常购清单列表*/
     getOfenBuyList() {
-      getOfenBuyList(2, 1).then(res => {
+      getOfenBuyList(99, 1).then(res => {
         let data = res.data.info.data;
         for (let item in data) {
           data[item].goods_photo = this.host + data[item].goods_photo;

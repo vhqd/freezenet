@@ -10,7 +10,7 @@
 			</mu-flex>
 		</mu-flex>
 
-		<mu-paper :z-depth="1" class="demo-list-wrap" style="padding-top:1rem;" v-if="dress">
+		<mu-paper :z-depth="1" class="demo-list-wrap" style="padding-top:1rem;" v-if="dress" @click='toEdit(dress)'>
 			<mu-list textline="two-line">
 				<mu-list-item avatar :ripple="false" button>
 					<mu-list-item-content>
@@ -356,7 +356,10 @@
 			}
 		},
 		methods: {
-
+			/*到编辑页面*/
+			toEdit(item){
+				this.$router.push({path:'/address',query:{item:item,isedit:true}})
+			},
 			/**获取收货地址*/
 			getDress(){
 				getDress(this.limit , this.page).then(res => {

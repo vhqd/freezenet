@@ -11,7 +11,7 @@
         <li v-for="(item , index) in resData" :key="index" @click="goDetail(item)">{{item.goods_title}}</li>
       </ul>
       <!--暂无历史-->
-      <mu-paper v-if="history.length == 0 && hothistory.length == 0 && searchshow">
+      <mu-paper v-if="history.length == 0 && hothistory.length == 0 && !searchshow">
         <mu-list>
           <mu-list-item avatar button :ripple="false">
             <mu-list-item-title>搜索历史</mu-list-item-title>
@@ -21,10 +21,10 @@
           </mu-list-item>
         </mu-list>
       </mu-paper>
-      <p class="noneHis" v-if="history.length == 0 && searchshow">暂无搜索历史</p>
+      <p class="noneHis" v-if="history.length == 0 && !searchshow">暂无搜索历史</p>
 
       <!--历史记录-->
-      <mu-container class="demo-chip-wrapper" v-if="history.length>0 && searchshow">
+      <mu-container class="demo-chip-wrapper" v-if="history.length>0 && !searchshow">
         <div class="historybox">
           <span>历史搜索</span>
           <div class="dele" @click="openDeleWin">
@@ -39,7 +39,7 @@
 
     </div>
     <!--热门搜索-->
-    <mu-container class="demo-chip-wrapper hotsearchbox" v-if="hothistory.length>0 && searchshow">
+    <mu-container class="demo-chip-wrapper hotsearchbox" v-if="hothistory.length>0 && !searchshow">
       <p class="historybox">热门搜索</p>
       <mu-chip class="demo-chip" v-for="(item , index) in hothistory" :key="index" @click="searchAWord(item)">
         {{item.key_word}}
@@ -107,7 +107,7 @@
         </mu-flex>
       </mu-flex>
     </div>
-    <div v-else-if="!searchshow" style="position: absolute;left: 50%;top: 35%;margin-left: -96px;">
+    <div v-else-if="searchshow&&resshow" style="position: absolute;left: 50%;top: 35%;margin-left: -96px;">
       <img src="../../../static/img/img_wujieguo@2x.png" style="width: 3.9rem;height: 3.3rem;" />
       <p style="color: #999;">没有找到相关商品</p>
     </div>
@@ -178,6 +178,7 @@ export default {
       host:this.$store.state.host,
       keyword:'',
       searchshow:true,
+      resshow:true,
       showList: [], //默认显示的数据
       openJS: false, //结算弹窗
       deleSearch: false, //删除弹窗
@@ -319,6 +320,7 @@ export default {
     };
   },
   activated(){
+    document.title = '搜索';
     this.searchshow = true;
     this.getSWords()
   },
@@ -328,11 +330,13 @@ export default {
       SearchWord(data).then(res => {
         let data = res.data.data;
         if(data.length == 0 ){
-            this.searchshow = false;
+            this.resData = []
+            this.searchshow = true;
             return;
         }
         if(data.length > 0){
           this.searchshow = true;
+          this.resshow = false//如果有搜索结果，不显示没有搜索结果的界面
         }
         for(let i in data){
           data[i].goods_photo = this.host + data[i].goods_photo;
@@ -429,6 +433,7 @@ export default {
       this.$store.commit("setLoad",true);
       GetKeyWord().then(res => {
           let data = res.data.data;
+          data = this.setSearchData(data)
           this.history = data;
           console.log(data);
           console.log("--------");
@@ -439,13 +444,29 @@ export default {
     GetKeyHotWord(){
       GetKeyHotWord().then(res => {
         let data = res.data.data;
+        data = this.setSearchData(data)
         this.hothistory = data;
         console.log(data);
         console.log("--------");
         console.log(res);
          this.$store.commit("setLoad",false);
       });
+    },
+    setSearchData(data){
+      let hostdata = []
+        //去掉空记录
+        for(let item in data){
+          if(data[item].key_word != ''){
+            hostdata.push(data[item])
+          }
+        }
+        //最多显示10条记录
+        if(hostdata.length > 10){
+          hostdata.length == 10
+        }
+        return hostdata
     }
+
   },
   mounted() {
      

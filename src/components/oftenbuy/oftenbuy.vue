@@ -40,7 +40,7 @@
 			  	</div>-->
 
 					<!--type==2的是可选择重量的列表-->
-					<div v-for="(item,index) in showlist" :key="index" class="li-box">
+					<div v-for="(item,index) in showlist" :key="index" class="li-box" v-if="showlist.length > 0">
 						<router-link :to="{path:'/detail',query: {id: item.id}}">
 							<mu-list-item avatar :ripple="false" button>
 								<mu-list-item-action>
@@ -111,6 +111,7 @@
 						</mu-expand-transition>
 
 					</div>
+					<p v-else>暂时没有记录！</p>
 
 				</mu-list>
 			</mu-paper>

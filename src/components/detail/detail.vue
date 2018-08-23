@@ -17,14 +17,14 @@
 								<span style="font-size: 0.5rem;">{{contentinfo[0].goods_price}}</span>
 								<!-- <span style="color: #ccc;text-decoration: line-through;">￥{{data.oldPrice}}</span> -->
 							</p>
-							<div class="mjbox">
-								<span class="mj">满300减20</span>
-							</div>
 						</mu-list-item-sub-title>
+						<div class="mjbox">
+							<span class="mj">满300减20</span>
+						</div>
 					</mu-list-item-content>
 				</mu-list-item>
 				<mu-divider></mu-divider>
-				<div style="position: absolute;right:0.28rem;bottom: 0;color: red;">
+				<div style="position: absolute;right:0.28rem;bottom: 25px;color: red;">
 					<div class="saoma">
 						<span class="minus" @click="minus()" v-if="contentinfo[0].num != 0"><img src="../../../static/img/ic_jian.png" alt="" style="width:.5rem;height:.5rem;"></span>
 						<span v-show="contentinfo[0].num != 0">{{contentinfo[0].num}}</span>
@@ -53,7 +53,7 @@
 										</mu-list-item-content>
 									</mu-list-item>
 								</mu-list>
-								<mu-list textline="two-line" class="gwc" style="margin-left:.2rem;">
+								<mu-list textline="two-line" class="gwc" style="margin-left:.2rem;" @click="goShopCar">
 									<mu-list-item avatar button :ripple="false">
 										<mu-list-item-content>
 											<mu-list-item-title><img src="../../../static/img/car/car.png"/></mu-list-item-title>
@@ -180,7 +180,10 @@ export default {
 				this.isOfen = true;
 			})
 		},
-	
+	 /**点击底部购物车图标到购物车*/
+      goShopCar(){
+        this.$router.push('/car')
+      },
 
 		/**添加商品到购物车结算*/
 		goBuy(){
@@ -303,4 +306,10 @@ export default {
 .mu-item-sub-title{line-height: 1.2}
 .mjbox{margin:.1rem 0}
 .mjbox .mj{color: red;background: #ffeaea;padding: .04rem .2rem;}
+
+@media screen and (max-width: 325px) {
+  .carprice {
+		top: 2px;
+	}
+}
 </style>

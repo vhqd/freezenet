@@ -1,7 +1,7 @@
 <template>
 	<!--home轮播图 -->
 	<div class="home_ban">
-		<mu-carousel hide-controls>
+		<mu-carousel hide-controls interval='3000'>
 		  <mu-carousel-item v-for='(item , index) in imgs' :key='index'>
 		    <img :src="item.banner_image_address" :onerror="onerrorimglong">
 		  </mu-carousel-item>

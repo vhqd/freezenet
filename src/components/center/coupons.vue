@@ -11,7 +11,7 @@
 					</mu-grid-tile>
 				</mu-grid-list>
 			</div>-->
-			<div class="carlistbox">
+			<div class="carlistbox coupons">
 				<mu-load-more :loading="loading" @load="load" style="padding-top:1rem;">
 					<ul>
 						<li class="list-item " v-for="(item,index) in list" :key="index" data-type="0">

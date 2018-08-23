@@ -43,7 +43,7 @@
       <mu-list class="carbut">
         <mu-list-item avatar button :ripple="false">
           <div class="pricecarbox">
-            <div class="carprice">
+            <div class="carprice" @click="goShopCar">
               <div class="carimgbox">
                 <img src="../../../static/img/car/car.png" />
                 <span class="carnum">{{carnum}}</span>
@@ -213,6 +213,10 @@
           });
         }
 
+      },
+      /**点击底部购物车图标到购物车*/
+      goShopCar(){
+        this.$router.push('/car')
       },
       /*关闭弹窗*/
       closeJSDialog() {

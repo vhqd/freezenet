@@ -70,7 +70,7 @@ export default {
       host: this.$store.state.host,
       dTitle: "添加收货地址",
       open: false, //这个值判断是否是编辑地址默认false编辑过来传true
-      city: "", //所在地区
+      city: "请选择  >", //所在地区
       item: {}, //传递过来编辑的数据
       order:null,
       isedit: false,
@@ -128,7 +128,7 @@ export default {
       }
       let tel = this.form.phone;
       let telReg = !!tel.match(
-        /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/
+        /^(0|86|17951)?(13[0-9]|15[012356789]|17[0-9]|18[0-9]|14[57])[0-9]{8}$/
       );
       if (telReg == false) {
         this.$toast.error("手机号码格式不正确");

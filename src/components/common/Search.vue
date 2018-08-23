@@ -4,7 +4,7 @@
 		<header class="m_header">
             <div class="inputitem pm">
 				<img src="../../../static/img/ic-search@2x.png" alt="" class="imgsearch">
-		    	<mu-text-field v-model="keyword" @focus="goSearch" class="widthstyle midm" id="searchIn" placeholder="您想要..."></mu-text-field>
+		    	<mu-text-field v-model="keyword" @focus="goSearch" class="widthstyle midm" id="searchIn" placeholder="请输入商品名称..."></mu-text-field>
 		    	<div class="guanbi" @click="clearinput"><img src="../../../static/img/ic_remove.png"/></div>
 		    	<div class="cancel" @click="cancelClick">取消</div>
 	    	</div>
@@ -41,7 +41,16 @@
            		}
 		   },
 		   sendKeyWord(){
+			   //匹配中文
 			   let reg = /[\u4E00-\u9FA5\uF900-\uFA2D]/;
+				//匹配特殊字符
+			   let regEn = /[`~!@#$%^&*()_+<>?:"{},.\/;'[\]]/im,
+    				regCn = /[·！#￥（——）：；“”‘、，|《。》？、【】[\]]/im;
+					if(regEn.test(this.keyword) || regCn.test(this.keyword)) {
+						this.keyword = ''
+						return false;
+					}
+
 			   if(this.keyword != '' && reg.test(this.keyword)){
 					this.timer = setTimeout(()=>{
 						 this.$emit("sendword",this.keyword);

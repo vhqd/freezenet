@@ -6,6 +6,7 @@ import {
   deleteOrder,
   cancelOrder
 } from "../http/http.js";
+import router from '../router/index.js'
 import store from "../store/store.js";
 import QS from "qs";
 
@@ -13,7 +14,6 @@ import QS from "qs";
 export function getTokens() {
   let str = localStorage.obj;
   let obj = JSON.parse(str);
-  //console.log(tok);
   let data = {
     username: obj.name,
     password: "123456"
@@ -27,8 +27,6 @@ export function getTokens() {
     console.log(token);
     //设置token
     store.commit("set_token", token);
-    //this.$store.commit('editIsBind');
-    //this.$router.push('/')
   });
 }
 
@@ -79,7 +77,9 @@ function onBridgeReady(params) {
       paySign: params.paySign // 微信签名
     },
     function(res){     
-      if(res.err_msg == "get_brand_wcpay_request:ok" ) {}     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。 
+      if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+        router.push({path:'/orderlist', query:{id:2}})
+      }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。 
     }
   );
 }
