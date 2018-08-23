@@ -254,6 +254,7 @@
 	getCenterCoupons,
 	getWXPayInfo
 	} from "../../http/http.js";
+	import { WXPay } from '../../common/common.js'
 	import wx from 'weixin-js-sdk'
 
 	export default {
@@ -442,130 +443,13 @@
 					//订单id
 					let id = res.data.info.id
 					if(id){
-						//唤起微信支付
-						this.WXPay(id)
+						//唤起微信支付(订单id)
+						WXPay(id)
 					}
 				})  
 			},
-			onBridgeReady (params) {
-				window.WeixinJSBridge.invoke(
-					'getBrandWCPayRequest', {
-						'appId': params.appId, // 公众号名称，由商户传入
-						'timeStamp': params.timeStamp, // 时间戳，自1970年以来的秒数
-						'nonceStr': params.nonceStr, // 随机串
-						'package': params.package,
-						'signType': params.signType, // 微信签名方式：
-						'paySign': params.paySign // 微信签名
-					},
-					function (res) {
-						//location.href = params.Url
-					}
-				)
-			},
-			/**微信支付*/
-			WXPay(id){
-				getWXPayInfo(id).then(res => {
-					console.log('微信订单提交获取支付参数');
-					console.log(res);
-					let opthions = {
-						appId: res.data.data.info.appId,
-						timeStamp: res.data.data.info.timeStamp,
-						nonceStr: res.data.data.info.nonceStr,
-						package: res.data.data.info.package,
-						signType: res.data.data.info.signType,
-						paySign: res.data.data.info.paySign
-					}
-					 if (typeof window.WeixinJSBridge === 'undefined') {
-						if (document.addEventListener) {
-						document.addEventListener('WeixinJSBridgeReady', function () { this.onBridgeReady(opthions) }, false)
-						} else if (document.attachEvent) {
-						document.attachEvent('WeixinJSBridgeReady', function () { this.onBridgeReady(opthions) })
-						document.attachEvent('onWeixinJSBridgeReady', function () { this.onBridgeReady(opthions) })
-						}
-					} else {
-						this.onBridgeReady(opthions)
-					}
-				})
-				/*  if (response && response.data.data.info && response.data.data.code === 200) {
-					let data = response.data.data.info
-					let appId = data.appId
-					let timeStamp = data.timeStamp
-					let nonceStr = data.nonceStr
-					let signature = data.paySign
-					let packages = data.package
-					let signType = data.signType
-					wx.config({
-						debug: true,
-						appId: response.data.data.info.appId,
-						timestamp: response.data.data.info.timestamp,
-						nonceStr: response.data.data.info.nonceStr,
-						signature: response.data.data.info.signature,
-						jsApiList: [
-							'checkJsApi',
-							'translateVoice',
-							'chooseWXPay'
-						]
-					});
-					wx.ready(function() {
-						wx.chooseWXPay({
-							timestamp: response.data.data.info.timestamp,
-							nonceStr: response.data.data.info.nonceStr,
-							signature: response.data.data.info.signature,
-							package: response.data.data.info.package,
-							signType: response.data.data.info.signType,
-							paySign: response.data.data.info.paySign,
-							//回调成功
-							success:function(res){
-								if(res.errMsg == 'chooseWXPay:ok'){
-									alert('支付成功')
-								}else{
-									alert("失败")
-								}
-							},
-							//回调失败
-							fail:function(res){
-
-							},
-							//取消支付
-							cancel:function(res){
-								alert("用户取消支付")
-							}
-						});
-					})
-				}  */
-			},
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+			
+			
 			/**提交订单(废弃)*/
 			toPay1() {
 				let alldata = JSON.parse(this.$route.query.list);

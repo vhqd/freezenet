@@ -530,7 +530,6 @@ textarea:-ms-input-placeholder {
 .oftenbuy .kcstyle {
 	padding-left: .2rem;
   }
-.orderlistbox .listbox .mu-circular-progress{position: absolute !important;}
 @media screen and (max-width: 325px) {
   .orderlistbox li {
     font-size: 12px;

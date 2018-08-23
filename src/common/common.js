@@ -1,6 +1,51 @@
-import { AddCarShop , getOrders } from '../http/http.js'
+import { AddCarShop , getOrders , getWXPayInfo , deleteOrder , cancelOrder } from '../http/http.js'
 import store from "../store/store.js"
 import QS from 'qs'
+
+
+/**微信支付*/
+export function WXPay(id){
+    getWXPayInfo(id).then(res => {
+        console.log('微信订单提交获取支付参数');
+        console.log(res);
+        let opthions = {
+            appId: res.data.data.info.appId,
+            timeStamp: res.data.data.info.timeStamp,
+            nonceStr: res.data.data.info.nonceStr,
+            package: res.data.data.info.package,
+            signType: res.data.data.info.signType,
+            paySign: res.data.data.info.paySign
+        }
+         if (typeof window.WeixinJSBridge === 'undefined') {
+            if (document.addEventListener) {
+            document.addEventListener('WeixinJSBridgeReady', function () { onBridgeReady(opthions) }, false)
+            } else if (document.attachEvent) {
+            document.attachEvent('WeixinJSBridgeReady', function () { onBridgeReady(opthions) })
+            document.attachEvent('onWeixinJSBridgeReady', function () { onBridgeReady(opthions) })
+            }
+        } else {
+            onBridgeReady(opthions)
+        }
+    })
+}
+function onBridgeReady (params) {
+    window.WeixinJSBridge.invoke(
+        'getBrandWCPayRequest', {
+            'appId': params.appId, // 公众号名称，由商户传入
+            'timeStamp': params.timeStamp, // 时间戳，自1970年以来的秒数
+            'nonceStr': params.nonceStr, // 随机串
+            'package': params.package,
+            'signType': params.signType, // 微信签名方式：
+            'paySign': params.paySign // 微信签名
+        },
+        function (res) {
+            console.log('支付之后的回调');
+            console.log(res);
+            //location.href = params.Url
+        }
+    )
+}
+
 
 /**移除一个常购数据*/
 export function removeOfenBuyData(item,data){

@@ -12,6 +12,7 @@
 		</mu-tabs>
 
 		<div class="listbox">
+      <p v-show="noorder">没有订单哦！</p>
 			<mu-load-more :loading="loading" @load="load">
         <mu-container data-mu-loading-color="secondary" v-if="list" data-mu-loading-overlay-color="rgba(0, 0, 0, .7)" v-loading="loading2" class="demo-loading-wrap">
 				<div class="onelistbox" v-for="(item,index) in list" :key="index">
@@ -70,7 +71,7 @@
 							<ul v-if='item.order_status == 1'>
 								<li @click="openJSDialog(index,item)">取消订单</li>
 								<li @click="goDetail(item)">查看详情</li>
-								<li class="qrsh">去支付</li>
+								<li class="qrsh" @click="WXPay(item.id)">去支付</li>
 							</ul>
 							<ul v-else-if='item.order_status == 2'>
 								<li @click="goDetail(item)">查看详情</li>
@@ -113,7 +114,8 @@
 <script>
 import BackBar from "../common/BackBar.vue";
 import { mapState } from "vuex";
-import { getOrders , cancelOrder } from "../../http/http.js";
+import { getOrders , cancelOrder , deleteOrder } from "../../http/http.js";
+import { WXPay } from '../../common/common.js'
 
 export default {
   data() {
@@ -128,6 +130,7 @@ export default {
       Delitem:null,
       loading2: false,
       loading: false,
+      noorder:false,//显示没有订单提示文字
       openJS: false, //取消弹窗
       openDel:false,//删除弹窗
       index: 0,
@@ -200,26 +203,31 @@ export default {
     
   },
   methods: {
+    /**支付*/
+    WXPay(id){
+      WXPay(id)
+    },
     /**
      * 获取用户订单
      * @param order_status 订单状态'0-全部 1-待支付 2-待发货 3-已发货(待收货) 4-已完成 5-已取消',
      * @param islodmore 是否是加载更多  加载更多-true，切换订单状态-false
      * */
     getOrders(order_status,isloadmore) {
-      this.loading2 = true;
-      this.list = [];
+      //this.loading2 = true;
       //点击顶部订单初始化参数
       if(!isloadmore){
         this.limit = 15;
         this.page = 1;
+        this.list = [];
       }
       //this.order_status = order_status;
       getOrders(this.limit, this.page,order_status).then(res => {
         this.page = this.page + 1;
         let data = res.data.info.data;
-        if(data.length==0){
-          this.loading2 = false;
-          return;
+        if(data.length==0 && !isloadmore){
+          //this.loading2 = false;
+          this.list = [];
+          this.noorder = true
         }
         for(let item in data){
           let img = data[item].goodsInfo;
@@ -233,12 +241,17 @@ export default {
         console.log(data);
         
         //判断是加载更多还是切换订单状态
-         if(isloadmore){
+        if(isloadmore){
           this.list = this.list.concat(data)
         }else{
-          this.list = data;
+          if(data.length == 0){
+            this.noorder = true
+          }else{
+            this.noorder = false
+            this.list = data;
+          }
         } 
-        this.loading2 = false;
+        //this.loading2 = false;
       });
     },
 
@@ -269,9 +282,11 @@ export default {
 
       console.log('++++++++++++');
       console.log(this.item);
-    /*   cancelOrder().then(res => {
+      let id = this.item.id
+      let redPacketId = this.item.red_packet_id
+      cancelOrder( id , redPacketId ).then(res => {
         console.log(res);
-      }) */
+      }) 
 
     },
     /*打开取消弹窗*/
@@ -297,8 +312,14 @@ export default {
       this.index = index;
       console.log(index);
       this.list.splice(index, 1);
+
       console.log('++++++++++++');
       console.log(this.Delitem);
+      let id = this.item.id
+      let redPacketId = this.item.red_packet_id
+      deleteOrder( id , redPacketId ).then(res => {
+        console.log(res);
+      }) 
     },
     /**设置订单类型*/
     setOrderType() {
@@ -420,8 +441,8 @@ export default {
 .shopinfos span:not(:first-child){font-weight: bold;font-size: .28rem;color: #333;}
 .shopinfos span{line-height: .88rem;}
 .demo-loading-wrap {
-  height: 300px;
+  height: 100%;
   position: relative;
 }
-
+.mu-load-more{overflow: initial !important;}
 </style>

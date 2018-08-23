@@ -299,8 +299,8 @@
 			   <mu-list-item avatar button :ripple="false">
 			      <div class="pricebox">
 				      <ul>
-				      	<li class="payorder">立即支付</li>
-				      	<li class="cancelorder">取消订单</li>
+				      	<li class="payorder" @click="WXPay">立即支付</li>
+				      	<li class="cancelorder" @click="cancelorder">取消订单</li>
 				      </ul>
 			      </div>
 			    </mu-list-item>
@@ -313,7 +313,7 @@
 			   <mu-list-item avatar button :ripple="false">
 			      <div class="pricebox">
 				      <ul>
-				      	<li class="cancelorder">删除订单</li>
+				      	<li class="cancelorder" @click="deleteorder">删除订单</li>
 				      </ul>
 			      </div>
 			    </mu-list-item>
@@ -326,8 +326,11 @@
 
 <script>
 	import BackBar from '../common/BackBar.vue'
+	import { WXPay } from '../../common/common.js'
 	import {
-	getDress
+	getDress,
+	cancelOrder,
+	deleteOrder
 	} from "../../http/http.js";
 	
 	export default{
@@ -373,6 +376,7 @@
 			this.status = status;
 			this.datainfo =JSON.parse(this.$route.query.data);
 			this.datainfo.count = eval('(' + this.datainfo.count + ')');
+			console.log('***********************');
 			console.log(this.datainfo);
 			
 			/**获取收货地址*/
@@ -392,6 +396,33 @@
 	    BackBar
 	   },
 	   methods:{
+			/**支付*/
+			WXPay(){
+				WXPay(this.datainfo.id)
+			},
+			/**取消订单*/
+			cancelorder(){
+				let id = this.datainfo.id
+				let redPacketId = this.datainfo.red_packet_id
+				alert(id)
+				alert(redPacketId)
+				cancelOrder( id , redPacketId ).then(res => {
+					alert('成功')
+					console.log(res);
+				}) 
+			},
+			
+			/**删除订单*/
+			deleteorder(){
+				let id = this.datainfo.id
+				let redPacketId = this.datainfo.red_packet_id
+				alert(id)
+				alert(redPacketId)
+				deleteOrder( id , redPacketId ).then(res => {
+					alert('成功')
+					console.log(res);
+				}) 
+			},
 	   	/*查看物流详情*/
 	   	goExpress(){
 	   		this.$router.push('/express')
