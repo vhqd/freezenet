@@ -23,6 +23,9 @@ export default {
   computed:{
     load(){
       return this.$store.state.load;
+    },
+    showerror(){
+      return this.$store.state.showerror
     }
   },
   watch:{
@@ -32,6 +35,9 @@ export default {
       }else{
         this.loads.close();
       }
+    },
+    showerror(a,b){
+        this.$toast.error(this.$store.state.showtext);
     }
   },
   mounted(){

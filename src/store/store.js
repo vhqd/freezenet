@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import { stat } from "fs";
 
 Vue.use(Vuex);
 
@@ -10,8 +11,12 @@ const store = new Vuex.Store({
 		host:'http://SW2018001.trg7.cn/eNet/public/index.php', //线上
 		basehost:'http://SW2018001.trg7.cn/#/', //线上
 		load:false,//全局loading
+		showerror:false,//全局错误提示
+		showtext:'',
 		token:'',
 		openid:null,//用户openid
+		userid:null,//用户id
+		userinfo:{},
         count:0,//导航栏上面的购物车数量
 		isbind:false,//用户是否绑定手机号，如果绑定才能看菜品价格否则不能查看
 		order:[],//个人中心订单
@@ -23,6 +28,17 @@ const store = new Vuex.Store({
     },
     
 	mutations:{
+		setShowText(state,text){
+			state.showtext = text
+		},
+		/**设置用户id*/
+		setUserid(state,userid){
+			state.userid = userid
+		},
+		/**设置用户信息*/
+		setUserInfo(state,userinfo){
+			state.userinfo = userinfo
+		},
 		/**
 		 * 设置用户openid
 		*/
@@ -30,6 +46,9 @@ const store = new Vuex.Store({
 			state.openid = openid
 		},
 
+		seterror(state){
+			state.showerror = !state.showerror;
+		},
 		/**
 		 * loading控制
 		 * @param {state} state 

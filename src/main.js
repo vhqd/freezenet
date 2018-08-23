@@ -81,15 +81,24 @@ axios.interceptors.response.use(function (response) {
 }  */
 return response
 }, function (error) {
-         let status = error.response.status;
-        if(status && status == 401){
+        let status = error.response.status;
+       /*  if(status && status == 401){
             router.replace({
                 path: '/login'
             })
             return;
+        } */
+        if(status && status == 422){
+            this.$toast.error('该用户绑定');
+            return;
         }
         if(status && status == 500){
             let msg = error.response.data.message;
+            //错误触发设着全部错误提示。
+            store.commit('setShowText',msg);
+            store.commit('seterror');
+            
+            
             console.log(status+'=>:'+msg);
             return;
         }

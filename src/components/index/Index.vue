@@ -10,7 +10,7 @@
       <ul>
         <li v-for="(item,index) in orderlist" @click="toplistgo(index)" :key='index'>
           <!--<router-link :to="{path:'/hot', query:{id:item.id}}">-->
-          <img :src="item.img"  :onerror="onerrorimglong"/>
+          <img :src="item.img" :onerror="onerrorimglong" />
           <p>{{item.title}}</p>
           <!--</router-link>-->
         </li>
@@ -111,9 +111,23 @@ import HomeSearch from "../common/HomeSearch.vue";
 import HomeBanner from "../home/HomeBanner.vue";
 import Footer from "../common/Footer.vue";
 import { mapState } from "vuex";
-import QS from 'qs'
-import { getIndexClass, getIndexBanner ,getCarList , getIndexTopClass , getOfenBuyList , deletOfenBuy , AddCarShop , test} from "../../http/http.js";
-import { removeOfenBuyData , setOfenBuyData } from '../../common/common.js'
+import QS from "qs";
+import {
+  getToken,
+  getIndexClass,
+  getIndexBanner,
+  getCarList,
+  getIndexTopClass,
+  getOfenBuyList,
+  deletOfenBuy,
+  AddCarShop,
+  test
+} from "../../http/http.js";
+import {
+  getTokens,
+  removeOfenBuyData,
+  setOfenBuyData
+} from "../../common/common.js";
 
 export default {
   components: {
@@ -126,18 +140,20 @@ export default {
       host: this.$store.state.host,
       limit: 10,
       page: 1,
-      carnum:0,//购物车数量
-      topclass:[],
-      onerrorimg:this.$store.state.onerrorimg,
-      onerrorimglong:this.$store.state.onerrorimglong,
-      alldata:[{
-				'goods_id':[],
-				'single_price':[],
-				'count':[],
-				'sum_price':0
-			} ],
+      carnum: 0, //购物车数量
+      topclass: [],
+      onerrorimg: this.$store.state.onerrorimg,
+      onerrorimglong: this.$store.state.onerrorimglong,
+      alldata: [
+        {
+          goods_id: [],
+          single_price: [],
+          count: [],
+          sum_price: 0
+        }
+      ],
       bannerImg: [
-       /*  require("../../../static/img/1-0_02.png"),
+        /*  require("../../../static/img/1-0_02.png"),
         require("../../../static/img/1-0_02.png"),
         require("../../../static/img/1-0_02.png"),
         require("../../../static/img/1-0_02.png")  */
@@ -181,7 +197,7 @@ export default {
       	}*/
       ],
       showlist: [
-       /*  {
+        /*  {
           id: 1,
           img: require("../../../static/img/1-0_03.png"), //图片
           title: "青岛大牡蛎  鲜活贝类海鲜烧烤食材带壳水产", //标题
@@ -225,111 +241,123 @@ export default {
       ]
     };
   },
-  activated(){
+  activated() {
     let is_phone = this.$route.query.is_phone;
-    if(is_phone == 1){
-      this.$store.commit('editIsBind')
-      sessionStorage.isbind = is_phone
-      console.log(is_phone);
-    }else{
-      //sessionStorage.isbind = false
-      console.log('是否绑定手机判断错误');
+    let userid = this.$route.query.userid;
+    console.log("userid");
+    console.log(userid);
+    if (userid) {
+      this.$store.commit("setUserid", userid);
+      sessionStorage.userid = userid;
     }
-    this.getOfenBuyList()
+    if (is_phone == 1) {
+      this.$store.commit("editIsBind");
+      sessionStorage.isbind = is_phone;
+      console.log(is_phone);
+    } else {
+      //sessionStorage.isbind = false
+      console.log("是否绑定手机判断错误");
+    }
   },
-   mounted() {
-     /* test().then(res => {
-       console.log('测试跨域');
-       
-       console.log(res);
-       
-     }) */
-    this.$store.commit("setLoad",true);
+  mounted() {
+    this.initData();
 
-    //alert(host);
-    /*if(!window.localStorage.getItem('token')){
-  		
-  	}else{
-  		console.log(this.$store.state.isbind)
-    }*/
-    
-    
-    getIndexTopClass().then(res => {
-      if (res) {
-        let data = res.data.info;
-        let grid = [];
-        let columns = [];
-        //'显示格式（1：列表，0：九宫格）'
-        for(let item in data){
-          if(data[item].show_method == 1){
-            columns.push(data[item])
-          }else{
-            grid.push(data[item])
-          }
-        }
-        this.topclass = grid;//九宫格
-        this.classlist = columns;//列表显示
-        console.log("中间class");
-        console.log(data);
+    this.$store.commit("setLoad", true);
+  },
+  methods: {
+    /**保存openid*/
+    setOpenid(openid) {
+      let obj = { name: openid };
+      let str = JSON.stringify(obj);
+      localStorage.obj = str;
+    },
+    initData() {
+      let openid = this.$route.query.openid;
+      if (openid) {
+        let str = localStorage.obj;
+        this.setOpenid(openid);
       }
-    });
+      this.$store.commit("setOpenId", openid);
 
-
+      let data = {
+        username: openid,
+        password: "123456"
+      };
+      /**获取token*/
+      getToken(data).then(res => {
+        let token = res.data.data.access_token;
+        console.log("获取到的token");
+        console.log(token);
+        //设置token
+        this.$store.commit("set_token", token);
+        //获取token成功后初始化数据
+        this.getOfenBuyList();
+        this.getIndexBanner();
+        this.getCarList();
+        this.getIndexTopClass();
+      });
+    },
     /**
      * 获取首页banner
      */
-     getIndexBanner(4, 1).then(res => {
-      if (res) {
-        let data = res.data.data.data;
-        for (let item in data) {
-          data[item].banner_image_address =
-            this.host + data[item].banner_image_address;
-        }
-        this.bannerImg = data;
-        console.log("banner");
-        console.log(data);
-      }
-    });
-
-    
-    
-
-    /**
-     * 获取首页分类专区(废弃)
-     */
-    /* getIndexClass(this.limit, this.page).then(res => {
-      //console.log("分类数据");
-      this.classlist = res.data.data.data;
-      //this.$store.commit("setLoad",false);
-
-      //console.log(res);
-      //console.log(res.data.data.data);
-    }); */
-
-    /**获取购物车数量显示到底部 */
-    getCarList(999,1).then((res)=>{
-      let data = res.data.shopInfo.data;
-      for(let item in data){
-        this.carnum += parseInt(data[item].count)
-      }
-      this.$store.commit('editCarnum',parseInt(this.carnum))
-    })
-
-    /* window.addEventListener('scroll', this.menuScrollTopStop)*/
-  },
-  methods: {
-    /**获取常购清单列表*/
-    getOfenBuyList(){
-      getOfenBuyList(2,1).then(res => {
-          let data = res.data.info.data;
-          for(let item in data){
-            data[item].goods_photo = this.host + data[item].goods_photo
-            data[item].num = 0
+    getIndexBanner() {
+      getIndexBanner(4, 1).then(res => {
+        if (res) {
+          let data = res.data.data.data;
+          for (let item in data) {
+            data[item].banner_image_address =
+              this.host + data[item].banner_image_address;
           }
-          this.showlist = data;
-          
-          this.$store.commit("setLoad",false);
-        })
+          this.bannerImg = data;
+          console.log("banner");
+          console.log(data);
+        }
+      });
+    },
+    /**获取购物车数量显示到底部 */
+    getCarList() {
+      getCarList(999, 1).then(res => {
+        let data = res.data.shopInfo.data;
+        for (let item in data) {
+          this.carnum += parseInt(data[item].count);
+        }
+        this.$store.commit("editCarnum", parseInt(this.carnum));
+      });
+    },
+    /**获取首页专区九宫格和列表数据*/
+    getIndexTopClass() {
+      getIndexTopClass().then(res => {
+        if (res) {
+          let data = res.data.info;
+          let grid = [];
+          let columns = [];
+          //'显示格式（1：列表，0：九宫格）'
+          for (let item in data) {
+            if (data[item].show_method == 1) {
+              columns.push(data[item]);
+            } else {
+              grid.push(data[item]);
+            }
+          }
+          this.topclass = grid; //九宫格
+          this.classlist = columns; //列表显示
+          console.log("中间class");
+          console.log(data);
+        }
+      });
+    },
+    /**获取常购清单列表*/
+    getOfenBuyList() {
+      getOfenBuyList(2, 1).then(res => {
+        let data = res.data.info.data;
+        for (let item in data) {
+          data[item].goods_photo = this.host + data[item].goods_photo;
+          data[item].num = 0;
+        }
+        this.showlist = data;
+
+        this.$store.commit("setLoad", false);
+      });
     },
     getClassList() {
       let that = this;
@@ -362,19 +390,19 @@ export default {
       }
     },
     /*删除一条常购清单记录*/
-    deleList(index,item) {
+    deleList(index, item) {
       this.showlist.splice(index, 1);
       this.deletOfenBuy(item);
     },
     /**专区商品1*/
     goClasstopDetail(item) {
-        this.$router.push({ path: "/chuanchuan", query: { typeid: item.id } });
-        //this.$router.push({ path: "/hotpot", query: { typeid: item.id } });
+      this.$router.push({ path: "/chuanchuan", query: { typeid: item.id } });
+      //this.$router.push({ path: "/hotpot", query: { typeid: item.id } });
     },
     /**专区商品2*/
     goDetail(item) {
-        this.$router.push({ path: "/hotpot", query: { typeid: item.id } });
-        //this.$router.push({ path: "/hotpot", query: { typeid: item.id } });
+      this.$router.push({ path: "/hotpot", query: { typeid: item.id } });
+      //this.$router.push({ path: "/hotpot", query: { typeid: item.id } });
     },
     /*减少数量值*/
     minus(item) {
@@ -384,22 +412,19 @@ export default {
       } else {
         item.num = 0;
       }
-      removeOfenBuyData(item,this.alldata);
+      removeOfenBuyData(item, this.alldata);
     },
     /*增加数量值*/
     plus(item) {
       let amount = item.num;
       item.num = amount + 1;
-      setOfenBuyData(item,this.alldata);
+      setOfenBuyData(item, this.alldata);
     },
 
     /**删除常购清单*/
-    deletOfenBuy(item){
-      deletOfenBuy(item.oftenBrowseId).then(res => {
-        
-      })
+    deletOfenBuy(item) {
+      deletOfenBuy(item.oftenBrowseId).then(res => {});
     }
-
   },
   computed: {
     ...mapState({
@@ -408,7 +433,6 @@ export default {
       isbind: "isbind"
     })
   }
- 
 };
 </script>
 
@@ -418,9 +442,9 @@ export default {
 }
 .indexlist {
   padding: 0 0.3rem;
-  margin-top: .1rem;
+  margin-top: 0.1rem;
   background: #fff;
-  border-bottom: .2px solid rgba(224, 224, 224, .5);
+  border-bottom: 0.2px solid rgba(224, 224, 224, 0.5);
 }
 
 .oftenby {
@@ -433,17 +457,17 @@ export default {
   line-height: 0.8rem;
 }
 .oftenby img {
-  width: .36rem;
-  height: .36rem;
+  width: 0.36rem;
+  height: 0.36rem;
 }
 .oftenbytitle {
-  font-size: .28rem;
+  font-size: 0.28rem;
   font-weight: 300;
   color: #333;
   padding-left: 0.1rem;
 }
 .oftenme {
-  font-size: .2rem;
+  font-size: 0.2rem;
   font-weight: 300;
   color: #999;
   padding-left: 0.15rem;
@@ -460,7 +484,9 @@ export default {
   margin: -35px auto 0.2rem auto;
   background: #fff;
   border-radius: 10px;
-  box-shadow: 0 3px 4px -1px rgba(224, 224, 224, .35), 0 3px 4px -1px rgba(224, 224, 224, .35), 0 3px 4px -1px rgba(224, 224, 224, .35);
+  box-shadow: 0 3px 4px -1px rgba(224, 224, 224, 0.35),
+    0 3px 4px -1px rgba(224, 224, 224, 0.35),
+    0 3px 4px -1px rgba(224, 224, 224, 0.35);
 }
 .ordertopbox {
   overflow: hidden;
@@ -485,7 +511,7 @@ export default {
   color: #333;
 }
 .topboxinfo ul li p {
-  font-size: .26rem;
+  font-size: 0.26rem;
   color: #333;
   font-weight: 300;
 }
@@ -607,9 +633,18 @@ export default {
   > li:not(:first-child) {
   margin-left: 0.15rem;
 }
-.mu-list .li-box:not(:last-child){border-bottom: 1px solid #e0e0e0;}
-.adimg .mu-carousel{height: 103px;}
-.toptab .fqtitle{max-width: 130px;overflow: hidden;text-overflow: ellipsis;}
-.iddexcontent .kcstyle{padding-left: .2rem}
-
+.mu-list .li-box:not(:last-child) {
+  border-bottom: 1px solid #e0e0e0;
+}
+.adimg .mu-carousel {
+  height: 103px;
+}
+.toptab .fqtitle {
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.iddexcontent .kcstyle {
+  padding-left: 0.2rem;
+}
 </style>

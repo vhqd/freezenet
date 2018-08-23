@@ -2,6 +2,7 @@ import store from "../store/store.js";
 import axios from "axios";
 import jsonp from './jsonp.js'
 const host = store.state.host;
+const host1 = store.state.host1
 
 
 /**
@@ -31,6 +32,13 @@ export const getWXPayInfo = id =>{ return axios.get(host + "/wechat/pay?id="+ id
  * 
  */
 export const register = (data) =>{ return axios.post(host + "/api/register" , data).then((res) => {return res;}).catch((error) => {return error.response})};
+
+/**
+ * 获取用户信息
+ * 
+ */
+export const getUserInfo = id =>{ return axios.get(host + "/api/get-user-detail?id="+ id).then((res) => {return res;}).catch((error) => {return error.response})};
+
 
 /**
  * 获取Token

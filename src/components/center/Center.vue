@@ -5,11 +5,11 @@
 			<!--<span style="position: absolute;right: 10px;top: 0.2rem;">地址管理</span>-->
 			<mu-container>
 				<mu-card style="width: 100%; max-width: 375px; margin: 0 auto;">
-				  <mu-card-header title="一花一世界">
+				  <mu-card-header :title="username">
 				    <mu-avatar slot="avatar">
-				      <img src="../../../static/img/back.png">
+				      <img :src="photo" :onerror='onerrorimg'>
 				    </mu-avatar>
-					<span class="mu-card-sub-titles" @click.stop.prevent="goBindPhone">绑定手机号</span>
+					<span class="mu-card-sub-titles" @click.stop.prevent="goBindPhone">{{bindtxt}}</span>
 				  </mu-card-header>
 				</mu-card>
 			</mu-container>
@@ -80,7 +80,7 @@
 
 <script>
 	import Footer from '../common/Footer.vue';
-	import { getOrders , getCenterCoupons } from '../../http/http.js'
+	import { getOrders , getCenterCoupons , getUserInfo } from '../../http/http.js'
 	import { getAllOrders } from '../../common/common.js'
 
 	
@@ -96,7 +96,11 @@
 			limit:15,
 			page:1,
 			couponsnum:0,
+			bindtxt:'绑定手机号',
+			onerrorimg:this.$store.state.onerrorimg,
 			order_status:0,//'0-全部 1-待支付 2-待发货 3-已发货(待收货) 4-已完成 5-已取消',
+			username:'冻品聚汇欢迎您',
+			photo:'',
 	    	orderlist:[
 	    		{
 	    			id:1,
@@ -159,19 +163,58 @@
 	    	]
 	    }
 	  },
+	  mounted(){
+		  this.$store.commit("setLoad",true);
+	  },
 	  activated(){
-		  this.getCouponsnum(1);
-		  this.getOrders();
-
+		this.getCouponsnum(1)
+		this.getOrders()
+		this.getUserInfo()
+		let isbind = sessionStorage.isbind
+		if(isbind == 1){
+			this.bindtxt = '重新绑定'
+		}
 		/**获取所有订单*/
-		getAllOrders().then(res =>{
-			
-			console.log('00000000000000');
-			console.log(res);
-		})
-		  
+		this.getAllOrders()
+		//如果打开获取用户信息这去掉这里
+		this.$store.commit("setLoad",false);
 	  },
 	  methods: {
+		  /**获取所有订单(计算个人中心订单数量)*/
+		  getAllOrders(){
+			let orderlist = this.orderlist
+			for(let ie in orderlist){
+				orderlist[ie].num = 0
+			}
+			getAllOrders().then(res =>{
+				let data = res.data.info.data;
+				for(let item in data){
+					let order_status = data[item].order_status
+					for(let i in orderlist){
+						let id = orderlist[i].id
+						if(id == order_status){
+							orderlist[i].num++
+						}
+					}
+				}
+				this.orderlist = orderlist
+				console.log('00000000000000');
+				console.log(this.orderlist);
+			})
+		  },
+		  /**获取用户信息*/
+		  getUserInfo(){
+			  let userid = sessionStorage.userid
+			  getUserInfo(userid).then(res => {
+				if(res.data){
+					let userinfo = res.data.data
+					this.username = userinfo.nickname
+					this.photo = userinfo.photo
+					this.$store.commit('setUserInfo',userinfo)
+					this.$store.commit("setLoad",false);
+				}
+			  })
+		  },
 		  /**获取个人优惠券*/
 		getCouponsnum(page){
 			getCenterCoupons(999,page).then(res => {

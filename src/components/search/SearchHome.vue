@@ -320,6 +320,7 @@ export default {
   },
   activated(){
     this.searchshow = true;
+    this.getSWords()
   },
   methods: {
     /**获取显示搜索结果*/
@@ -417,29 +418,37 @@ export default {
     /*关闭弹窗*/
     closeJSDialog() {
       this.openJS = false;
+    },
+    /**获取搜索词和热门搜索词*/
+    getSWords(){
+      this.GetKeyWord()
+      this.GetKeyHotWord()
+    },
+     /*获取搜索历史*/
+    GetKeyWord(){
+      this.$store.commit("setLoad",true);
+      GetKeyWord().then(res => {
+          let data = res.data.data;
+          this.history = data;
+          console.log(data);
+          console.log("--------");
+          console.log(res);
+        });
+    },
+     /*获取搜索历史*/
+    GetKeyHotWord(){
+      GetKeyHotWord().then(res => {
+        let data = res.data.data;
+        this.hothistory = data;
+        console.log(data);
+        console.log("--------");
+        console.log(res);
+         this.$store.commit("setLoad",false);
+      });
     }
   },
   mounted() {
-    /*获取搜索历史*/
-    GetKeyWord().then(res => {
-      let data = res.data.data;
-      this.history = data;
-      console.log(data);
-
-      console.log("--------");
-
-      console.log(res);
-    });
-    /*获取搜索历史*/
-    GetKeyHotWord().then(res => {
-      let data = res.data.data;
-      this.hothistory = data;
-      console.log(data);
-
-      console.log("--------");
-
-      console.log(res);
-    });
+     
   },
   components: {
     Search,

@@ -91,6 +91,7 @@
 				</div>
         </mu-container>
 			</mu-load-more>
+      <p v-show="nomoreorder">没有更多的订单了！</p>
 		</div>
     
 		<mu-dialog title="温馨提示" width="360" :open.sync="openJS">
@@ -131,6 +132,7 @@ export default {
       loading2: false,
       loading: false,
       noorder:false,//显示没有订单提示文字
+      nomoreorder:false,//滚动加载没有更多提示
       openJS: false, //取消弹窗
       openDel:false,//删除弹窗
       index: 0,
@@ -243,6 +245,11 @@ export default {
         //判断是加载更多还是切换订单状态
         if(isloadmore){
           this.list = this.list.concat(data)
+          if(data.length == 0){
+            this.nomoreorder = true
+          }else{
+            this.nomoreorder = false
+          }
         }else{
           if(data.length == 0){
             this.noorder = true
@@ -260,7 +267,10 @@ export default {
       this.loading = true;
       setTimeout(() => {
         this.loading = false;
-        this.getOrders(this.order_status,true)
+        if(this.nomoreorder){
+         this.getOrders(this.order_status,true)
+        }
+       
         //this.list.push(this.list[0]);
         console.log("成功添加一条数据");
         //this.num += 10;

@@ -349,7 +349,7 @@ textarea:-ms-input-placeholder {
 }
 
 .homebanner .mu-carousel-indicators {
-  margin: .2rem auto .75rem auto !important;
+  margin: .2rem auto .75rem auto;
 }
 
 .indexbox .mu-item {
@@ -536,6 +536,13 @@ textarea:-ms-input-placeholder {
   }
   .mu-tab-wrapper {
     padding: 7px;
+  }
+  .homebanner .mu-carousel-indicators {
+    margin: .2rem auto .9rem auto;
+  }
+  .settlement{
+    height: 40px;
+    line-height: 40px;
   }
 }
 

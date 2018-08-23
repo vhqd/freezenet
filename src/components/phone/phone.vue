@@ -1,9 +1,9 @@
 <template>
 	<div class="address">
 		<mu-appbar style="width: 100%;" color="primary">
-			<mu-button icon slot="left" @click="back">
+			<!-- <mu-button icon slot="left" @click="back">
 				<img src="../../../static/img/back.png"/>
-			</mu-button>
+			</mu-button> -->
 			绑定手机号
 			<!--<span v-if="isshow" style="position: absolute;right: .2rem;top: -.1rem;" @click="goEditDress">管理</span>-->
 		</mu-appbar>
@@ -12,7 +12,7 @@
 			<mu-list-item button :ripple="false">
 				<mu-list-item-title>手机号</mu-list-item-title>
 				<mu-list-item-action>
-					<mu-text-field v-model="phone" placeholder="请输入手机号"></mu-text-field>
+					<mu-text-field v-model="phone" type='number' placeholder="请输入手机号"></mu-text-field>
 				</mu-list-item-action>
 				<div v-if="!issend&&phone != ''" class="sendyzm" @click="snedyzm">发送验证码</div>
 				<div v-else class="sendyzm saveboxhui">发送验证码</div>
@@ -48,7 +48,7 @@
 
 <script>
 	import { oauth , register , getToken , getTokentest , getUserWXInfo , sendPhoneYzm , test1 } from '../../http/http.js'
-	import { getUrlParms } from '../../common/common.js'
+	import { getTokens , getUrlParms } from '../../common/common.js'
 	import QS from "qs";
 
 	export default {
@@ -71,33 +71,26 @@
 		activated(){
 				console.log(this.$route.query.openid)
 				let openid = this.$route.query.openid
-				this.openid = openid
-				let str = sessionStorage.obj
-				console.log('str');
-				console.log(str);
-				
-				if(str){
+				if(openid){
+					this.openid = openid
+					let str = localStorage.obj
+					console.log('str');
+					console.log(str);
+					this.setOpenid(openid);
+				}
+				/* if(str){
 					let obj = JSON.parse(str);
 					if(!obj.name || ((openid != obj.name) && openid)){
 						this.setOpenid(openid);
-						/* let obj = { name:this.$route.query.openid };
-						let str = JSON.stringify(obj);
-						sessionStorage.obj = str; */
 					}
 				}else{
 					this.setOpenid(openid);
-					/* let obj = { name:this.$route.query.openid };
-					let str = JSON.stringify(obj);
-					sessionStorage.obj = str; */
-				}
-				let a = sessionStorage.obj
-				let b = JSON.parse(a);
-				console.log(b);
-				
+				} */
 				
 				this.$store.commit("setOpenId",openid)
 				console.log('store里面的openid');
 				console.log(openid);
+				this.gettoken();
 			//window.location.href = this.host + "/oauth"
 
 			/* console.log('jsonp');
@@ -128,7 +121,10 @@
 
 		},
 		mounted(){
-			window.location.href = this.basehost + 'phone'
+			//window.location.href = this.basehost + 'phone'
+
+
+
 			/**测试获取登录token（存在跨域问题）*/
 			/*  getTokentest().then(res=>{
 				 let token = res.data.access_token;
@@ -143,12 +139,24 @@
 				console.log(res);
 			}) */
 		},
+		watch:{
+			yzm(a,b){
+				let reg =/[\u4E00-\u9FA5]|[\uFE30-\uFFA0]/gi;
+				if (reg.test(a)) {
+					this.yzm = ''
+        		} 
+			}
+		},
 		methods:{
+			gettoken(){
+				getTokens();
+			},
 			/**保存openid*/
 			setOpenid(openid){
 				let obj = { name:openid };
 				let str = JSON.stringify(obj);
-				sessionStorage.obj = str;
+				localStorage.obj = str; 
+				//sessionStorage.obj = str;
 			},
 	  		/*绑定手机操作*/
 	  		bindPone(){
@@ -170,13 +178,13 @@
 	  				this.$toast.error('请输入邀请码');
 	  				return;
 				}
-	  			//this.getToken();
+	  			
 				this.putRegister();
 			},
 			
 			/**提交用户信息*/  
 			putRegister(){
-				let str = sessionStorage.obj
+				let str = localStorage.obj
 				let obj = JSON.parse(str);
 				let data = {
 					openid:obj.name,
@@ -228,23 +236,7 @@
 					})
 				}
 			},
-			getToken(){
-				let tok = this.$store.state.token
-				//console.log(tok);
-				let data = {
-					username: 'test_01',
-					password: 'admin@'
-				};
-				getToken(data).then(res => {
-					let token = res.data.data.access_token;
-					console.log('获取到的token');
-					console.log(token);
-					//设置token
-					this.$store.commit('set_token', token);
-					this.$store.commit('editIsBind');
-					this.$router.push('/') 
-				})
-			},
+			
 			back(){
 				this.$router.go('-1');
 			}
