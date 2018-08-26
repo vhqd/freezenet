@@ -10,12 +10,12 @@
 				<mu-list-item avatar :ripple="false" button>
 					<mu-list-item-content>
 						<mu-list-item-title>{{contentinfo[0].goods_title}}</mu-list-item-title>
-						<span style="color: #a9a9a9;font-size: 0.2rem;">{{contentinfo[0].goods_count}}斤装</span>
+						<span style="color: #a9a9a9;font-size: 0.2rem;">{{contentinfo[0].goods_specification}}</span>
 						<mu-list-item-sub-title>
 							<p style="color: red;">
 								￥
 								<span v-show="!isbind" style="color: #a9a9a9;">绑定手机号才能查看价格</span>
-								<span  v-show="isbind" style="font-size: 0.5rem;">{{contentinfo[0].goods_price}}</span>
+								<span  v-show="isbind" style="font-size: .38rem;">{{showprice}}</span>
 								<!-- <span style="color: #ccc;text-decoration: line-through;">￥{{data.oldPrice}}</span> -->
 							</p>
 						</mu-list-item-sub-title>
@@ -25,7 +25,13 @@
 					</mu-list-item-content>
 				</mu-list-item>
 				<mu-divider></mu-divider>
-				<div style="position: absolute;right:0.28rem;bottom: 25px;color: red;">
+					<mu-container class="demo-chip-wrapper">
+					<mu-chip class="demo-chip" v-for="(item , index) in pricebox" :key="index" :color="item.isselect ? 'red' : '#e0e0e0'" @click="switchPrice(item,index)">
+						{{item.specification*2}}斤装
+					</mu-chip>
+				</mu-container>
+				<mu-divider></mu-divider>
+				<div style="position: absolute;right:0.28rem;top: 70px;color: red;">
 					<div class="saoma">
 						<span class="minus" @click="minus()" v-if="contentinfo[0].num != 0"><img src="../../../static/img/ic_jian.png" alt="" style="width:.5rem;height:.5rem;"></span>
 						<span v-show="contentinfo[0].num != 0">{{contentinfo[0].num}}</span>
@@ -39,7 +45,7 @@
 			<img v-if="contentinfo[0]" :src="contentinfo[0].goods_photo" style="width: 100%;margin-top: 0.2rem;" :onerror="onerrorimglong"/>
 		</div>
 
-		<div class="addToCar">
+		<div class="addToCar" v-if="contentinfo[0]">
 			<mu-list class="carbut">
 				<mu-list-item avatar button :ripple="false">
 					<div class="pricecarbox">
@@ -134,10 +140,12 @@ export default {
   },
   data() {
     return {
-			baseimg:this.$store.state.baseimg,
 			dTitle: "商品详情", //详情标题
 			host:this.$store.state.host,
 			id:0,//商品id
+			showprice:0,
+			isSelect:true,
+			thisitem:0,
       carnum: 0, //分类底部小车数量
 			qigou: this.$store.state.qigou, //起购价
 			manjian:this.$store.state.manjian,//满减
@@ -149,7 +157,8 @@ export default {
 			isOfen:false,
       jcg1: require("../../../static/img/home/ic_jiachanggou_moren@3x.png"),
       jcg2: require("../../../static/img/home/ic_jiachanggou_yijia@3x.png"),
-      contentinfo: [],
+			contentinfo: [],
+			pricebox:[],
        /*  id: 1,
         img: require("../../../static/img/1-0_03.png"), //图片
         title: "算哈哈是111", //标题
@@ -166,7 +175,11 @@ export default {
       ]
     };
 	},
+	watch:{
+	},
 	activated(){
+		
+		this.$store.commit("setLoad", true);
 		//this.contentinfo = [];//防止缓存
 		this.id = this.$route.query.id;
 		this.isOfen = false
@@ -175,9 +188,24 @@ export default {
 
 		getProductInfos(JSON.stringify(data)).then(res => {
 			let data = res.data.data;
-			data[0].goods_photo = this.baseimg + data[0].goods_photo;
+			data[0].goods_photo = this.host + data[0].goods_photo;
 			data[0].num = 0;
 			this.contentinfo = data;
+			if(this.contentinfo[0].hasOwnProperty('specifications')){
+				this.showprice = this.contentinfo[0].specifications[0].price
+			}else{
+				this.showprice = this.contentinfo[0].price
+			}
+			this.pricebox = this.contentinfo[0].specifications
+			for(let item in this.pricebox){
+				if(item == 0){
+					this.pricebox[item].isselect = true
+				}else{
+					this.pricebox[item].isselect = false
+				}
+			}
+			
+			this.$store.commit("setLoad", false);
 		})
 	},
 	mounted(){
@@ -190,6 +218,16 @@ export default {
     })
   },
   methods: {
+		switchPrice(item , index){
+			this.showprice = item.price
+			for(let item in this.pricebox){
+				if(item == index){
+					this.pricebox[item].isselect = true
+				}else{
+					this.pricebox[item].isselect = false
+				}
+			}
+		},
 		/**添加常购或者取消常购*/
 		addOfenBuy(){
 			let is_often_browse = this.contentinfo[0].is_often_browse
@@ -370,10 +408,13 @@ export default {
 .mu-item-sub-title{line-height: 1.2}
 .mjbox{margin:.1rem 0}
 .mjbox .mj{color: red;background: #ffeaea;padding: .04rem .2rem;}
-
+.demo-chip-wrapper{padding: 10px 0;overflow: hidden;}
+.mu-chip{margin-left: 5px;float: left;}
 @media screen and (max-width: 325px) {
   .carprice {
 		top: 2px;
 	}
+
 }
+
 </style>

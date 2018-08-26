@@ -21,12 +21,12 @@
                   </mu-list-item-action>
                   <mu-list-item-content>
                     <mu-list-item-title>{{item.goods_title}}</mu-list-item-title>
-                    <span style="color: #666;font-size: 0.2rem;padding-left:.2rem">库存{{item.goods_count}}件</span>
+                    <span style="color: #666;font-size: 0.2rem;padding-left:.2rem">{{item.goods_specification}}</span>
                     <mu-list-item-sub-title>
                       <p style="color: red;">
                         <span v-show="!isbind" style="color: #a9a9a9;">绑定手机号才能查看价格</span>
                         <span v-show="isbind">￥
-                          <span style="font-size: .38rem;">{{item.goods_price}}</span>
+                          <span style="font-size: .38rem;">{{item.price}}</span>
                         </span>
                       </p>
                     </mu-list-item-sub-title>
@@ -112,7 +112,6 @@
   export default {
     data() {
       return {
-        baseimg:this.$store.state.baseimg,
         typeid: null, //分类id
         onerrorimg: this.$store.state.onerrorimg,
         host: this.$store.state.host,
@@ -153,10 +152,10 @@
         this.$http.get(that.host + 　'/api/goods-list?typeid=' + this.$route.query.typeid + '&limit=' + this.limit + '&page=' + page)
           .then(function (res) {
             that.page = that.page + 1;
-            let data = res.data.data;
+            let data = res.data.data.data;
             for (let item in data) {
               data[item].num = 0
-              data[item].goods_photo = that.baseimg + data[item].goods_photo
+              data[item].goods_photo = that.host + data[item].goods_photo
               data[item].weight = 5
             }
             if (data.length > 0) {

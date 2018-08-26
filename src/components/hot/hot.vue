@@ -20,12 +20,12 @@
 								</mu-list-item-action>
 								<mu-list-item-content>
 									<mu-list-item-title>{{item.goods_title}}</mu-list-item-title>
-									<span style="color: #666;font-size: 0.2rem;padding-left:.2rem;">库存{{item.goods_count}}件</span>
+									<span style="color: #666;font-size: 0.2rem;padding-left:.2rem;">{{item.specification}}</span>
 									<mu-list-item-sub-title>
 										<p style="color: red;">
 											<span v-show="!isbind" style="color: #a9a9a9;">绑定手机号才能查看价格</span>
 											<span v-show="isbind">￥
-												<span style="font-size: 0.5rem;">{{item.goods_price}}</span>
+												<span style="font-size: .28rem;">{{item.price}}</span>
 											</span>
 										</p>
 									</mu-list-item-sub-title>
@@ -38,8 +38,8 @@
 								<!-- <span class="minus mpsytl" @click="minus(item)" v-if="item.num != 0">-</span>
 				        	<span>{{item.num}}</span>
 				        	<span class="plus mpsytl" @click="plus(item)">+</span> -->
-								<span class="minus" @click="minus(item)" v-if="item.num != 0"><img src="../../../static/img/ic_jian.png" alt="" style="width:.5rem;height:.5rem;"></span>
-								<span v-show="item.num != 0">{{item.num}}</span>
+								<span class="minus" @click="minus(item)" v-if="item.count != 0"><img src="../../../static/img/ic_jian.png" alt="" style="width:.5rem;height:.5rem;"></span>
+								<span v-show="item.count != 0">{{item.count}}</span>
 								<span class="plus" @click="plus(item)"><img src="../../../static/img/ic_jia.png" alt="" style="width:.5rem;height:.5rem;"></span>
 							</div>
 						</div>
@@ -47,7 +47,7 @@
 
 				</mu-list>
 			</mu-paper>
-
+      <div id="realheight"></div>
 		</div>
 
 		<div class="addToCar">
@@ -73,11 +73,6 @@
 					</div>
 				</mu-list-item>
 			</mu-list>
-			<mu-dialog title="温馨提示" width="360" :open.sync="openJS">
-				<span class="cancelbox" @click="closeJSDialog"><img src="../../../static/img/ic_Shut .png" /></span>
-				你还没有选中商品<br>还不能去结算
-				<mu-button slot="actions" flat color="primary" @click="closeJSDialog">确定</mu-button>
-			</mu-dialog>
 		</div>
 <mu-dialog title="温馨提示" width="360" :open.sync="openwins">
         <span class="cancelbox" @click="cancel"><img src="../../../static/img/ic_Shut .png" /></span>
@@ -91,8 +86,9 @@
 <script>
 import { mapState } from "vuex";
 import BackBar from "../common/BackBar.vue";
-import { getHotList } from "../../http/http.js";
-import { jiancar, setOfenBuyData } from "../../common/common.js";
+import { getHotList , EditCarShop } from "../../http/http.js";
+import { jiancar, setOfenBuyData , jianHotcar  } from "../../common/common.js";
+import QS from 'qs'
 
 export default {
   data() {
@@ -103,7 +99,6 @@ export default {
 	  qigou: this.$store.state.qigou,
     onerrorimg:this.$store.state.onerrorimg,
      openwins:false,
-      openJS: false, //结算弹窗
       list: [
       /*   {
           id: 1,
@@ -193,7 +188,7 @@ export default {
 		getHotList().then(res => {
 			let data = res.data.info
 			for(let item in data){
-				data[item].num = 0
+				data[item].count = 0
 				data[item].type = 1
 			}
 			console.log(data);
@@ -203,50 +198,44 @@ export default {
     /*结算*/
     settlement() {
       //用选中商品总价判断是否选择商品
-      if (!this.allPrice > 0) {
-        //打开弹窗
-        this.openJS = true;
-      } else {
-		let data = this.list;
-		let datas = [];
-		console.log(2222222222222222222222222);
-		for(let item in data){
-		if(data[item].num > 0){
-			datas.push(data[item]);
-		}
-		}
-		console.log(datas);
-		
-		this.$router.push({ path: "/order" ,query:{list:JSON.stringify(datas)}});
-      }
+      if (this.allPrice > 0) {
+        let data = this.list;
+        let datas = [];
+        console.log(2222222222222222222222222);
+        for(let item in data){
+        if(data[item].count > 0){
+          datas.push(data[item]);
+        }
+        }
+        console.log(datas);
+        
+        this.$router.push({ path: "/order" ,query:{list:JSON.stringify(datas)}});
+      } 
     },
     /**点击底部购物车图标到购物车*/
     goShopCar(){
       this.$router.push('/car')
     },
-    /*关闭弹窗*/
-    closeJSDialog() {
-      this.openJS = false;
-    },
     /*减少数量值*/
     minus(item) {
-      let amount = item.num;
+      let amount = item.count;
       if (amount > 0) {
-        item.num = amount - 1;
+        item.count = amount - 1;
         this.carnum = this.carnum - 1;
-        this.allPrice = this.allPrice - item.goods_price;
+        this.allPrice = this.allPrice -parseFloat(item.price);
       } else {
-        item.num = 0;
+        item.count = 0;
       }
       let data = {
+          specification_id:item.specification_id,
           goods_id: item.id,
-          single_price: item.goods_price,
-          count: item.num,
+          single_price: item.price,
+          count: 1,
           isadd:0
         };
       console.log('减少购物车');
       console.log(data);
-      jiancar(item.id, data);
+      jianHotcar(item.id , QS.stringify(data))
     },
     /*增加数量值*/
     plus(item) {
@@ -254,11 +243,17 @@ export default {
       if(isbind != 1){
         this.openwins = true
       }else{
-        let amount = item.num;
-        item.num = amount + 1;
         this.carnum = this.carnum + 1;
-        this.allPrice = this.allPrice + item.goods_price;
-         setOfenBuyData(item, this.list);
+        this.allPrice = this.allPrice +parseFloat(item.price);
+        let ite = {ishotlist:true}
+        let list =  [{
+          goods_id: [],
+          single_price: [],
+          count: [],
+          sum_price: 0,
+          specification_id: []
+        }]
+         setOfenBuyData(item, list , ite);
       }
     },
     sure(){
@@ -319,7 +314,7 @@ export default {
   padding: 0;
 }
 .li-box li {
-  padding: 8px 0;
+  padding: 0;
 }
 .mu-item-title {
   line-height: 0.36rem;

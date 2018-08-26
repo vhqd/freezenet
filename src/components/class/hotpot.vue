@@ -17,7 +17,7 @@
                 <p class="rtitle">{{item.goods_title}}</p>
                 <p class="liang">{{item.weight}}斤装</p>
                 <p v-show="!isbind" class="price">绑定手机号才能查看价格</p>
-                <p v-show="isbind" class="price">￥{{item.goods_price}}</p>
+                <p v-show="isbind" class="price">￥{{item.price}}</p>
               </router-link>
               <div style="position: absolute;right:0;bottom: -.2rem;">
                 <div class="saoma">
@@ -93,7 +93,6 @@
   export default {
     data() {
       return {
-        baseimg:this.$store.state.baseimg,
         typeid: null, //分类id
         onerrorimg: this.$store.state.onerrorimg,
         host: this.$store.state.host,
@@ -138,10 +137,10 @@
         this.$http.get(that.host + 　'/api/goods-list?typeid=' + this.$route.query.typeid + '&limit=' + this.limit + '&page=' + page)
           .then(function (res) {
             that.page = that.page + 1;
-            let data = res.data.data;
+            let data = res.data.data.data;
             for (let item in data) {
               data[item].num = 0
-              data[item].goods_photo = that.baseimg + data[item].goods_photo
+              data[item].goods_photo = that.host + data[item].goods_photo
               data[item].weight = 5
             }
             if (data.length > 0) {

@@ -65,8 +65,8 @@
 									<span v-show="!isbind" style="color: #a9a9a9;">绑定手机号才能查看价格</span>
 									<p style="color: red;" v-show="isbind">
 										￥
-										<span style="font-size: 0.5rem;">{{item.goods_price}}</span>
-										<span style="color: #ccc;text-decoration: line-through;">￥{{item.goods_original_price}}</span>
+										<span style="font-size: 0.38rem;">{{item.single_price}}</span>
+										<!-- <span style="color: #ccc;text-decoration: line-through;">￥{{item.goods_original_price}}</span> -->
 									</p>
 								</mu-list-item-sub-title>
 							</mu-list-item-content>
@@ -258,7 +258,7 @@
 	getWXPayInfo
 	} from "../../http/http.js";
 	import { WXPay } from '../../common/common.js'
-	import wx from 'weixin-js-sdk'
+	/* import wx from 'weixin-js-sdk' */
 
 	export default {
 		data() {
@@ -279,7 +279,9 @@
 					transport_id:0,
 					pay_way:0,
 					distribution_fee:0,
-					distribution_id:0
+					distribution_id:0,
+					goods_specification_id:null,
+					specification_id:null
 				},
 				orderdata:[{
 					'goods_id':[],//商品id
@@ -399,7 +401,7 @@
 				this.alllistlength = list.length;
 				for(let item in list){
 					this.llength += list[item].count;//总商品数
-					this.allprice += parseFloat(list[item].goods_price*list[item].count)
+					this.allprice += parseFloat(list[item].single_price)*list[item].count
 				}
 				this.payprice = this.allprice - this.yhj + this.psf;
 			},
@@ -434,7 +436,9 @@
 					let obj = {};
 					obj.goods_id = alldata[ite].goods_id;
 					obj.count = alldata[ite].count;
-					obj.single_price = alldata[ite].goods_price;
+					obj.single_price = alldata[ite].single_price;
+					obj.specification_id = alldata[ite].specification_id;
+					obj.goods_specification_id = alldata[ite].goods_specification_id;
 					//this.paydata.goods.push(obj);
 					goods.push(obj);
 				}
@@ -459,11 +463,18 @@
 				/**提交订单数据*/
 				AddOrder(this.paydata).then(res =>{
 					//订单id
-					let id = res.data.info.id
-					if(id){
-						//唤起微信支付(订单id)
-						WXPay(id)
+					if(res.data.code == 200){
+						let id = res.data.info.id
+						if(id){
+							//唤起微信支付(订单id)
+							WXPay(id)
+						}
+					}else{
+						let msg = res.data.message
+						this.$store.commit('setShowText',msg);
+            			this.$store.commit('seterror');
 					}
+					
 				})  
 			},
 			

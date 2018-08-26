@@ -38,7 +38,7 @@
 												<span v-show="!isbind" style="color: #a9a9a9;">绑定手机号才能查看价格</span>
 												<p style="color: red;" v-show="isbind">
 													￥
-													<span style="font-size: 0.5rem;">{{ie.goods_price}}</span>
+													<span style="font-size: 14px;">{{ie.price}}</span>
 												</p>
 											</mu-list-item-sub-title>
 										</mu-list-item-content>
@@ -66,7 +66,7 @@
 								</div>
 							</mu-list>
 						</mu-paper>
-            <div class="shopinfos"><span>共{{ item.goodsInfo.length}}件商品</span><span>实付款：</span><span>￥{{item.real_pay_price}}.00</span></div>
+            <div class="shopinfos"><span>共{{ item.goodsInfo.length}}件商品</span><span>实付款：</span><span>￥{{item.sum_price}}.00</span></div>
 						<div class="actionli">
 							<ul v-if='item.order_status == 1'>
 								<li @click="openJSDialog(index,item)">取消订单</li>
@@ -121,7 +121,6 @@ import { WXPay } from '../../common/common.js'
 export default {
   data() {
     return {
-      baseimg:this.$store.state.baseimg,
       host:this.$store.state.host,
       num: 10,
       refreshing: false,
@@ -236,7 +235,7 @@ export default {
         for(let item in data){
           let img = data[item].goodsInfo;
           for(let ite in img){
-            img[ite].goods_photo = this.baseimg + img[ite].goods_photo;
+            img[ite].goods_photo = this.host + img[ite].goods_photo;
           }
         }
         
@@ -248,8 +247,8 @@ export default {
         if(isloadmore){
           this.list = this.list.concat(data)
           if(data.length == 0){
-            this.loading = false;
             this.nomoreorder = true
+            this.noorder = false
           }
         }else{
          
@@ -260,6 +259,10 @@ export default {
             this.list = data;
           }
         } 
+        console.log('8888888888888888888888888888888888888888');
+        
+        console.log(this.list);
+        
         //this.loading2 = false;
       });
     },
@@ -270,6 +273,9 @@ export default {
         this.loading = true;
         this.nomoreorder = false
         this.getOrders(this.order_status,true)
+        setTimeout(()=>{
+          this.loading = false;
+        },300)
         }else{
           this.nomoreorder = true
         }
@@ -419,6 +425,7 @@ export default {
 .mu-avatar {
   margin-top: 0 !important;
 }
+.mu-item-title{font-size: 13px}
 .saoma span {
   color: #666;
 }

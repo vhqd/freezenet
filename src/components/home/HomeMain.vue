@@ -65,8 +65,69 @@
       <mu-container data-mu-loading-color="secondary" data-mu-loading-overlay-color="rgba(0, 0, 0, .7)" v-loading="loading2" class="demo-loading-wrap">
         <mu-paper :z-depth="1" class="demo-list-wrap" id="rightbox">
           <mu-list textline="three-line" v-if="caiDetailList.length != 0">
+              <div v-for="(item,index) in caiDetailList" :key="index" class="li-box" v-if="caiDetailList.length > 0">
+                          <router-link :to="{path:'/detail',query: {id: item.id}}">
+                            <mu-list-item avatar :ripple="false" button>
+                              <mu-list-item-action>
+                                <mu-avatar style="min-width: 1.42rem;height: 1.4rem;">
+                                  <img :src="item.goods_photo" :onerror="onerrorimg">
+                                </mu-avatar>
+                              </mu-list-item-action>
+                              <mu-list-item-content>
+                                <mu-list-item-title>{{item.goods_title}}</mu-list-item-title>
+                                <span class="kcstyle">{{item.goods_specification}}</span>
+                                <mu-list-item-sub-title>
+                                  <div style="color: red;">
+                                    <span v-show="!isbind" style="color: #a9a9a9;">绑定手机号才能查看价格</span>
+                                    <div v-show="isbind">￥
+                                      <span v-if="item.type == 1" style="font-size: .28;">{{item.goods_price}}</span>
+                                      <span v-if="item.type == 2" style="font-size: .28rem;">{{item.specifications[0].price}}</span>
+                                    </div>
+                                  </div>
+                                </mu-list-item-sub-title>
+                              </mu-list-item-content>
+                            </mu-list-item>
+                          </router-link>
+                          <mu-divider></mu-divider>
+                          <div style="position: absolute;right: 0.3rem;top: .9rem;">
+                            <div class="saoma">
+                              <div v-if="item.type == 1">
+                                <span class="minus" @click="minus(item)" v-if="item.num != 0"><img src="../../../static/img/ic_jian.png" alt=""></span>
+                                <span v-show="item.num != 0">{{item.num}}</span>
+                                <span class="plus" @click="plus(item)"><img src="../../../static/img/ic_jia.png" alt=""></span>
+                              </div>
+                              <div v-if="item.type == 2">
+                                <span class="mpsytl" @click="typeo2show(item , 1)" v-if="!item.show" style="margin-right:3px;"><img src="../../../static/img/often/down.png" style="width:.5rem;height:.5rem;"/></span>
+                                <span class="mpsytl" @click="typeo2show(item), 2" v-if="item.show" style="margin-right:3px;"><img src="../../../static/img/often/up.png"  style="width:.5rem;height:.5rem;"/></span>
+                              </div>
+                            </div>
+                          </div>
 
-            <div v-for="(item,index) in caiDetailList" :key="index" class="li-box">
+                          <mu-expand-transition>
+                            <div class="type2list" v-show="item.type == 2 && item.show">
+                              <!--下拉的重量列表-->
+                              <mu-list textline="two-line">
+                                <mu-list-item avatar button :ripple="false" v-for="(ite , ind) in item.specifications" :key="ind">
+                                  <mu-list-item-content>
+                                    <mu-list-item-title>{{ite.specification*2}}斤装</mu-list-item-title>
+                                    <mu-list-item-sub-title style="color:red;">￥{{ite.price}}</mu-list-item-sub-title>
+                                  </mu-list-item-content>
+                                  <mu-list-item-action>
+                                    <div class="saoma" style="margin-right:6px;">
+                                      <div>
+                                        <span class="minus" @click="minus(item,ite)" v-if="ite.num != 0" :data-index="ind"><img src="../../../static/img/ic_jian.png" style="width:.5rem;height:.5rem" alt=""></span>
+                                        <span v-show="ite.num != 0">{{ite.num}}</span>
+                                        <span class="plus" @click="plus(item,ite)" :data-index="ind"><img src="../../../static/img/ic_jia.png" style="width:.5rem;height:.5rem" alt=""></span>
+                                      </div>
+                                    </div>
+                                  </mu-list-item-action>
+                                </mu-list-item>
+                              </mu-list>
+                            </div>
+                          </mu-expand-transition>
+
+                        </div>
+            <!-- <div v-for="(item,index) in caiDetailList" :key="index" class="li-box">
               <router-link :to="{path:'/detail',query: {id: item.id}}">
                 <mu-list-item avatar :ripple="false" button>
                   <mu-list-item-action>
@@ -76,15 +137,15 @@
                   </mu-list-item-action>
                   <mu-list-item-content>
                     <mu-list-item-title>{{item.goods_title}}</mu-list-item-title>
-                    <span class="kcstyle">库存{{item.goods_count}}件</span>
+                    <span class="kcstyle">{{item.goods_specification}}</span>
                     <mu-list-item-sub-title>
                       <div>
                         <span v-show="!isbind" style="color: #a9a9a9;">绑定手机号才能查看价格</span>
                         <div v-show="isbind" style="color: red;">
                           ￥
-                          <span style="font-size: .38rem;">{{item.goods_price}}</span>
-                          <span style="color: #ccc;text-decoration: line-through;font-size:12px;">￥{{item.goods_original_price}}</span>
-                        </div>
+                          <span style="font-size: .28rem;">{{item.price}}</span> -->
+                          <!-- <span style="color: #ccc;text-decoration: line-through;font-size:12px;">￥{{item.original_price}}</span> -->
+              <!--           </div>
                       </div>
                     </mu-list-item-sub-title>
                   </mu-list-item-content>
@@ -93,28 +154,34 @@
               <mu-divider></mu-divider>
               <div style="position: absolute;right: 0;bottom: 0;" v-show="isbind">
                 <div class="saoma">
-                 <!--  <span class="minus mpsytl" @click="minus(item)" v-if="item.num != 0">-</span>
-                  <span v-show="item.num != 0">{{item.num}}</span>
-                  <span class="plus mpsytl" @click="plus(item)"><img src="../../../static/img/ic_jia.png" alt="" style="width:25px;height:25px;"></span> -->
                    <span class="minus" @click="minus(item)" v-if="item.num != 0"><img src="../../../static/img/ic_jian.png" alt="" style="width:25px;height:25px;"></span>
                   <span v-show="item.num != 0">{{item.num}}</span>
                   <span class="plus" @click="plus(item)"><img src="../../../static/img/ic_jia.png" alt="" style="width:25px;height:25px;"></span>
                 </div>
               </div>
-            </div>
+            </div> -->
           </mu-list>
           <p v-else class="nodata">暂时没有商品哦</p>
           <div id="real2height"></div>
         </mu-paper>
-        <!--    <mu-container data-mu-loading-color="secondary" data-mu-loading-overlay-color="rgba(0, 0, 0, .7)" v-loading="loading2" class="demo-loading-wrap">
-         <mu-button color="teal" @click="fullscreen()">全屏加载</mu-button>
-</mu-container> -->
-
       </mu-container>
       </div>
       	<!-- </mu-load-more> -->
     </div>
-
+<!--
+if (data[item].hasOwnProperty("specifications")) {
+            data[item].type = 2;
+            let secdata = data[item].specifications;
+            for (let i in secdata) {
+              secdata[i].num = 0;
+            }
+          } else {
+            data[item].type = 1;
+          }
+          data[item].goods_photo = this.host + data[item].goods_photo;
+          data[item].num = 0;
+          data[item].show = false;
+-->
     <!--购物车bar-->
 
     		<div class="addToCar">
@@ -154,10 +221,10 @@
 
 <script>
 import { mapState } from "vuex";
-import { AddCarShop } from "../../http/http.js";
 import QS from "qs";
-
+import { jiancar, setOfenBuyData } from "../../common/common.js";
 import {
+  AddCarShop,
   getCaiClassOne,
   getCaiClassChild,
   getCaiClassChildDetail
@@ -167,7 +234,6 @@ export default {
   data() {
     return {
       host: this.$store.state.host,
-      baseimg:this.$store.state.baseimg,
       onerrorimg:this.$store.state.onerrorimg,
       page: 1,
       limit: 99, //当前页面分页条数
@@ -181,10 +247,11 @@ export default {
       isSwitch:true,//用于防止快速点击顶部菜单出现数据错误问题
       qigou:this.$store.state.qigou,//起购价
       alldata:[{
-        'goods_id':[],
-        'single_price':[],
-        'count':[],
-        'sum_price':0
+        goods_id:[],
+        single_price:[],
+        count:[],
+        sum_price:0,
+        specification_id: []
       } ],//分类底部购物车数据
       allPrice: 0,
       openJS: false, //结算弹窗
@@ -278,6 +345,8 @@ export default {
     /*点击切换顶部菜单默认第一个的状态,并且获取数据*/
     removeBg(index, item) {
       if(!this.isSwitch){
+        this.$store.commit('setShowText','网络拥堵...');
+        this.$store.commit('seterror');
         return;
       }
       if(this.isSwitch){
@@ -321,7 +390,7 @@ export default {
       this.itemid = item.id
       //this.getCaiClassChildDetail(item.id)
        getCaiClassChildDetail(item.id, this.limit, this.page).then(res => {
-        let data = res.data.data;
+        let data = res.data.data.data;
         this.isSwitch = true
         if (data.length == 0) {
           this.nodata = true;
@@ -329,9 +398,19 @@ export default {
           this.loading2 = false
           return;
         }
-        for (let item in data) {
-          data[item].goods_photo = this.baseimg + data[item].goods_photo;
-          data[item].num = 0;
+        for (let ite in data) {
+          if (data[ite].hasOwnProperty("specifications")) {
+            data[ite].type = 2;
+            let secdata = data[ite].specifications;
+            for (let i in secdata) {
+              secdata[i].num = 0;
+            }
+          } else {
+            data[ite].type = 1;
+          }
+          data[ite].goods_photo = this.host + data[ite].goods_photo;
+          data[ite].num = 0;
+          data[ite].show = false;
         }
         this.caiDetailList = data;
         this.loading2 = false
@@ -345,22 +424,39 @@ export default {
     },
     /**获取右侧数据*/
     getCaiClassChildDetail(id){
+      
        getCaiClassChildDetail(id, this.limit, this.page).then(res => {
         let data = res.data.data;
-        if (data.length == 0) {
+        console.log('data');
+        
+        console.log(data);
+        
+        if (data.data.length == 0) {
           this.nodata = true;
           this.caiDetailList = [];
           return;
         }
-        for (let item in data) {
-          data[item].goods_photo = this.baseimg + data[item].goods_photo;
+        
+        let secdatas = data.data
+        for (let item in secdatas) {
+          if (secdatas[item].hasOwnProperty("specifications")) {
+            secdatas[item].type = 2;
+            let secdata = secdatas[item].specifications;
+            for (let i in secdata) {
+              secdata[i].num = 0;
+            }
+          } else {
+            secdatas[item].type = 1;
+          }
+          data[item].goods_photo = this.host + data[item].goods_photo;
           data[item].num = 0;
+          data[item].show = false;
         }
         this.caiDetailList = this.caiDetailList.concat(data)
         //this.caiDetailList = [this.caiDetailList,...data];
         this.loading2 = false
         this.page = this.page + 1
-        //console.log(data);
+        
       });
     },
     /*结算*/
@@ -391,13 +487,32 @@ export default {
       //showList.push(this.menu[0]);
       //console.log(showList);
     },
+     /*切换显示重量选择*/
+    typeo2show(item, ind) {
+      if (ind == 1) item.show = true;
+      else item.show = false;
+    },
+    /*减少数量值*/
+    minus(item, ite) {
+      console.log("减少购物车");
+      jiancar(item, ite);
+    },
+    /*增加数量值*/
+    plus(item, ite) {
+      let isbind = sessionStorage.isbind;
+      if (isbind != 1) {
+        this.openwins = true;
+      } else {
+        setOfenBuyData(item, this.alldata, ite);
+      }
+    },
     /**减少商品数量*/
-    minus(item) {
+   /*  minus(item) {
       let amount = item.num;
       if (amount > 0) {
         item.num = amount - 1;
         this.carnum = this.carnum - 1;
-        this.allPrice = this.allPrice - item.goods_price;
+        this.allPrice = this.allPrice - parseFloat(item.price)
       } else {
         item.num = 0;
       }
@@ -414,47 +529,38 @@ export default {
       this.alldata[0].count.splice(indexs,1);
       this.alldata[0].goods_id.splice(indexs,1);
       this.alldata[0].single_price.splice(indexs,1);
+      this.alldata[0].specification_id.splice(indexs,1);
       console.log('-----------------------------------------');
       
       console.log(this.alldata);
       
-    },
+    }, */
     
       
     
     /**增加商品数量*/
-    plus(item) {
+  /*   plus(item) {
       let amount = item.num;
       item.num = amount + 1;
       this.carnum = this.carnum + 1;
-      this.allPrice = this.allPrice + item.goods_price;
+      this.allPrice = this.allPrice + parseFloat(item.price)
 
        
       let alldata = this.alldata;
       let sum_price = alldata[0].sum_price;
       this.alldata[0].goods_id.push(item.id);
-      this.alldata[0].single_price.push(item.goods_price);
+      this.alldata[0].single_price.push(item.price);
       this.alldata[0].count.push(1);//这里只能push=>1个数量
+      this.alldata[0].specification_id.push(item.specification_id);
       this.alldata[0].sum_price = item.num*item.goods_price + sum_price;
       console.log('++++++++++++++++++++++++++++++++++++++++++++');
       
       console.log(this.alldata);
       
-     /*  //下面是拆开单条的数据
-      let obj = {
-        'goods_id':[item.id],
-        'single_price':[item.goods_price],
-        'count':[1],
-        'sum_price':item.num*item.goods_price
-      }
-      this.alldata.length = 0;
-      this.alldata.push(obj)  */
-     // console.log('========================');
-     // console.log(this.alldata);
       
       
     },
-    
+     */
     /*点击分类操作*/
     isopen() {
       this.open = !this.open; //控制菜单显示隐藏
@@ -593,9 +699,9 @@ export default {
 }
 .saoma {
   float: right;
-  padding: 0.2rem 0 0 0;
+  padding: 0;
   border-radius: 0.2rem;
-  margin-right: 0.3rem;
+  margin-right: 0;
 }
 /* .minus {
   background: #c3c3c3;
@@ -772,7 +878,20 @@ export default {
 
 
 #scrollbox .mu-item{height: 38px;}
-
+.type2list .mu-item-content {
+  max-width: 85% !important;
+}
+.type2list li {
+  padding: 0;
+}
+.saoma img {
+  width: 0.6rem;
+  height: 0.6rem;
+}
+.saoma > div {
+  display: flex;
+}
+#homelistbox .mu-list{overflow-y: hidden !important}
 /*.opentab .toptab:not(:first-child){
     	background: #f0f0f0;
     	border-radius: 0.5rem;

@@ -8,9 +8,8 @@ const store = new Vuex.Store({
     state: {
 		 /* host:'http://enet.api.gg',  //刘强本地  */
 		host1:'http://enet.com/eNet/public',//李琦本地 
-		host:'http://SW2018001.trg7.cn/eNet/public/index.php', //线上
+		host:'http://SW2018001.trg7.cn/eNet/public', //线上
 		basehost:'http://SW2018001.trg7.cn/#/', //线上
-		baseimg:'http://SW2018001.trg7.cn//eNet/public/banner', //线上
 		changgou:'已添加常购',
 		qxchanggou:'已取消常购',
 		addcar:'已添加到购物车',
@@ -18,6 +17,7 @@ const store = new Vuex.Store({
 		showerror:false,//全局错误提示
 		showinfo:false,//全局信息提示
 		openwin:false,//全局弹窗
+		waitToken:false,
 		showtext:'',
 		token:null,
 		openid:null,//用户openid
@@ -43,7 +43,10 @@ const store = new Vuex.Store({
 		setShowText(state,text){
 			state.showtext = text
 		},
-
+		/**设置waitToken*/
+		setWaitToken(state,value){
+			state.waitToken = value
+		},
 		/**设置用户id*/
 		setUserid(state,userid){
 			state.userid = userid

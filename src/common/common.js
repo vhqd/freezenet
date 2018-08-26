@@ -79,9 +79,9 @@ function onBridgeReady(params) {
     },
     function(res){     
       if(res.err_msg == "get_brand_wcpay_request:ok" ) {
-        router.push({path:'/paysuccessful'})
+        router.replace({path:'/paysuccessful'})
       }else{
-        router.push({path:'/payfailure'})
+        router.replace({path:'/payfailure'})
       }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。 
     }
   );
@@ -103,15 +103,36 @@ export function removeOfenBuyData(item, data) {
   this.addcar(data[0], 1);
 }
 
-/**添加一个常购数据*/
-export function setOfenBuyData(item, data) {
+/**添加一个购物车数据*/
+export function setOfenBuyData(item, data,ite) {
   data[0].goods_id = [];
   data[0].single_price = [];
   data[0].count = [];
   data[0].sum_price = 0;
+  data[0].specification_id = [];
   let sum_price = data[0].sum_price;
   data[0].goods_id.push(item.id);
-  data[0].single_price.push(item.goods_price);
+  
+
+  if(item.hasOwnProperty("specifications")){
+    let amount = ite.num;
+		ite.num = amount + 1;
+    data[0].single_price.push(ite.price);
+    data[0].specification_id.push(ite.specification_id);
+  }else{
+    data[0].single_price.push(item.price);
+    if(ite.hasOwnProperty("ishotlist")){
+      let amount = item.count;
+      item.count = amount + 1;
+    }else{
+      let amount = item.num;
+      item.num = amount + 1;
+    }
+    //data[0].single_price.push(item.goods_price);
+    data[0].specification_id.push(item.specification_id);
+  }
+  
+
   data[0].count.push(1); //这里只能push=>1个数量
   data[0].sum_price = item.num * item.goods_price + sum_price;
   console.log('添加到购物车的数据');
@@ -119,6 +140,48 @@ export function setOfenBuyData(item, data) {
   
   addcar(data[0], 2);
 }
+
+export function jianHotcar(id,data){
+  EditCarShop(id , data).then(res => {
+    store.commit("editCarnum", store.state.count - 1);
+  })
+}
+
+/**减少一个购物车数据*/
+export function jiancar(item,ite){
+  let specification_id ;
+  let single_price ;
+  if(item.hasOwnProperty("specifications")){
+    let amount = ite.num;
+    if (amount > 0) {
+      ite.num = amount - 1;
+    } else {
+      ite.num = 0;
+    }
+    single_price = ite.price;
+    specification_id = ite.specification_id;
+  }else{
+    let amount = item.num;
+    if (amount > 0) {
+      item.num = amount - 1;
+    } else {
+      item.num = 0;
+    }
+    single_price = item.goods_price;
+    specification_id = item.specification_id;
+  }
+  let data = {
+    specification_id:specification_id,
+    goods_id: item.id,
+    single_price: single_price,
+    count: 1,
+    isadd:0
+  };
+  EditCarShop(item.id , QS.stringify(data)).then(res => {
+    store.commit("editCarnum", store.state.count - 1);
+  })
+}
+
 
 /*添加购物车*/
 export function addcar(data, minusORplus) {
@@ -136,11 +199,6 @@ export function addcar(data, minusORplus) {
   });
 }
 
-export function jiancar(id,data){
-  EditCarShop(id , data).then(res => {
-    store.commit("editCarnum", store.state.count - 1);
-  })
-}
 
 /**获取所有订单*/
 export function getAllOrders() {

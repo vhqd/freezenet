@@ -29,14 +29,14 @@
                           </mu-list-item-action>
                           <mu-list-item-content>
                             <mu-list-item-title>{{item.goods_title}}</mu-list-item-title>
-                            <span style="color: #a9a9a9;font-size: .2rem;padding-left:.2rem;" v-show="isbind">{{item.goods_count}}斤</span>
+                            <span style="color: #a9a9a9;font-size: .2rem;padding-left:.2rem;" v-show="isbind">{{item.specification*2}}斤</span>
                             <mu-list-item-sub-title>
                               <div>
                                 <span v-show="!isbind" style="color: #a9a9a9;">绑定手机号才能查看价格</span>
                                 <div v-show="isbind" style="color: red;">
                                   ￥
-                                  <span style="font-size: .38rem;">{{item.goods_price}}</span>
-                                  <span style="color: #ccc;text-decoration: line-through;">￥{{item.goods_original_price}}</span>
+                                  <span style="font-size: .38rem;">{{item.sum_price}}</span>
+                                  <!-- <span style="color: #ccc;text-decoration: line-through;">￥{{item.goods_original_price}}</span> -->
                                 </div>
                               </div>
                             </mu-list-item-sub-title>
@@ -119,7 +119,6 @@ export default {
   data() {
     return {
       host: this.$store.state.host,
-      baseimg:this.$store.state.baseimg,
       page: 1,
       limit: 10, //当前页面分页条数
       qigou:this.$store.state.qigou,//起购价
@@ -203,7 +202,7 @@ export default {
         
         let data = res.data.shopInfo.data;
         for(let item in data){
-          data[item].goods_photo = this.baseimg + data[item].goods_photo;
+          data[item].goods_photo = this.host + data[item].goods_photo;
           data[item].isslid = false;
         }
         console.log('返回的购物车list');
@@ -356,7 +355,7 @@ export default {
       let checkNum = 0;
       for (let i = 0; i < data.length; i++) {
         if (data[i].checks) {
-          allprice += data[i].goods_price * parseInt(data[i].count);
+          allprice += parseFloat(data[i].single_price) * parseInt(data[i].count);
           checkNum += parseInt(data[i].count);
         }
       }
@@ -407,8 +406,9 @@ export default {
       //alert(item.count);
       //商品data
       let data = {
+        specification_id:item.specification_id,
         goods_id: item.goods_id,
-        single_price: item.goods_price,
+        single_price: item.single_price,
         count: item.count,
         isadd:minusOrPlus
       };
@@ -417,6 +417,8 @@ export default {
         if(item.count == 0){
           this.list.splice(index,1)
         } 
+        this.$store.commit('setShowText',this.$store.state.addcar);
+        this.$store.commit('showInfo');
         //设置导航购物车数量(成功之后在设置，但是在界面上显示有延迟)
         /* this.$store.commit(
           "editCarnum",
@@ -445,7 +447,7 @@ export default {
         }
         console.log(11111111111111111111111111111);
         
-        this.$router.push({ path: "/order" ,query:{list:JSON.stringify(datas)}});
+        this.$router.replace({ path: "/order" ,query:{list:JSON.stringify(datas)}});
       }
     },
     
@@ -690,12 +692,12 @@ export default {
 
 .list-item .delete {
   width: 1.1rem;
-  height: 2.08rem;
+  height:1.7rem;
   background: #ff4949;
   font-size: 17px;
   color: #fff;
   text-align: center;
-  line-height: 2.1rem;
+  line-height: 1.7rem;
   position: absolute;
   top: 0;
   right: -1.1rem;
@@ -733,7 +735,7 @@ export default {
   height: .3rem;
 }
 .mu-load-more .radioimg {
-  margin-top: -17px
+  margin-top: 0px
 }
 .mu-item-action {
   padding-left: 5px;
