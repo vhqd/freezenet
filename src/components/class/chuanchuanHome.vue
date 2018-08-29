@@ -1,10 +1,10 @@
 <template>
 	<div class="oftenbuy">
-		<div :style="ishome == 1 ? cssStyle : ''">
-			<mu-paper :z-depth="1" class="demo-list-wrap" v-if="showlist.length > 0">
+		<div>
+			<mu-paper :z-depth="1" class="demo-list-wrap">
 				<mu-list textline="three-line">
 					<!--type==2的是可选择重量的列表-->
-					<div v-for="(item,index) in showlist" :key="index" class="li-box">
+					<div v-for="(item,index) in showlist" :key="index" class="li-box" v-if="showlist.length > 0">
 						<router-link :to="{path:'/detail',query: {id: item.id}}">
 							<mu-list-item avatar :ripple="false" button>
 								<mu-list-item-action>
@@ -41,7 +41,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="dele" @click="deleList(index,item)" style="padding:10px 15px;">
+						<div class="dele" @click="deleList(index,item)">
 							<img src="../../../static/img/ic-del.png" />
 						</div>
 
@@ -69,14 +69,10 @@
 						</mu-expand-transition>
 
 					</div>
-					<!-- <p v-else>暂时没有记录！</p> -->
+					<p v-else>暂时没有记录！</p>
 
 				</mu-list>
 			</mu-paper>
-      <div v-else style="position: absolute;left: 50%;top: 50%;margin-top: -1.8rem;margin-left: -1rem;">
-        <img src="../../../static/img/home/img_meiyoutuihuodan.png" style="width: 2rem;height: 2rem;" />
-        <p style="color: #999;">你还没有清单哦</p>
-      </div>
 			<div id="realheight"></div>
 			<mu-dialog title="温馨提示" width="360" :open.sync="openJS">
 				<span class="cancelbox" @click="closeJSDialog"><img src="../../../static/img/ic_Shut .png" /></span>
@@ -112,10 +108,6 @@ export default {
       item: null,
       index: null,
       onerrorimg: this.$store.state.onerrorimg,
-      cssStyle:{
-        'position':'relative',
-        'min-height':'4.4rem'
-      },
       alldata: [
         {
           goods_id: [],
@@ -128,7 +120,6 @@ export default {
       showlist: []
     };
   },
-  props:['ishome'],
   watch:{
     /*   waitToken(a,b){
         if(a){
@@ -167,7 +158,7 @@ export default {
         this.getOfenBuyList();
     } */
      //this.getOfenBuyList();
-    if(localStorage.obj&&this.$store.state.getoften){
+    if(localStorage.obj){
       if(JSON.parse(localStorage.obj).name){
         this.$store.dispatch("getCg");
       } 
@@ -314,8 +305,8 @@ export default {
 }
 .dele {
   position: absolute;
-  right: .15rem;
-  top: .1rem;
+  right: 0.4rem;
+  top: 0.18rem;
 }
 .dele img {
   width: 0.35rem;

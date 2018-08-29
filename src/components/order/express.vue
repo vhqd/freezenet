@@ -74,7 +74,7 @@
 	    	dTitle:'物流信息',
 	    	vactiveStep: 0,
 	    	list:[
-      			{
+      		/* 	{
       				id:1,
       				img:require('../../../static/img/1-0_03.png'),//图片
       				title:'算哈哈是111',//标题
@@ -91,8 +91,8 @@
       				price:'20',//单价
       				oldPrice:'50',//旧的价格
       				inventory:'5'//库存
-      			}
-      		]
+      			}*/
+      		] 
 	    }
 	  },
 	  computed: {

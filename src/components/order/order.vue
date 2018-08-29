@@ -98,7 +98,7 @@
 						</mu-list-item-action>
 					</mu-list-item>
 					<mu-list-item button :ripple="false" @click="openBotttomSheet">
-						<mu-list-item-title>优惠券优惠<span style="font-size:12px;padding-left:15px;">(满300减20)</span></mu-list-item-title>
+						<mu-list-item-title>优惠券优惠<!-- <span style="font-size:12px;padding-left:15px;">(满300减20)</span> --></mu-list-item-title>
 						<mu-list-item-action>
 							<span><span v-if="yhj!=0">-</span>￥{{yhj}}</span>
 						</mu-list-item-action>
@@ -112,7 +112,7 @@
 					<mu-list-item button :ripple="false">
 						<mu-list-item-title>应付款</mu-list-item-title>
 						<mu-list-item-action>
-							<span v-show="isbind">￥{{allprice}}</span>
+							<span v-show="isbind">￥{{payprice}}</span>
 						</mu-list-item-action>
 					</mu-list-item>
 				</mu-list>
@@ -162,7 +162,7 @@
 													<mu-list-item avatar :ripple="false" button>
 														<mu-list-item-action>
 															<mu-avatar style="width: 1.4rem;height: 1.4rem;">
-																<img src="../../../static/img/center/img_youhuiquan @3x.png">
+																<img src="../../../static/img/center/img_youhuiquan.png">
 															</mu-avatar>
 														</mu-list-item-action>
 														<mu-list-item-content>
@@ -189,7 +189,7 @@
 								</div>
 							</li>
 							<li v-if="couponsnum == 0" class="yhjtipbox">
-								<img src="../../../static/img/order/img_wuyouhuiquan @2x.png" class="yhjtip" alt="">
+								<img src="../../../static/img/order/img_wuyouhuiquan.png" class="yhjtip" alt="">
 								您暂无可以使用的优惠券
 							</li>
 						</ul>
@@ -208,7 +208,7 @@
 													<mu-list-item avatar :ripple="false" button>
 														<mu-list-item-action>
 															<mu-avatar style="width: 1.4rem;height: 1.4rem;">
-																<img src="../../../static/img/center/img_youhuiquanno @3x_.png">
+																<img src="../../../static/img/center/img_youhuiquano.png">
 															</mu-avatar>
 														</mu-list-item-action>
 														<mu-list-item-content>
@@ -235,7 +235,7 @@
 								</div>
 							</li>
 							<li v-if="nocouponsnum == 0" class="yhjtipbox">
-								<img src="../../../static/img/order/img_wuyouhuiquan @2x.png" class="yhjtip" alt="">
+								<img src="../../../static/img/order/img_wuyouhuiquan.png" class="yhjtip" alt="">
 								您暂无可以使用的优惠券
 							</li>
 						</ul>
@@ -255,7 +255,8 @@
 	getDress,
 	AddOrder,
 	getCenterCoupons,
-	getWXPayInfo
+	getWXPayInfo,
+	Daofu
 	} from "../../http/http.js";
 	import { WXPay } from '../../common/common.js'
 	/* import wx from 'weixin-js-sdk' */
@@ -305,8 +306,8 @@
 				shenyu:0,//商品展开剩余数量
 				radioF: require('../../../static/img/car/ic_xuanzhong.png'), //选中图片
 				radioT: require('../../../static/img/car/ic_weixuan.png'), //未选图片
-				zankai: require('../../../static/img/order/ic_zhankai@3x.png'), //展开
-				shouqi: require('../../../static/img/order/ic_shouqi@3x.png'), //收起
+				zankai: require('../../../static/img/order/ic_zhankai.png'), //展开
+				shouqi: require('../../../static/img/order/ic_shouqi.png'), //收起
 				couponsnum:0,//可用优惠券数量
 				nocouponsnum:0,//不可用优惠券数量
 				payway: [{
@@ -378,6 +379,8 @@
 					for(let item in data){
 						if(data[item].is_default == 1){
 							this.dress = data[item]
+						}else if(data.length == 1){
+							this.dress = data[item]
 						}
 					}
 				});
@@ -431,9 +434,11 @@
 					return;
 				}
 				let alldata = JSON.parse(this.$route.query.list);
+				let count = 0
 				let goods = [];
 				for(let ite in alldata){
 					let obj = {};
+					count += alldata[ite].count
 					obj.goods_id = alldata[ite].goods_id;
 					obj.count = alldata[ite].count;
 					obj.single_price = alldata[ite].single_price;
@@ -459,15 +464,24 @@
 				this.paydata.distribution_id = 20;//'配送方式id' */
 				console.log('重新组合的订单数据');
 				console.log(this.paydata);
+				
 
 				/**提交订单数据*/
 				AddOrder(this.paydata).then(res =>{
 					//订单id
 					if(res.data.code == 200){
 						let id = res.data.info.id
-						if(id){
+						if(id && payway == 1){
 							//唤起微信支付(订单id)
-							WXPay(id)
+							WXPay(id,count)
+						}else{
+							/**货到付款*/
+							Daofu(QS.stringify({id:id})).then(res => {
+								if(res.data.code == 200){
+									this.$router.replace({path:'/orderlist',query:{id:1}})
+									this.$store.commit("editCarnum", this.$store.state.count - count);
+								}
+							})
 						}
 					}else{
 						let msg = res.data.message
@@ -735,7 +749,7 @@
 		right: 0px;
 		background: #f24c4c;
 		width: 33%;
-		height: 45px;
+		height: 100%;
 		line-height: 45px;
 	}
 	

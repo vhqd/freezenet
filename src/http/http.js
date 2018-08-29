@@ -1,9 +1,15 @@
-import store from "../store/store.js";
-import axios from "axios";
+import store from '../store/store'
+import axios from "axios"
 import jsonp from './jsonp.js'
+console.log(store);
+
 const host = store.state.host;
 const host1 = store.state.host1
 
+/**
+ * 获取分享
+*/
+export const getShareConfig = shareurl =>{ return axios.post(host + "/api/get-wx-share-config" , shareurl).then((res) => {return res;}).catch((error) => {return error.response})};
 
 /**
  * test跨域
@@ -138,6 +144,12 @@ export const EditCarShop = (id , upData) =>{ return axios.put(host + "/api/shopp
  * 提交购物车结算订单
  */
 export const AddOrder = upData  =>{ return axios.post(host + "/api/order" , upData).then((res) => {return res;}).catch((error) => {return error.response})};
+
+/**
+ * 提交购物车结算订单货到付款
+ */
+export const Daofu = upData  =>{ return axios.post(host + "/wechat/pay-after-goods" , upData).then((res) => {return res;}).catch((error) => {return error.response})};
+
 
 
 

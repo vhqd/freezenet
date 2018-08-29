@@ -37,6 +37,9 @@ export default {
       this.openwins = true
     }
   },
+  mounted(){
+     
+  },
   computed:{
     /**全局loading*/
     load(){

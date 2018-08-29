@@ -33,7 +33,7 @@
 														<!--<span style="color: #a9a9a9;font-size: 0.2rem;">库存{{item.inventory}}件</span>-->
 														<p style="color: red;">
 															￥
-															<span style="font-size: 0.5rem;">{{item.red_packet_price}}</span>
+															<span style="font-size: .35rem;">{{item.red_packet_price}}</span>
 															<span style="color: red;background: #ffeaea;padding: .04rem .2rem;" v-if="item.red_packet_threshold_price != 0">满{{item.red_packet_threshold_price}}可用</span>
 														</p>
 													</mu-list-item-sub-title>
@@ -60,8 +60,8 @@
 		</template>
 
 		<div v-else style="position: absolute;left: 50%;top: 50%;margin-top: -97.5px;margin-left: -96px;">
-			<img src="../../../static/img/car/img_konggouwuche.png" style="width: 3.9rem;height: 3.3rem;" />
-			<p style="color: #999;">还没有获得优惠券呦</p>
+			<img src="../../../static/img/home/img_meiyoutuihuodan.png" style="width: 3.9rem;height: 3.3rem;" />
+			<p style="color: #999;">暂时没有可领取的优惠券</p>
 		</div>
 
 	</div>
@@ -70,6 +70,7 @@
 <script>
 import BackBar from "../common/BackBar.vue";
 import { getCouponsList , getCoupons } from '../../http/http.js'
+  import { share } from '../../common/share.js';
 
 export default {
   name: "index",
@@ -89,10 +90,16 @@ export default {
   },
   activated(){
 
+    document.title = '领优惠券'
   },
   mounted() {
 	  /**获取优惠券列表*/
-	  this.getCouponsList();
+    this.getCouponsList();
+    
+    let invate_code = localStorage.invate_code
+    if (invate_code && invate_code!= '') {
+       share(this.$store.state.shareurl,localStorage.invate_code,this.$store.state.shareimg)
+    }
   },
   methods: {
     /**去商品分类使用优惠券*/
@@ -289,6 +296,9 @@ export default {
 .mu-item-title {
   padding-left: 0.2rem;
 }
+.mu-item-title{
+width: 56%;
+}
 .carMbox .mu-avatar img {
   border-radius: 0.2rem;
 }
@@ -338,7 +348,7 @@ export default {
   right: 0px;
   background: #f24c4c;
   width: 33%;
-  height: 45px;
+  height: 100%;
   line-height: 45px;
   color: #fff;
 }

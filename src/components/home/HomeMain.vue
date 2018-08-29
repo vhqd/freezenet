@@ -80,7 +80,7 @@
                                   <div style="color: red;">
                                     <span v-show="!isbind" style="color: #a9a9a9;">绑定手机号才能查看价格</span>
                                     <div v-show="isbind">￥
-                                      <span v-if="item.type == 1" style="font-size: .28;">{{item.goods_price}}</span>
+                                      <span v-if="item.type == 1" style="font-size: .28rem;">{{item.price}}</span>
                                       <span v-if="item.type == 2" style="font-size: .28rem;">{{item.specifications[0].price}}</span>
                                     </div>
                                   </div>
@@ -89,7 +89,7 @@
                             </mu-list-item>
                           </router-link>
                           <mu-divider></mu-divider>
-                          <div style="position: absolute;right: 0.3rem;top: .9rem;">
+                          <div style="position: absolute;right: .2rem;top: 1rem;">
                             <div class="saoma">
                               <div v-if="item.type == 1">
                                 <span class="minus" @click="minus(item)" v-if="item.num != 0"><img src="../../../static/img/ic_jian.png" alt=""></span>
@@ -97,8 +97,8 @@
                                 <span class="plus" @click="plus(item)"><img src="../../../static/img/ic_jia.png" alt=""></span>
                               </div>
                               <div v-if="item.type == 2">
-                                <span class="mpsytl" @click="typeo2show(item , 1)" v-if="!item.show" style="margin-right:3px;"><img src="../../../static/img/often/down.png" style="width:.5rem;height:.5rem;"/></span>
-                                <span class="mpsytl" @click="typeo2show(item), 2" v-if="item.show" style="margin-right:3px;"><img src="../../../static/img/often/up.png"  style="width:.5rem;height:.5rem;"/></span>
+                                <span class="mpsytl" @click="typeo2show(item , 1)" v-if="!item.show"><img src="../../../static/img/often/down.png" style="width:.5rem;height:.5rem;"/></span>
+                                <span class="mpsytl" @click="typeo2show(item, 2)" v-if="item.show"><img src="../../../static/img/often/up.png"  style="width:.5rem;height:.5rem;"/></span>
                               </div>
                             </div>
                           </div>
@@ -113,7 +113,7 @@
                                     <mu-list-item-sub-title style="color:red;">￥{{ite.price}}</mu-list-item-sub-title>
                                   </mu-list-item-content>
                                   <mu-list-item-action>
-                                    <div class="saoma" style="margin-right:6px;">
+                                    <div class="saoma" style="margin-right:1px;">
                                       <div>
                                         <span class="minus" @click="minus(item,ite)" v-if="ite.num != 0" :data-index="ind"><img src="../../../static/img/ic_jian.png" style="width:.5rem;height:.5rem" alt=""></span>
                                         <span v-show="ite.num != 0">{{ite.num}}</span>
@@ -162,7 +162,7 @@
             </div> -->
           </mu-list>
           <p v-else class="nodata">暂时没有商品哦</p>
-          <div id="real2height"></div>
+          <div id="realheight"></div>
         </mu-paper>
       </mu-container>
       </div>
@@ -184,7 +184,7 @@ if (data[item].hasOwnProperty("specifications")) {
 -->
     <!--购物车bar-->
 
-    		<div class="addToCar">
+<!--     		<div class="addToCar">
 		  	<mu-list class="carbut">
 			   <mu-list-item avatar button :ripple="false">
 			      <div class="pricecarbox">
@@ -196,11 +196,6 @@ if (data[item].hasOwnProperty("specifications")) {
 				      </div>
 				      <div style="position: relative;">合计：<span style="color: red;" v-show="!isbind">￥{{allPrice}}</span><span class="qigou">{{qigou}}元起购</span></div>
 			      </div>
-            <!-- 
-              <div :class="carnum == 0 || allPrice < qigou ? 'huise settlement': 'settlement'">
-			       	加入购物车
-			      </div>
-             -->
 			      <div v-if="carnum == 0 || allPrice < qigou" class="huise settlement">
 			       	加入购物车
 			      </div>
@@ -214,7 +209,7 @@ if (data[item].hasOwnProperty("specifications")) {
 			    你还没有选中商品<br>还不能去结算
 			    <mu-button slot="actions" flat color="primary" @click="closeJSDialog">确定</mu-button>
 			  </mu-dialog>
-	  </div>
+	  </div> -->
 
   </div>
 </template>
@@ -293,10 +288,9 @@ export default {
       ] */
     };
   },
-   mounted() {
-
+  activated(){
+     /*获取顶部菜单*/
      this.$store.commit("setLoad",true);
-    /*获取顶部菜单*/
     getCaiClassOne(this.limit, this.page).then(res => {
      
       
@@ -310,6 +304,8 @@ export default {
       this.getChildList(this.classification[0]);
       this.$store.commit("setLoad",false);
     });
+  },
+   mounted() {
 
     //this.getMenuListOne();
     /*this.scrollTop = window.scrollY;*/
@@ -318,7 +314,7 @@ export default {
     //初始化右边商品高度
     let rightbox = document.getElementById('rightbox');
     let h = document.documentElement.clientHeight || document.body.clientHeight;
-    rightbox.style.height = h - 180+'px';
+    rightbox.style.height = h - 150+'px';
   },
   methods: {
     loadingg () {
@@ -345,8 +341,8 @@ export default {
     /*点击切换顶部菜单默认第一个的状态,并且获取数据*/
     removeBg(index, item) {
       if(!this.isSwitch){
-        this.$store.commit('setShowText','网络拥堵...');
-        this.$store.commit('seterror');
+        //this.$store.commit('setShowText','网络拥堵...');
+        //this.$store.commit('seterror');
         return;
       }
       if(this.isSwitch){
@@ -495,14 +491,18 @@ export default {
     /*减少数量值*/
     minus(item, ite) {
       console.log("减少购物车");
+      this.carnum = this.carnum - 1
+      this.allPrice = this.allPrice - item.price
       jiancar(item, ite);
     },
     /*增加数量值*/
     plus(item, ite) {
-      let isbind = sessionStorage.isbind;
+      let isbind = localStorage.isbind;
       if (isbind != 1) {
         this.openwins = true;
       } else {
+        this.carnum = this.carnum + 1
+        this.allPrice = this.allPrice + item.price
         setOfenBuyData(item, this.alldata, ite);
       }
     },

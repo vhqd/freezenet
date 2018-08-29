@@ -35,13 +35,12 @@ Vue.use(Toast,toastConfig)
 Vue.prototype.$http = axios
 
 Vue.config.productionTip = false
-
 //定义全局默认配置
 axios.defaults.headers.common['Authorization'] = store.state.token;
 
 axios.interceptors.request.use(
     config => {
-        let isbind = sessionStorage.isbind
+        let isbind = localStorage.isbind
         console.log('是否绑定手机');
         console.log(isbind);
         if(isbind == 1){

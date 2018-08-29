@@ -106,7 +106,7 @@
 			this.getDress(this.page);
 		},
 		mounted(){
-			
+			document.title = '地址管理'
 			
 				
 		},

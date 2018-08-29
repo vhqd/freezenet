@@ -77,18 +77,27 @@ export default {
       form: {
         name: "", //联系人
         phone: "", //联系电话
-        city: "", //所在地区
+        city: "请选择  >", //所在地区
         address: "", //详细地址
         switch: false //是否默认
       }
     };
   },
   activated(){
+    document.title = '添加收货地址'
     let add = this.$route.query.status;
     let order = this.$route.query.order
     /**这里是从提交订单过来的添加地址，添加成功需要返回订单页面*/
     if(order == 1){
       this.order = order
+      //如果是订单页面过来的清空页面缓存数据解决之前用户编辑过地址的缓存
+      this.form = {
+         name: "", //联系人
+          phone: "", //联系电话
+          city: "请选择  >", //所在地区
+          address: "", //详细地址
+          switch: false //是否默认
+      }
     }
     if(add == 1){//防止缓存
       this.city= "", //所在地区
@@ -101,8 +110,6 @@ export default {
         switch: false //是否默认
       }
     }
-  },
-  mounted() {
     if (this.$route.query.isedit) {
       this.isedit = this.$route.query.isedit; //这个值判断是否是编辑地址
     }
@@ -116,6 +123,10 @@ export default {
         this.$set(this.form, "switch", true);
       }
     }
+  },
+  mounted() {
+    
+    
     /*获取显示用户地址*/
   },
   methods: {

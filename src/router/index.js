@@ -67,8 +67,8 @@ const router =  new Router({
 
 
 // 页面刷新时，重新赋值token
-if (sessionStorage.getItem('token')) {
-	store.commit('set_token', sessionStorage.getItem('token'))
+if (localStorage.getItem('token')) {
+	store.commit('set_token', localStorage.getItem('token'))
 }
 
  
@@ -89,7 +89,7 @@ if (sessionStorage.getItem('token')) {
 
 
 router.beforeEach((to, from, next) => {
-  let token = sessionStorage.getItem('token');//获取浏览器缓存的用户信息
+  let token = localStorage.getItem('token');//获取浏览器缓存的用户信息
   let isbind = store.state.isbind;
   
 	if(token){ //如果有就直接到首页咯

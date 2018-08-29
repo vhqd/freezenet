@@ -6,15 +6,16 @@
 			<mu-tab class='tabtitle' @click="getOrders(0,false)">全部</mu-tab>
 			<mu-tab class='tabtitle' @click="getOrders(1,false)">待支付</mu-tab>
 			<mu-tab class='tabtitle' @click="getOrders(2,false)">待发货</mu-tab>
-			<mu-tab class='tabtitle' @click="getOrders(3,false)">已发货</mu-tab>
+			<mu-tab class='tabtitle' @click="getOrders(3,false)">待收货</mu-tab>
 			<mu-tab class='tabtitle' @click="getOrders(4,false)">已完成</mu-tab>
 			<mu-tab class='tabtitle' @click="getOrders(5,false)">已取消</mu-tab>
 		</mu-tabs>
 
+        <mu-container data-mu-loading-color="secondary" v-if="list" data-mu-loading-overlay-color="rgba(0, 0, 0, .7)" v-loading="loading2" class="demo-loading-wrap" style='height:100%'>
 		<div class="listbox">
       <p v-show="noorder">没有更多的订单了！</p>
 			<mu-load-more :loading="loading" @load="load">
-        <mu-container data-mu-loading-color="secondary" v-if="list" data-mu-loading-overlay-color="rgba(0, 0, 0, .7)" v-loading="loading2" class="demo-loading-wrap">
+
 				<div class="onelistbox" v-for="(item,index) in list" :key="index">
 					<div class="leftright">
 						<span class="left">订单编号：{{item.order_number}}</span>
@@ -89,10 +90,10 @@
 					</div>
 
 				</div>
-        </mu-container>
         <p v-show="nomoreorder" style="margin-top:10px;">没有更多的订单了！</p>
 			</mu-load-more>
 		</div>
+        </mu-container>
     
 		<mu-dialog title="温馨提示" width="360" :open.sync="openJS">
 			<span class="cancelbox" @click="closeJSDialog"><img src="../../../static/img/ic_Shut .png" /></span>
@@ -117,6 +118,7 @@ import BackBar from "../common/BackBar.vue";
 import { mapState } from "vuex";
 import { getOrders , cancelOrder , deleteOrder } from "../../http/http.js";
 import { WXPay } from '../../common/common.js'
+import { disableShare } from '../../common/disableShare.js'
 
 export default {
   data() {
@@ -124,7 +126,7 @@ export default {
       host:this.$store.state.host,
       num: 10,
       refreshing: false,
-      limit: 15,
+      limit: 5,
       page: 1,
       item:null,
       id:null,
@@ -201,8 +203,23 @@ export default {
       isbind: "isbind"
     })
   },
-  activated(){
-    
+  activated() {
+    document.title = '我的订单'
+    this.setOrderType();
+    let paynum = this.$route.query.pay
+    if(paynum==1){
+
+    }
+  },
+  watch:{
+    loading(a,b){
+      if(a){
+        this.loading2 = false
+      }
+    }
+  },
+  mounted() {
+    //disableShare();
   },
   methods: {
     /**支付*/
@@ -215,7 +232,7 @@ export default {
      * @param islodmore 是否是加载更多  加载更多-true，切换订单状态-false
      * */
     getOrders(order_status,isloadmore) {
-      //this.loading2 = true;
+      this.loading2 = true
       //点击顶部订单初始化参数
       if(!isloadmore){
         this.limit = 15;
@@ -228,7 +245,6 @@ export default {
         this.page = this.page + 1;
         let data = res.data.info.data;
         if(data.length==0 && !isloadmore){
-          //this.loading2 = false;
           this.list = [];
           this.noorder = true
         }
@@ -262,8 +278,7 @@ export default {
         console.log('8888888888888888888888888888888888888888');
         
         console.log(this.list);
-        
-        //this.loading2 = false;
+        this.loading2 = false
       });
     },
 
@@ -363,11 +378,7 @@ export default {
         };
       }
     }
-  },
-  activated() {
-    this.setOrderType();
-  },
-  mounted() {}
+  }
 };
 </script>
 

@@ -267,6 +267,7 @@ export default {
     BackBar
   },
   activated(){
+    document.title = '我的优惠券'
     this.list = []
 	/*获取个人优惠券*/
     this.getCoupons(1);
@@ -590,7 +591,7 @@ export default {
   right: 0px;
   background: #f24c4c;
   width: 33%;
-  height: 45px;
+  height: 100%;
   line-height: 45px;
   color: #fff;
 }

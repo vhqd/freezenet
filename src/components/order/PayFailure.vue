@@ -37,7 +37,7 @@
 			this.$router.push({path:'/'})
 		},
 		goorder(){
-			this.$router.push({path:'/orderlist',query:{id:1}})
+			this.$router.replace({path:'/orderlist',query:{id:1,pay:1}})
 		},
 	  }
 	}

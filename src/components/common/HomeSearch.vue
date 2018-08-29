@@ -3,7 +3,7 @@
 	<div class="home_h">
 		<header class="m_header">
             <div class="inputitem pm">
-				<img src="../../../static/img/ic-search@2x.png" alt="" class="imgsearch">
+				<img src="../../../static/img/ic-search.png" alt="" class="imgsearch">
 		    	<mu-text-field class="widthstyle midm" id="searchIn" @focus="goSearch" placeholder="您想要...">
 					<div class="guanbi"><img src="../../../static/img/ic_remove.png"/></div>
 				</mu-text-field>

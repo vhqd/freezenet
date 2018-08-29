@@ -12,17 +12,25 @@
 	export default{
 		data(){
 			return{
+				urls:'-1'
+			}
+		},
+		watch:{
+			ispay(a,b){
+				if(a == 1){
+					this.urls = '/center'
+				}
 			}
 		},
 		methods:{
 			back(){
-				this.$router.go(-1);
+				this.$router.go(this.urls);
 			},
 			goEditDress(){
 				this.$router.push('/editdress');
 			}
 		},
-		props:['dTitle','isshow']
+		props:['dTitle','isshow','ispay']
 	}
 </script>
 

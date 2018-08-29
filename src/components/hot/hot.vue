@@ -13,10 +13,10 @@
 									<mu-avatar style="min-width: 1.4rem;height: 1.4rem;margin-top:0;">
 										<img :src="host+item.goods_photo" :onerror='onerrorimg'>
 									</mu-avatar>
-									<img v-show="index == 0" class="listimg" src="../../../static/img/hot/img_1@3x.png" />
-									<img v-show="index == 1" class="listimg" src="../../../static/img/hot/img_2@3x.png" />
-									<img v-show="index == 2" class="listimg" src="../../../static/img/hot/img_3@3x.png" />
-									<img v-show="index == 3" class="listimg" src="../../../static/img/hot/img_4@3x.png" />
+									<img v-show="index == 0" class="listimg" src="../../../static/img/hot/img_1.png" />
+									<img v-show="index == 1" class="listimg" src="../../../static/img/hot/img_2.png" />
+									<img v-show="index == 2" class="listimg" src="../../../static/img/hot/img_3.png" />
+									<img v-show="index == 3" class="listimg" src="../../../static/img/hot/img_4.png" />
 								</mu-list-item-action>
 								<mu-list-item-content>
 									<mu-list-item-title>{{item.goods_title}}</mu-list-item-title>
@@ -89,6 +89,7 @@ import BackBar from "../common/BackBar.vue";
 import { getHotList , EditCarShop } from "../../http/http.js";
 import { jiancar, setOfenBuyData , jianHotcar  } from "../../common/common.js";
 import QS from 'qs'
+  import { share } from '../../common/share.js';
 
 export default {
   data() {
@@ -177,9 +178,15 @@ export default {
   mounted() {
     this.carnum = 0
 	  this.allPrice = 0
-	  this.getHotLists()
+    this.getHotLists()
+    
+    let invate_code = localStorage.invate_code
+    if (invate_code && invate_code!= '') {
+       share(this.$store.state.shareurl,localStorage.invate_code,this.$store.state.shareimg)
+    }
   },
   activated(){
+    document.title = '热销榜'
 	  
   },
   methods: {
@@ -239,13 +246,14 @@ export default {
     },
     /*增加数量值*/
     plus(item) {
-      let isbind = sessionStorage.isbind
+      let isbind = localStorage.isbind
       if(isbind != 1){
         this.openwins = true
       }else{
         this.carnum = this.carnum + 1;
         this.allPrice = this.allPrice +parseFloat(item.price);
-        let ite = {ishotlist:true}
+        let amount = item.count;
+      item.count = amount + 1;
         let list =  [{
           goods_id: [],
           single_price: [],
@@ -253,7 +261,7 @@ export default {
           sum_price: 0,
           specification_id: []
         }]
-         setOfenBuyData(item, list , ite);
+         setOfenBuyData(item, list , {});
       }
     },
     sure(){
@@ -363,7 +371,7 @@ export default {
   right: 0px;
   background: #f24c4c;
   width: 33%;
-  height: 45px;
+  height: 100%;
   line-height: 45px;
   color: #fff;
 }

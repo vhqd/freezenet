@@ -32,7 +32,7 @@ export function getTokens(openid) {
 }
 
 /**微信支付*/
-export function WXPay(id) {
+export function WXPay(id,count) {
   getWXPayInfo(id).then(res => {
     console.log("微信订单提交获取支付参数");
     console.log(res);
@@ -49,24 +49,24 @@ export function WXPay(id) {
         document.addEventListener(
           "WeixinJSBridgeReady",
           function() {
-            onBridgeReady(opthions);
+            onBridgeReady(opthions,count);
           },
           false
         );
       } else if (document.attachEvent) {
         document.attachEvent("WeixinJSBridgeReady", function() {
-          onBridgeReady(opthions);
+          onBridgeReady(opthions,count);
         });
         document.attachEvent("onWeixinJSBridgeReady", function() {
-          onBridgeReady(opthions);
+          onBridgeReady(opthions,count);
         });
       }
     } else {
-      onBridgeReady(opthions);
+      onBridgeReady(opthions,count);
     }
   });
 }
-function onBridgeReady(params) {
+function onBridgeReady(params,count) {
   window.WeixinJSBridge.invoke(
     "getBrandWCPayRequest",
     {
@@ -82,6 +82,7 @@ function onBridgeReady(params) {
         router.replace({path:'/paysuccessful'})
       }else{
         router.replace({path:'/payfailure'})
+        store.commit("editCarnum", store.state.count - count);
       }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。 
     }
   );
@@ -115,19 +116,14 @@ export function setOfenBuyData(item, data,ite) {
   
 
   if(item.hasOwnProperty("specifications")){
-    let amount = ite.num;
-		ite.num = amount + 1;
     data[0].single_price.push(ite.price);
     data[0].specification_id.push(ite.specification_id);
+    let amount = ite.num;
+    ite.num = amount + 1;
   }else{
     data[0].single_price.push(item.price);
-    if(ite.hasOwnProperty("ishotlist")){
-      let amount = item.count;
-      item.count = amount + 1;
-    }else{
-      let amount = item.num;
-      item.num = amount + 1;
-    }
+    let amount = item.num;
+    item.num = amount + 1;
     //data[0].single_price.push(item.goods_price);
     data[0].specification_id.push(item.specification_id);
   }
@@ -167,7 +163,7 @@ export function jiancar(item,ite){
     } else {
       item.num = 0;
     }
-    single_price = item.goods_price;
+    single_price = item.price;
     specification_id = item.specification_id;
   }
   let data = {

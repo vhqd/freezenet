@@ -10,6 +10,7 @@
 <script>
 import Home from "../home/Home.vue";
 import Footer from "../common/Footer.vue";
+import { share } from '../../common/share.js';
 
 export default {
   components: {
@@ -30,7 +31,14 @@ export default {
 		    }
   		}*/
   },
+  activated(){
+    document.title = '分类'
+  },
   mounted() {
+    let invate_code = localStorage.invate_code
+    if (invate_code && invate_code!= '') {
+       share(this.$store.state.shareurl,localStorage.invate_code,this.$store.state.shareimg)
+    }
     /* window.addEventListener('scroll', this.menuScrollTopStop)*/
   }
 };

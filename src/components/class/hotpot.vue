@@ -89,6 +89,8 @@
   } from 'vuex'
   import BackBar from '../common/BackBar.vue'
   import { jiancar, setOfenBuyData } from "../../common/common.js";
+  import { AddCarShop } from '../../http/http.js'
+  import QS from 'qs'
 
   export default {
     data() {
@@ -113,6 +115,7 @@
       BackBar
     },
     activated() {
+      document.title = '火锅专区'
       this.page = 1
       this.list = []
       let typeid = this.$route.query.typeid
@@ -171,39 +174,88 @@
         }
 
       },
+      /*增加数量值*/
+    plus(item) {
+      let isbind = localStorage.isbind;
+      if (isbind != 1) {
+        this.openwins = true;
+      } else {
+        let shopdata = item;
+        let amount = shopdata.num;
+        shopdata.num = amount + 1;
+        this.allPrice = parseInt(shopdata.num) * parseFloat(shopdata.price);
+
+        let data = {};
+        //暂时没有可分类数据
+        if (shopdata.hasOwnProperty("specifications")) {
+          data = {
+            specification_id: [specification_id],
+            goods_id: [shopdata.id],
+            single_price: single_price,
+            count: [1],
+            sum_price: shopdata.num * shopdata.price
+          };
+        } else {
+          data = {
+            specification_id: [item.specification_id],
+            goods_id: [item.id],
+            single_price: [item.price],
+            count: [1],
+            sum_price: item.num * item.price
+          };
+        }
+        /* 	let data = {
+					specification_id:[specification_id],
+					goods_id:[shopdata.id],
+					single_price:single_price,
+					count:[1],
+					sum_price : shopdata.num * shopdata.price
+				} */
+        console.log("添加的数据");
+        console.log(data);
+        AddCarShop(QS.stringify(data)).then(res => {
+        //设置导航购物车数量
+        store.commit('setShowText',store.state.addcar);
+        store.commit('showInfo');
+        store.commit("editCarnum", store.state.count + 1);
+      });
+      }
+    },
       /*减少数量值*/
-      minus(item) {
+      /* minus(item) {
         let amount = item.num;
         if (amount > 0) {
           item.num = amount - 1;
           this.carnum = this.carnum - 1
-          this.allPrice = this.allPrice - item.goods_price
+          this.allPrice = this.allPrice - item.price
         } else {
           item.num = 0;
         }
         let data = {
           goods_id: item.id,
-          single_price: item.goods_price,
+          single_price: item.price,
           count: item.num,
           isadd:0
         };
         console.log('减少购物车');
         console.log(data);
         jiancar(item.id, data);
-      },
+      }, */
       /*增加数量值*/
-      plus(item) {
-        let isbind = sessionStorage.isbind
+     /*  plus(item) {
+        let isbind = localStorage.isbind
       if(isbind != 1){
         this.openwins = true
       }else{
         let amount = item.num;
         item.num = amount + 1
         this.carnum = this.carnum + 1
-        this.allPrice = parseFloat(this.allPrice) + parseFloat(item.goods_price)
-        setOfenBuyData(item, this.list);
+        this.allPrice = parseFloat(this.allPrice) + parseFloat(item.price)
+
+        let ite = {}
+        setOfenBuyData(item, this.list, ite); 
       }
-      },
+      }, */
       /*获取购物车数量*/
       getCarNum() {
         let carnum = this.carnum;
@@ -367,7 +419,7 @@
     right: 0px;
     background: #f24c4c;
     width: 33%;
-    height: 45px;
+    height: 100%;
     line-height: 45px;
     color: #fff;
   }

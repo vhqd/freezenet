@@ -38,7 +38,7 @@
 	  			console.log(that.timeDown)
 	  			if(that.timeDown <=　0){
 					clearInterval(that.SI);
-					this.$router.push({path:'/orderlist',query:{id:2}})  
+					this.$router.replace({path:'/orderlist',query:{id:2,pay:1}})  
 	  			}else{
 	  				that.timeDown = that.timeDown - 1
 	  			}

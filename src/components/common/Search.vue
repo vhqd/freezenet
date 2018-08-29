@@ -3,7 +3,7 @@
 	<div class="home_h">
 		<header class="m_header">
             <div class="inputitem pm">
-				<img src="../../../static/img/ic-search@2x.png" alt="" class="imgsearch">
+				<img src="../../../static/img/ic-search.png" alt="" class="imgsearch">
 		    	<mu-text-field v-model="keyword" @focus="goSearch" class="widthstyle midm" id="searchIn" placeholder="请输入商品名称..."></mu-text-field>
 		    	<div class="guanbi" @click="clearinput"><img src="../../../static/img/ic_remove.png"/></div>
 		    	<div class="cancel" @click="cancelClick">取消</div>
@@ -41,7 +41,7 @@
            		}
 		   },
 		   sendKeyWord(){
-			   //匹配中文
+			  /*  //匹配中文
 			   let reg = /[\u4E00-\u9FA5\uF900-\uFA2D]/;
 				//匹配特殊字符
 			   let regEn = /[`~!@#$%^&*()_+<>?:"{},.\/;'[\]]/im,
@@ -49,20 +49,31 @@
 					if(regEn.test(this.keyword) || regCn.test(this.keyword)) {
 						this.keyword = ''
 						return false;
-					}
+					} */
 
-			   if(this.keyword != '' && reg.test(this.keyword)){
+			   /* if(this.keyword != '' && reg.test(this.keyword)){ */
+				if(this.keyword != ''){
 					this.timer = setTimeout(()=>{
-						 this.$emit("sendword",this.keyword);
+						this.$emit("sendword",this.keyword);
 						clearTimeout(this.timer)
-					},1000)
+					},1000) 
+			   }else{
+				/* this.$store.commit('setShowText','请输入商品名称');
+            	this.$store.commit('seterror'); */
 			   }
 			  
 		   }
 		},
 		watch:{
-			keyword(){
+			keyword(a,b){
 				this.sendKeyWord();
+				if(keyword != null || keyword != 'null'){
+					this.keyword = keyword
+				}
+				if(b!='' && a==''){
+					this.$store.commit('setShowText','请输入商品名称');
+            		this.$store.commit('seterror');
+				}
 			}
 		},
         props:['ishome','keyword'],

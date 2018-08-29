@@ -83,6 +83,8 @@
 	import Footer from '../common/Footer.vue';
 	import { getOrders , getCenterCoupons , getUserInfo } from '../../http/http.js'
 	import { getAllOrders } from '../../common/common.js'
+	import { share } from '../../common/share.js';
+	import { disableShare } from '../../common/disableShare.js'
 
 	
 	
@@ -100,7 +102,7 @@
 			bindtxt:'绑定手机号',
 			onerrorimg:this.$store.state.onerrorimg,
 			order_status:0,//'0-全部 1-待支付 2-待发货 3-已发货(待收货) 4-已完成 5-已取消',
-			username:'冻品聚汇欢迎您',
+			username:'			',
 			photo:'',
 	    	orderlist:[
 	    		{
@@ -139,39 +141,48 @@
 	    			id:1,
 					title:'常见问题',
 					router:'/problems',
-	    			img:require('../../../static/img/center/ic_changjianweiti@2x.png')
+	    			img:require('../../../static/img/center/ic_changjianweiti.png')
 	    		},
 	    		{
 	    			id:2,
 	    			title:'服务中心',
-	    			img:require('../../../static/img/center/ic_fuwuzhongxin@2x.png')
+	    			img:require('../../../static/img/center/ic_fuwuzhongxin.png')
 	    		},
 	    		{
 	    			id:3,
 	    			title:'问题反馈',
-	    			img:require('../../../static/img/center/ic_wentifankui@2x.png')
+	    			img:require('../../../static/img/center/ic_wentifankui.png')
 	    		},
 	    		{
 	    			id:4,
 	    			title:'在线客服',
-	    			img:require('../../../static/img/center/ic_zaixian kefu @2x.png')
+	    			img:require('../../../static/img/center/ic_zaixiankefu.png')
 	    		},
 	    		{
 	    			id:5,
 	    			title:'联系我们',
-	    			img:'../../../static/img/center/ic_lainxi women @2x.png'
+	    			img:'../../../static/img/center/ic_lainxiwomen.png'
 	    		}
 	    	]
 	    }
 	  },
 	  mounted(){
+		  
 		  this.$store.commit("setLoad",true);
+
+		//禁用分享
+		//disableShare()
+		/* let invate_code = localStorage.invate_code
+		if (invate_code && invate_code!= '') {
+		share(this.$store.state.shareurl,localStorage.invate_code,this.$store.state.shareimg)
+		} */
 	  },
 	  activated(){
+		document.title = '个人中心'
 		this.getCouponsnum(1)
 		this.getOrders()
 		this.getUserInfo()
-		let isbind = sessionStorage.isbind
+		let isbind = localStorage.isbind
 		if(isbind == 1){
 			this.bindtxt = '重新绑定'
 		}
@@ -205,7 +216,7 @@
 		  },
 		  /**获取用户信息*/
 		  getUserInfo(){
-			  let userid = sessionStorage.userid
+			  let userid = localStorage.userid
 			  getUserInfo(userid).then(res => {
 				if(res.data){
 					let userinfo = res.data.data

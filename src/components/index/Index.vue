@@ -3,7 +3,7 @@
     <!-- 搜索区 -->
     <HomeSearch :ishome='true'></HomeSearch>
     <!-- 轮播图-->
-    <HomeBanner :imgs='bannerImg' class='homebanner'></HomeBanner>
+    <HomeBanner :imgs='bannerImg' class='homebanner' v-if="bannerImg"></HomeBanner>
 
     <!--首页覆盖Banner的tab-->
     <div class="topboxinfo">
@@ -20,7 +20,7 @@
     <div class="iddexcontent">
       <div class="adimg">
         <mu-carousel hide-controls>
-          <mu-carousel-item v-for="(item , index) in topclass" :key="index">
+          <mu-carousel-item v-for="(item , index) in topclass" :key="index" v-if="topclass">
             <img :src="item.img" @click="goClasstopDetail(item)" :onerror="onerrorimglong">
           </mu-carousel-item>
         </mu-carousel>
@@ -31,7 +31,7 @@
         <div class="inc-scroll-landscape-container">
           <div class="inc-scroll-landscape-content">
             <ul>
-              <li class="toptab" v-for="(item , index) in classlist" :key='index' @click="goDetail(item)">
+              <li class="toptab" v-for="(item , index) in classlist" :key='index' @click="goClasstopDetail(item)" v-if="classlist">
                 <p class="fqtitle">{{item.goods_type_second_name}}</p>
                 <p class="stip">{{item.goods_type_second_desc}}</p>
                 <img :src="item.img" :onerror="onerrorimg"/>
@@ -50,7 +50,7 @@
           <span class="oftenme">我的专属购物清单</span>
         </div>
       </div>
-      <oftenHome></oftenHome>
+      <oftenHome ishome='1'></oftenHome>
 
      <!--  <div style="position: relative;min-height: 4rem;">
         <mu-paper :z-depth="1" class="demo-list-wrap" v-if="showlist.length > 0">
@@ -123,7 +123,7 @@
           </mu-list>
         </mu-paper>
         <div v-else style="position: absolute;left: 50%;top: 50%;margin-top: -1.8rem;margin-left: -1rem;">
-          <img src="../../../static/img/home/img_meiyoutuihuodan@2x.png" style="width: 2rem;height: 2rem;" />
+          <img src="../../../static/img/home/img_meiyoutuihuodan.png" style="width: 2rem;height: 2rem;" />
           <p style="color: #999;">你还没有清单哦</p>
         </div>
       </div> -->
@@ -169,6 +169,8 @@ import {
   setOfenBuyData,
   jiancar
 } from "../../common/common.js";
+import { disableShare } from '../../common/disableShare.js'
+import { share } from '../../common/share.js';
 
 export default {
   components: {
@@ -180,6 +182,7 @@ export default {
   data() {
     return {
       host: this.$store.state.host,
+      basehost:this.$store.state.basehost,
       limit: 10,
       page: 1,
       openJS: false, //取消弹窗
@@ -225,36 +228,97 @@ export default {
       ]
     };
   },
+  computed: {
+    ...mapState({
+      // mapState相当于映射
+      token: "token",
+      isbind: "isbind",
+      a(){
+        return this.$store.state.bannerImg
+      },
+      b(){
+        return this.$store.state.topclass
+      },
+      c(){
+        return this.$store.state.classlist
+      },
+    })
+  },
+  //监听等待token获取到之后数据返回成功加载数据
+  watch:{
+    a(n,o){
+       this.bannerImg = n
+    },
+    b(n,o){
+      this.topclass = n
+    },
+		c(n,o){
+      this.classlist = n
+    }
+  },
   mounted() {
-
     this.$store.commit("setLoad", true);
-    this.initData();
 
+    let invate_code = localStorage.invate_code
+    if (invate_code && invate_code!= '') {
+       share(this.$store.state.shareurl,localStorage.invate_code,this.$store.state.shareimg)
+    }
+    
+    let openid = this.$route.query.openid || JSON.parse(localStorage.obj).name;
+    console.log(11111);
+    //获取token并且初始化首页数据
+    this.$store.dispatch("getTokens",openid);
+    //禁用分享
+    //disableShare()
+
+
+    //this.$store.commit("setLoad", true);
+    //this.initData();
+    window.location.href = this.basehost
   },
   activated() {
+    document.title = '冻品聚汇'
 
-    let is_phone = this.$route.query.is_phone || sessionStorage.isbind;
-    let userid = this.$route.query.userid;
+    let is_phone = this.$route.query.is_phone || localStorage.isbind;
+    let invate_code = this.$route.query.invate_code || localStorage.invate_code;
+    let userid = this.$route.query.userid || localStorage.userid;
     console.log("userid");
     console.log(userid);
-    if (userid) {
+    if(invate_code){
+      localStorage.invate_code = invate_code;
+    }
+    if (userid != 'undefined') {
       this.$store.commit("setUserid", userid);
-      sessionStorage.userid = userid;
+      localStorage.userid = userid;
     }
     /**通过判断用户是否绑定手机控制是否能看到商品价格以及后续操作*/
-    if (is_phone == 1) {
+    if (is_phone != 'undefined' && is_phone == 1) {
       this.$store.commit("editIsBind");
-      sessionStorage.isbind = is_phone;
+      localStorage.isbind = is_phone;
       console.log(is_phone);
-    } else {
+    } else if(is_phone != 'undefined') {
       this.$store.commit('editIsBindFalse')
-      sessionStorage.isbind = is_phone;
+      localStorage.isbind = is_phone;
       console.log("用户没有绑定手机，不能显示商品价格");
     }
+
+
+    
+    //切换菜单更新数据
+    this.bannerImg = this.$store.state.bannerImg
+    this.topclass = this.$store.state.topclass
+    this.classlist = this.$store.state.classlist
+    if(localStorage.obj){
+      if(JSON.parse(localStorage.obj).name){
+        this.$store.dispatch("getCg");
+      } 
+    }
+    
+
     /* if(this.$store.state.token){
       this.getOfenBuyList();
     } */
-    //window.location.href = '/'
+  
   },
   methods: {
      /*删除一条常购清单记录*/
@@ -281,10 +345,15 @@ export default {
     },
 
     initData() {
-    
       let openid = this.$route.query.openid || JSON.parse(localStorage.obj).name;
+      console.log(22222);
+      //this.$store.dispatch("getTokens",openid);
+      this.getIndexBanner();
+      this.getCarList();
+      this.getIndexTopClass();
+     /*  let openid = this.$route.query.openid || JSON.parse(localStorage.obj).name;
       if (openid) {
-        let str = localStorage.obj;
+        //let str = localStorage.obj;
         this.setOpenid(openid);
       }
       this.$store.commit("setOpenId", openid);
@@ -292,9 +361,9 @@ export default {
       let data = {
         username: openid,
         password: "123456"
-      };
+      }; */
       /**获取token*/
-      getToken(data).then(res => {
+      /* getToken(data).then(res => {
         let token = res.data.data.access_token;
         console.log("获取到的token");
         console.log(token);
@@ -306,14 +375,15 @@ export default {
         this.getIndexTopClass();
         //通知常购清单组件token已获取完毕可以加载
         this.$store.commit("setWaitToken",true)
-        /* this.getOfenBuyList(); */
-      });
+      }); */
     },
 
     /**
      * 获取首页banner
      */
     getIndexBanner() {
+      console.log(44444);
+      
       getIndexBanner(4, 1).then(res => {
         if (res) {
           let data = res.data.data.data;
@@ -414,7 +484,7 @@ export default {
     }, */
     /*增加数量值*/
   /*   plus(item, ite) {
-      let isbind = sessionStorage.isbind;
+      let isbind = localStorage.isbind;
       if (isbind != 1) {
         this.openwins = true;
       } else {
@@ -435,7 +505,7 @@ export default {
 
     /*增加数量值*/
     /* plus(item) {
-      let isbind = sessionStorage.isbind
+      let isbind = localStorage.isbind
       console.log(isbind);
       if(isbind != 1){
         //this.$store.commit("setLoad", true);
@@ -460,14 +530,6 @@ export default {
       this.openwins = false
     }
 
-  },
-  computed: {
-    ...mapState({
-      // mapState相当于映射
-      token: "token",
-      isbind: "isbind",
-     
-    })
   }
 
 };

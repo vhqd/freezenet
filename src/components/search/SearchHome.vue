@@ -109,7 +109,7 @@
     </div>
     <!-- <div v-else-if="searchshow&&resshow" style="position: absolute;left: 50%;top: 35%;margin-left: -96px;"> -->
       <div v-else-if="!searchshow&&resshow">
-      <img src="../../../static/img/img_wujieguo@2x.png" style="width: 3.9rem;height: 3.3rem;" />
+      <img src="../../../static/img/img_wujieguo.png" style="width: 3.9rem;height: 3.3rem;" />
       <p style="color: #999;">没有找到相关商品</p>
     </div>
 
@@ -204,7 +204,7 @@ export default {
         } */
       ],
       list: [
-        {
+        /* {
           img: require("../../../static/img/1-0_03.png"),
           title: "BreakfastBreakfastBreakfast",
           num: 0,
@@ -245,10 +245,10 @@ export default {
           num: 0,
           weight: 5,
           price: 20
-        }
+        } */
       ],
       menu: [
-        {
+        /* {
           id: 1,
           name: "热卖",
           list: [
@@ -316,7 +316,7 @@ export default {
               inventory: "5" //库存
             }
           ]
-        }
+        } */
       ]
     };
   },
@@ -324,12 +324,14 @@ export default {
     document.title = '搜索';
     this.searchshow = true;
     this.getSWords()
+    this.resData = []
   },
   methods: {
     /**获取显示搜索结果*/
     showword(data) {
       SearchWord(data).then(res => {
         let data = res.data.data;
+        this.keyword = res.data.keyword
         //刷新获取的搜索词
         this.GetKeyWord()
         if(data.length == 0 ){
@@ -706,7 +708,7 @@ export default {
   right: 0px;
   background: #c3c3c3;
   width: 33%;
-  height: 45px;
+  height: 100%;
   line-height: 45px;
 }
 .gotobuy {

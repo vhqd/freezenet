@@ -100,6 +100,7 @@
 			this.getDress(this.page);
 		},
 		mounted(){
+			document.title = '地址管理'
 			//this.getDress(this.page);
 			
 			//this.getDress(this.page);

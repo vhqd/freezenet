@@ -191,9 +191,12 @@ html,
   justify-content: flex-end !important;
   min-width: 80px;
 }
+.mu-input-line.disabled{border:none !important}
 .saoma span {
   margin-left: 0.15rem;
   color: #333;
+/*   position: absolute;
+  right: 0; */
 }
 .inputitem {
   width: 100%;
@@ -545,13 +548,14 @@ textarea:-ms-input-placeholder {
 .indexbox .guanbi {
   right: 0% !important;
   top: 0rem !important;
-  padding: 9px 15px 0px 5px !important;
+  padding: 9px 15px 5px 13px !important;
 }
 .center-top .mu-card-title{min-width: 2rem;}
 .mu-list-three-line .mu-item-action .mu-avatar{margin-top: 0;}
 .iddexcontent .oftenby .li-box{
   padding: 15px 0 !important;
 }
+.orderlistbox .mu-circular-progress{position: fixed;top:50%;}
 .mu-list-three-line .mu-item{height: auto !important;}
 .iddexcontent .type2list li{padding: 8px 0 !important}
 @media screen and (max-width: 325px) {
