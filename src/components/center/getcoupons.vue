@@ -3,14 +3,6 @@
 		<!--头部-->
 		<BackBar dTitle='领优惠券'></BackBar>
 		<template v-if="list.length != 0">
-			<!--<div class="topgrid">
-				<mu-grid-list class="gridlist-demo sptop" :cols="3">
-					<mu-grid-tile v-for="tile, index in product" :key="index">
-						<span slot="title">{{tile.title}}</span>
-						<span slot="subTitle">{{tile.author}}</b></span>
-					</mu-grid-tile>
-				</mu-grid-list>
-			</div>-->
 			<div class="carlistbox" style="margin-top:1rem;">
 				<ul>
 					<li class="list-item " v-for="(item,index) in list" :key="index" data-type="0">

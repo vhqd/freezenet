@@ -214,6 +214,28 @@ export const cancelOrder = ( id , redPacketId ) =>{ return axios.get(host + "/ap
 
 
 /**
+ *个人中心常见问题
+ */
+export const problems = (limit , page) =>{ return axios.get(host + "/api/frequently-question?limit=" + limit+ "&page=" + page).then((res) => {return res;}).catch((error) => {return error.response})};
+
+/**
+ *个人中心常见问题详情
+ */
+export const problemsDetail = id =>{ return axios.get(host + "/api/frequently-question?id=" + id).then((res) => {return res;}).catch((error) => {return error.response})};
+
+
+/**
+ *个人中心常见问题
+ */
+export const sendFeedback = data =>{ return axios.post(host + "/api/new-question" , data).then((res) => {return res;}).catch((error) => {return error.response})};
+
+
+/**
+ *确认个人订单
+ */
+export const confirmOrder = id =>{ return axios.get(host + "/api/sure-order?id="+id).then((res) => {return res;}).catch((error) => {return error.response})};
+
+/**
  *获取收货地址
  */
 export const getDress = (limit , page) =>{ return axios.get(host + "/api/transport?limit=" + limit+ "&page=" + page + "&is_receive=0").then((res) => {return res;}).catch((error) => {return error.response})};
@@ -233,3 +255,4 @@ export const DeleDress = item  =>{ return axios.delete(host + "/api/transport/" 
  *修改默认收货地址
  */
 export const DefaultDress = (item , updata)  =>{ return axios.put(host + "/api/transport/" + item.id , updata).then((res) => {return res}).catch((error) => {return error.response})};
+

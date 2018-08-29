@@ -9,6 +9,8 @@ import store from "./store/store.js"
 import axios from 'axios'
 import VueJsonp from 'vue-jsonp'
 import Loading from 'muse-ui-loading';
+import Message from 'muse-ui-message';
+
 import '../static/js/auto-size.js'
 import '../static/css/base.css'
 import 'muse-ui/dist/muse-ui.css';
@@ -19,6 +21,7 @@ import { stringify } from 'querystring';
 Vue.use(MuseUI)
 Vue.use(VueJsonp)
 Vue.use(Loading)
+Vue.use(Message);
 
 const toastConfig = {
   position: 'top',               // 弹出的位置

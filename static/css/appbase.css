@@ -558,6 +558,14 @@ textarea:-ms-input-placeholder {
 .orderlistbox .mu-circular-progress{position: fixed;top:50%;}
 .mu-list-three-line .mu-item{height: auto !important;}
 .iddexcontent .type2list li{padding: 8px 0 !important}
+.problems-content .mu-item-title{color: #333;}
+.problems-content .mu-item{padding: 0 10px;}
+.problems-content .mu-item-after-text{position: absolute;left:10px;}
+.problems-content .mu-list li{border-bottom:1px solid #f3f3f3;padding-bottom: 6px;}
+.problems-content .mu-list{padding: 8px 0 0}
+/* .problems-content .mu-item-action{position: absolute;top:-30px;right: 10px;} */
+.list-content .mu-list li{padding: 8px 0}
+.feedback-content .mu-button-wrapper{color: #fff !important;}
 @media screen and (max-width: 325px) {
   .orderlistbox li {
     font-size: 12px;

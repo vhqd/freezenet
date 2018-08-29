@@ -1,34 +1,6 @@
 <template>
 	<div class="dreesMannage">
 		<BackBar :dTitle='dTitle' :isshow="isshow"></BackBar>
-		<!--<mu-list class='adddress'>
-			<mu-list-item button :ripple="false">
-				<img src="../../../static/img/car/ic_tianjia.png" />
-				<p class="title">
-					添加收货地址
-				</p>
-				<mu-list-item-action>
-					<mu-avatar>
-						<img class="rightJ" src="../../../static/img/ic_jump.png" />
-					</mu-avatar>
-				</mu-list-item-action>
-
-			</mu-list-item>
-		</mu-list>-->
-		<!--添加收货地址-->
-		<!--<mu-list textline="two-line" class='adddress' @click="goAddress" v-show='list.length == 0'>
-			<mu-list-item avatar button :ripple="false">
-				<mu-list-item-action>
-					<img src="../../../static/img/car/ic_tianjia.png" />
-				</mu-list-item-action>
-				<mu-list-item-content>
-					<mu-list-item-title>新增地址</mu-list-item-title>
-				</mu-list-item-content>
-				<mu-list-item-action>
-					<img class="rightJ" src="../../../static/img/ic_jump.png" />
-				</mu-list-item-action>
-			</mu-list-item>
-		</mu-list>-->
 		<p class="qxgl" @click="goEditDress"><span>管理地址</span></p>
 		<!--收货地址管理-->
 		<div class="dresslist">
@@ -47,24 +19,10 @@
 			      </mu-list-item-content>
 			    </mu-list-item>
 			  </mu-list>
-			  
-			  <!-- <mu-list textline="two-line" class='listone'>
-			    <mu-list-item avatar :ripple="false" button>
-			      <mu-list-item-content>
-			        <mu-list-item-title>
-			        	汤丽丽
-			          <mu-list-item-after-text class="phone">11231554545486</mu-list-item-after-text>
-			        </mu-list-item-title>
-			        <mu-list-item-sub-title>
-			          	四川省成都市超级能算解开从大家老双方空档开双就开双脚开动就开开老算A好弄的四川省成都市超级能算解开从大家老双方空档开双就开双脚开动就开开老算A好弄的
-			        </mu-list-item-sub-title>
-			      </mu-list-item-content>
-			    </mu-list-item>
-			  </mu-list>-->
 		</mu-paper>
 		</mu-load-more>
 	</div>
-<div class="newdress" @click="goAddress">新增地址</div>
+    <div class="newdress" @click="goAddress">新增地址</div>
 	</div>
 </template>
 

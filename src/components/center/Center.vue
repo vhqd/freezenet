@@ -25,34 +25,44 @@
 						</router-link>
 						<span class="fanallcar" v-if="item.num > 0">{{item.num}}</span>
 					</li>
-					<!--<li>
-						<img src="../../../static/img/center/ic_daifahuo.png"/>
-						<p>待发货</p>
-					</li>
-					<li>
-						<img src="../../../static/img/center/ic_daishouhuo.png"/>
-						<p>待收货</p>
-					</li>
-					<li>
-						<img src="../../../static/img/center/ic_yiwancheng.png"/>
-						<p>已完成</p>
-					</li>
-					<li>
-						<img src="../../../static/img/center/ic_yiquxiao.png"/>
-						<p>已取消</p>
-					</li>-->
 				</ul>
 			</div>
 			
 			<div class="topboxinfo hlepbox">
 				<p class="ordertopbox"><span class="myordertext">帮助中心</span></p>
 				<ul>
-					<li v-for="(item,index) in hlep" :key="index">
+                    <li>
+                        <router-link to="/problems">
+                            <img src="../../../static/img/center/ic_changjianweiti.png"/>
+                            <p>常见问题</p>
+                        </router-link>
+					</li>
+                    <li>
+                        <img src="../../../static/img/center/ic_fuwuzhongxin.png"/>
+                        <p>服务中心</p>
+					</li>
+                     <li>
+                        <router-link to="/feedback">
+                            <img src="../../../static/img/center/ic_wentifankui.png"/>
+                            <p>问题反馈</p>
+                        </router-link>
+					</li>
+                     <li @click="confirm()">
+                        <img src="../../../static/img/center/ic_zaixiankefu.png"/>
+                        <p>在线客服</p>
+					</li>
+                     <li>
+                        <router-link to="">
+                            <img src="../../../static/img/center/ic_lainxiwomen.png"/>
+                            <p>联系我们</p>
+                        </router-link>
+					</li>
+					<!-- <li v-for="(item,index) in hlep" :key="index">
 						 <router-link :to="{path:item.router, query:{id:item.id}}">
 							<img :src="item.img"/>
 							<p>{{item.title}}</p>
 						</router-link>
-					</li>
+					</li> -->
 				</ul>
 			</div>
 				<div class="listcenterbox">
@@ -85,9 +95,6 @@
 	import { getAllOrders } from '../../common/common.js'
 	import { share } from '../../common/share.js';
 	import { disableShare } from '../../common/disableShare.js'
-
-	
-	
 	
 	export default {
 	  name: 'HelloWorld',
@@ -192,6 +199,19 @@
 		this.$store.commit("setLoad",false);
 	  },
 	  methods: {
+        confirm () {
+            this.$confirm('拨打电话联系客服', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'info'
+            }).then(({ result }) => {
+                if (result) {
+                    window.location.href = 'tel://10086'
+                } else {
+                   
+                }
+            });
+        },
 		  /**获取所有订单(计算个人中心订单数量)*/
 		  getAllOrders(){
 			let orderlist = this.orderlist

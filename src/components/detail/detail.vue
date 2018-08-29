@@ -310,40 +310,6 @@ export default {
         let amount = shopdata.num;
         shopdata.num = amount + 1;
         let data = this.returnData(shopdata , this.pricebox)
-       /*  let data = {};
-        let id = null
-        if (shopdata.hasOwnProperty("specifications")) {
-          let pribox = this.pricebox;
-          let specification_id = null;
-          let single_price = null;
-          let num = null
-          for (let ite in pribox) {
-            if (pribox[ite].isselect) {
-              this.allPrice = parseInt(shopdata.num) * parseFloat(pribox[ite].price);
-              specification_id = pribox[ite].specification_id;
-              single_price = pribox[ite].price;
-              num = pribox[ite].num;
-            }
-          }
-          
-          data = {
-            specification_id: [specification_id],
-            goods_id: [shopdata.id],
-            single_price: single_price,
-            count: [1],
-            sum_price: shopdata.num * shopdata.price
-          };
-        } else {
-          this.allPrice = parseInt(shopdata.num) * parseFloat(shopdata.price);
-          data = {
-           specification_id: [shopdata.specification_id],
-            goods_id: [shopdata.id],
-            single_price: [shopdata.price],
-            count: [1],
-            sum_price: shopdata.num * shopdata.price,
-            isadd: 0
-          };
-        } */
         console.log("添加的数据");
         console.log(data);
         addcar(data, 2);

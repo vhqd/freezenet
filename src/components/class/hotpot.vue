@@ -221,41 +221,6 @@
       });
       }
     },
-      /*减少数量值*/
-      /* minus(item) {
-        let amount = item.num;
-        if (amount > 0) {
-          item.num = amount - 1;
-          this.carnum = this.carnum - 1
-          this.allPrice = this.allPrice - item.price
-        } else {
-          item.num = 0;
-        }
-        let data = {
-          goods_id: item.id,
-          single_price: item.price,
-          count: item.num,
-          isadd:0
-        };
-        console.log('减少购物车');
-        console.log(data);
-        jiancar(item.id, data);
-      }, */
-      /*增加数量值*/
-     /*  plus(item) {
-        let isbind = localStorage.isbind
-      if(isbind != 1){
-        this.openwins = true
-      }else{
-        let amount = item.num;
-        item.num = amount + 1
-        this.carnum = this.carnum + 1
-        this.allPrice = parseFloat(this.allPrice) + parseFloat(item.price)
-
-        let ite = {}
-        setOfenBuyData(item, this.list, ite); 
-      }
-      }, */
       /*获取购物车数量*/
       getCarNum() {
         let carnum = this.carnum;

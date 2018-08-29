@@ -262,16 +262,7 @@
                         </mu-list-item>
                         <div id="realheight"></div>
                     </mu-list>
-
                 </mu-paper>
-
-                <!--	<div class="total">
-				<span class="xj" style="font-size: 0.26rem;font-weight: bold;">小计：<span style="color: red;">￥89.265</span></span>
-				<span class="xj">
-					共两件商品
-				</span>
-			</div>-->
-
             </div>
 
             <!--已发货-->
@@ -281,7 +272,7 @@
                         <div class="pricebox">
                             <ul>
                                 <!-- <li class="payorder">查看物流</li> -->
-                                <li class="cancelorder">确认收货</li>
+                                <li class="cancelorder" @click="confirmOrder">确认收货</li>
                             </ul>
                         </div>
                     </mu-list-item>
@@ -322,7 +313,7 @@
 <script>
 import BackBar from "../common/BackBar.vue";
 import { WXPay } from "../../common/common.js";
-import { getDress, cancelOrder, deleteOrder } from "../../http/http.js";
+import { getDress, cancelOrder, deleteOrder , confirmOrder } from "../../http/http.js";
 import { disableShare } from "../../common/disableShare.js";
 
 export default {
@@ -336,26 +327,7 @@ export default {
       limit: 99, //当前页面分页条数
       status: null, //订单状态
       dress: null, //默认地址
-      list: [
-        /* {
-      				id:1,
-      				img:require('../../../static/img/1-0_03.png'),//图片
-      				title:'算哈哈是111',//标题
-      				num:0,//数量
-      				price:'20',//单价
-      				oldPrice:'50',//旧的价格
-      				inventory:'5'//库存
-      			},
-      			{
-      				id:2,
-      				img:require('../../../static/img/1-0_03.png'),//图片
-      				title:'算哈哈是',//标题
-      				num:0,//数量
-      				price:'20',//单价
-      				oldPrice:'50',//旧的价格
-      				inventory:'5'//库存
-      			} */
-      ]
+      list: []
     };
   },
   computed: {
@@ -400,7 +372,8 @@ export default {
       alert(id);
       alert(redPacketId);
       cancelOrder(id, redPacketId).then(res => {
-        alert("成功");
+       this.$store.commit("setShowText", '已取消订单');
+        this.$store.commit("showInfo");
         console.log(res);
       });
     },
@@ -412,9 +385,17 @@ export default {
       alert(id);
       alert(redPacketId);
       deleteOrder(id, redPacketId).then(res => {
-        alert("成功");
+        this.$store.commit("setShowText", '已删除订单');
+        this.$store.commit("showInfo");
         console.log(res);
       });
+    },
+     /**确认收货*/
+    confirmOrder(){
+        confirmOrder(this.datainfo.id).then(res=>{
+            this.$store.commit("setShowText", '已确认订单');
+            this.$store.commit("showInfo");
+        })
     },
     /*查看物流详情*/
     goExpress() {

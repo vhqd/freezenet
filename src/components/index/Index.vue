@@ -51,95 +51,6 @@
         </div>
       </div>
       <oftenHome ishome='1'></oftenHome>
-
-     <!--  <div style="position: relative;min-height: 4rem;">
-        <mu-paper :z-depth="1" class="demo-list-wrap" v-if="showlist.length > 0">
-          <mu-list textline="three-line">
-            <div v-for="(item,index) in showlist" :key="index" class="li-box">
-              <router-link :to="{path:'/detail',query: {id: item.id}}">
-                <mu-list-item avatar :ripple="false" button>
-                  <mu-list-item-action>
-                    <mu-avatar style="min-width: 1.4rem;height: 1.4rem;">
-                      <img :src="item.goods_photo" :onerror="onerrorimg">
-                    </mu-avatar>
-                  </mu-list-item-action>
-                  <mu-list-item-content>
-                    <mu-list-item-title>{{item.goods_title}}</mu-list-item-title>
-                    <span class="kcstyle">{{item.goods_specification}}</span>
-                    <mu-list-item-sub-title>
-                      <div style="color: red;">
-                        <span v-show="!isbind" style="color: #a9a9a9;">绑定手机号才能查看价格</span>
-                        <div v-show="isbind" class="pricecolor">￥
-                          <span v-if="item.type == 1">{{item.goods_price}}</span>
-												  <span v-if="item.type == 2">{{item.specifications[0].price}}</span>
-                        </div>
-                      </div>
-                    </mu-list-item-sub-title>
-                  </mu-list-item-content>
-                </mu-list-item>
-              </router-link>
-              <div style="position: absolute;right: 0.3rem;top: 1.3rem;">
-							<div class="saoma">
-								<div v-if="item.type == 1">
-									<span class="minus" @click="minus(item)" v-if="item.num != 0"><img src="../../../static/img/ic_jian.png" alt=""></span>
-									<span v-show="item.num != 0">{{item.num}}</span>
-									<span class="plus" @click="plus(item)"><img src="../../../static/img/ic_jia.png" alt=""></span>
-								</div>
-								<div v-if="item.type == 2">
-									<span class="mpsytl" @click="typeo2show(item , 1)" v-if="!item.show"><img src="../../../static/img/often/down.png" /></span>
-									<span class="mpsytl" @click="typeo2show(item), 2" v-if="item.show"><img src="../../../static/img/often/up.png" /></span>
-								</div>
-							</div>
-						</div>
-
-              <div class="dele" @click="deleList(index,item)">
-                <img src="../../../static/img/ic-del.png" />
-              </div>
-
-              <mu-expand-transition>
-							<div class="type2list" v-show="item.type == 2 && item.show">
-								<mu-list textline="two-line">
-									<mu-list-item avatar button :ripple="false" v-for="(ite , ind) in item.specifications" :key="ind">
-										<mu-list-item-content>
-											<mu-list-item-title>{{ite.specification*2}}斤装</mu-list-item-title>
-											<mu-list-item-sub-title>￥{{ite.price}}</mu-list-item-sub-title>
-										</mu-list-item-content>
-										<mu-list-item-action>
-											<div class="saoma" style="margin-right:6px;">
-												<div>
-													<span class="minus" @click="minus(item,ite)" v-if="ite.num != 0" :data-index="ind"><img src="../../../static/img/ic_jian.png" alt=""></span>
-													<span v-show="ite.num != 0">{{ite.num}}</span>
-													<span class="plus" @click="plus(item,ite)" :data-index="ind"><img src="../../../static/img/ic_jia.png" alt=""></span>
-												</div>
-											</div>
-										</mu-list-item-action>
-									</mu-list-item>
-								</mu-list>
-							</div>
-						</mu-expand-transition>
-
-
-            </div>
-          </mu-list>
-        </mu-paper>
-        <div v-else style="position: absolute;left: 50%;top: 50%;margin-top: -1.8rem;margin-left: -1rem;">
-          <img src="../../../static/img/home/img_meiyoutuihuodan.png" style="width: 2rem;height: 2rem;" />
-          <p style="color: #999;">你还没有清单哦</p>
-        </div>
-      </div> -->
-        <!-- <div id="realheight"></div> -->
-    <!--   	<mu-dialog title="温馨提示" width="360" :open.sync="openJS">
-        <span class="cancelbox" @click="closeJSDialog"><img src="../../../static/img/ic_Shut .png" /></span>
-        您确认要删除该常购清单吗?<br />
-        <mu-button slot="actions" flat color="primary" @click="sureClick(index)">确定</mu-button>
-        <mu-button slot="actions" flat color="secondary" @click="closeJSDialog">取消</mu-button>
-      </mu-dialog>
-       <mu-dialog title="温馨提示" width="360" :open.sync="openwins">
-        <span class="cancelbox" @click="cancel"><img src="../../../static/img/ic_Shut .png" /></span>
-        绑定手机才可以下单呦~<br />
-        <mu-button slot="actions" flat color="primary" @click="sure">确定</mu-button>
-        <mu-button slot="actions" flat color="secondary" @click="cancel">取消</mu-button>
-      </mu-dialog> -->
     </div>
 
     <!--底部导航-->
@@ -193,14 +104,6 @@ export default {
       topclass: [],
       onerrorimg: this.$store.state.onerrorimg,
       onerrorimglong: this.$store.state.onerrorimglong,
-/*       alldata: [
-        {
-          goods_id: [],
-          single_price: [],
-          count: [],
-          sum_price: 0
-        }
-      ], */
       bannerImg: [],
       classlist: [],
       showlist: [],
@@ -321,22 +224,6 @@ export default {
   
   },
   methods: {
-     /*删除一条常购清单记录*/
- /*    deleList(index, item) {
-      this.openJS = true;
-      this.item = item;
-      this.index = index;
-    }, */
-    /*取消订单*/
- /*    sureClick(index) {
-      this.openJS = false;
-      this.showlist.splice(this.index, 1);
-      this.deletOfenBuy(this.item);
-    }, */
-    /*关闭取消弹窗*/
- /*    closeJSDialog() {
-      this.openJS = false;
-    }, */
     /**保存openid*/
     setOpenid(openid) {
       let obj = { name: openid };
@@ -351,31 +238,6 @@ export default {
       this.getIndexBanner();
       this.getCarList();
       this.getIndexTopClass();
-     /*  let openid = this.$route.query.openid || JSON.parse(localStorage.obj).name;
-      if (openid) {
-        //let str = localStorage.obj;
-        this.setOpenid(openid);
-      }
-      this.$store.commit("setOpenId", openid);
-      let username = openid
-      let data = {
-        username: openid,
-        password: "123456"
-      }; */
-      /**获取token*/
-      /* getToken(data).then(res => {
-        let token = res.data.data.access_token;
-        console.log("获取到的token");
-        console.log(token);
-        //设置token
-        this.$store.commit("set_token", token);
-        //获取token成功后初始化数据
-        this.getIndexBanner();
-        this.getCarList();
-        this.getIndexTopClass();
-        //通知常购清单组件token已获取完毕可以加载
-        this.$store.commit("setWaitToken",true)
-      }); */
     },
 
     /**
@@ -433,20 +295,6 @@ export default {
       });
     },
 
-    /**获取常购清单列表*/
-    /* getOfenBuyList() {
-      getOfenBuyList(99, 1).then(res => {
-        let data = res.data.info.data;
-        for (let item in data) {
-          data[item].goods_photo = this.host + data[item].goods_photo;
-          data[item].num = 0;
-        }
-        this.showlist = data;
-
-        
-      });
-    }, */
-
     /*首页顶部热销榜、常购清单、领券优惠、我的订单router*/
     toplistgo(index) {
       if (index == 0) {
@@ -463,8 +311,6 @@ export default {
       }
     },
 
-   
-
     /**专区商品1*/
     goClasstopDetail(item) {
       this.$router.push({ path: "/chuanchuan", query: { typeid: item.id } });
@@ -474,49 +320,7 @@ export default {
     /**专区商品2*/
     goDetail(item) {
       this.$router.push({ path: "/hotpot", query: { typeid: item.id } });
-      //this.$router.push({ path: "/hotpot", query: { typeid: item.id } });
     },
-
-    /*减少数量值*/
-/*     minus(item, ite) {
-      console.log("减少购物车");
-      jiancar(item, ite);
-    }, */
-    /*增加数量值*/
-  /*   plus(item, ite) {
-      let isbind = localStorage.isbind;
-      if (isbind != 1) {
-        this.openwins = true;
-      } else {
-        setOfenBuyData(item, this.alldata, ite);
-      }
-    }, */
-
-    /*减少数量值*/
-   /*  minus(item) {
-      let amount = item.num;
-      if (amount > 0) {
-        item.num = amount - 1;
-      } else {
-        item.num = 0;
-      }
-      removeOfenBuyData(item, this.alldata);
-    }, */
-
-    /*增加数量值*/
-    /* plus(item) {
-      let isbind = localStorage.isbind
-      console.log(isbind);
-      if(isbind != 1){
-        //this.$store.commit("setLoad", true);
-        this.openwins = true
-      }else{
-        let amount = item.num;
-        item.num = amount + 1;
-        setOfenBuyData(item, this.alldata);
-      }
-      
-    }, */
 
     /**删除常购清单*/
     deletOfenBuy(item) {

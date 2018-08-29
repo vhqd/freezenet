@@ -248,4 +248,5 @@ export default {
 .area {
   width: auto;
 }
+.mu-item-sub-title, .mu-item-title{width: 27% !important;}
 </style>

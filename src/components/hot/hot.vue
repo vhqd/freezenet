@@ -100,76 +100,7 @@ export default {
 	  qigou: this.$store.state.qigou,
     onerrorimg:this.$store.state.onerrorimg,
      openwins:false,
-      list: [
-      /*   {
-          id: 1,
-          type: 1,
-          show: false,
-          img: require("../../../static/img/1.6_03.png"), //图片
-          title: "青岛大牡蛎  鲜活贝类海鲜烧烤食材带壳水产", //标题
-          num: 0, //数量
-          price: 20, //单价
-          oldPrice: 50, //旧的价格
-          inventory: "5" //库存
-        },
-        {
-          id: 1,
-          type: 1,
-          show: false,
-          img: require("../../../static/img/1.6_03.png"), //图片
-          title: "青岛大牡蛎  鲜活贝类海鲜烧烤食材带壳水产", //标题
-          num: 0, //数量
-          price: 20, //单价
-          oldPrice: 50, //旧的价格
-          inventory: "5" //库存
-        },
-        {
-          id: 1,
-          type: 1,
-          show: false,
-          img: require("../../../static/img/1.6_03.png"), //图片
-          title: "青岛大牡蛎  鲜活贝类海鲜烧烤食材带壳水产", //标题
-          num: 0, //数量
-          price: 20, //单价
-          oldPrice: 50, //旧的价格
-          inventory: "5" //库存
-        },
-        {
-          id: 1,
-          type: 1,
-          show: false,
-          img: require("../../../static/img/1.6_03.png"), //图片
-          title: "青岛大牡蛎  鲜活贝类海鲜烧烤食材带壳水产", //标题
-          num: 0, //数量
-          price: 20, //单价
-          oldPrice: 50, //旧的价格
-          inventory: "5" //库存
-        },
-        {
-          id: 2,
-          type: 2,
-          weights: [
-            {
-              weight: 5.5,
-              price: 240,
-              num: 0
-            },
-            {
-              weight: 5.5,
-              price: 240,
-              num: 0
-            }
-          ],
-          show: false,
-          img: require("../../../static/img/1.6_03.png"), //图片
-          title:
-            "青岛大牡蛎  鲜活贝类海鲜烧烤食材带壳水产青岛大牡蛎  鲜活贝类海鲜烧烤食材带壳水产", //标题
-          num: 0, //数量
-          price: 20, //单价
-          oldPrice: 50, //旧的价格
-          inventory: "5" //库存
-        } */
-      ]
+      list: []
     };
   },
   components: {

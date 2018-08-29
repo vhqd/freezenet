@@ -28,30 +28,7 @@
 			  		<span class="editanddelete" @click="openJSDialog(index,item)">删除</span>
 			  		<span class="editanddelete edittext" @click='toEdit(item)'>编辑</span>
 				  </div>
-				   
 			    </div>
-			
-			  <!-- <div class="listonebox">
-				  <mu-list textline="two-line" class='listone'>
-				    <mu-list-item avatar :ripple="false" button>
-				      <mu-list-item-content>
-				        <mu-list-item-title>
-				        	汤丽丽
-				          <mu-list-item-after-text class="phone">11231554545486</mu-list-item-after-text>
-				        </mu-list-item-title>
-				        <mu-list-item-sub-title class='dresstitle'>
-				          	四川省成都市超级能算解开从大家老双方空档开双就开双脚开动就开开老算A好弄的
-				        </mu-list-item-sub-title>
-				      </mu-list-item-content>
-				    </mu-list-item>
-				  </mu-list>
-				  <div class="editbox">
-			  		<span class="moren">默认地址</span>
-			  		<span class="editanddelete">删除</span>
-			  		<span class="editanddelete edittext">编辑</span>
-				  </div>
-			  </div>-->
-			  
 		</mu-paper>
 		</mu-load-more>
 	</div>
@@ -81,20 +58,7 @@
 				item:[],//操作的数据
 				openJS:false,//弹窗
 				index:0,
-				list:[
-					/*{
-						name:'囧的就',
-						phone:'1324567',
-						dress:'四川省成都市超级能算解开从大家老双方空档开双就开双脚开动就开开老算A好弄的',
-						isdefault:true
-					},
-					{
-						name:'囧的就',
-						phone:'1324567',
-						dress:'四川省成都市超级能算解开从大家老双方空档开双就开双脚开动就开开老算A好弄的四川省成都市超级能算解开从大家老双方空档开双就开双脚开动就开开老算A好弄的',
-						isdefault:false
-					}*/
-				]
+				list:[]
 			}
 		},
 		components: {

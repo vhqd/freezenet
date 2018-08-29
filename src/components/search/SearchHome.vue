@@ -46,43 +46,6 @@
       </mu-chip>
     </mu-container>
     <!--搜索结果-->
-    <!--<div class="listbox">
-			<mu-paper :z-depth="1" class="demo-list-wrap">
-			  <mu-list textline="three-line">
-			  	
-			  	<div v-for="(item,index) in showList" :key="index" class="li-box">
-				    <mu-list-item avatar :ripple="false" button>
-				      <mu-list-item-action>
-				        <mu-avatar style="width: 1.4rem;height: 1.4rem;">
-				          <img :src="item.img">
-				        </mu-avatar>
-				      </mu-list-item-action>
-				      <mu-list-item-content>
-				        <mu-list-item-title>{{item.title}}</mu-list-item-title>
-				        <mu-list-item-sub-title>
-				          <span style="color: #a9a9a9;font-size: 0.2rem;">库存{{item.inventory}}件</span>
-			<p style="color: red;">
-				          	￥<span style="font-size: 0.5rem;">{{item.price}}</span>
-				          	<span style="color: #ccc;text-decoration: line-through;">￥{{item.oldPrice}}</span>
-				          </p>
-				        </mu-list-item-sub-title>
-				      </mu-list-item-content>
-				    </mu-list-item>
-				    <mu-divider></mu-divider>
-				    <div style="position: absolute;right: 0;bottom: 0;">
-				    	<div class="saoma">
-				        	<span class="minus mpsytl" @click="minus(item)" v-if="item.num != 0">-</span>
-				        	<span>{{item.num}}</span>
-				        	<span class="plus mpsytl" @click="plus(item)">+</span>
-				        </div>
-				    </div>
-			  	</div>
-			  </mu-list>
-			</mu-paper>
-			
-		
-		</div>-->
-
     <div class="searchreult" v-if="resData.length > 0">
       <mu-flex class="flex-wrapper" align-items="center" wrap="wrap">
         <mu-flex v-for="(item,index) in resData" :key="index" class="flex-demo" direction='column' align-items="center" justify-content="center" fill>
@@ -147,18 +110,6 @@
       删除历史搜索记录
       <mu-button slot="actions" flat color="primary" @click="deleSearchbox">确定</mu-button>
     </mu-dialog>
-    <!--<div class="carBox">
-			<mu-container>
-			  <mu-bottom-nav>
-			    <mu-bottom-nav-item title="购物车"></mu-bottom-nav-item>
-			    <img src="../../../static/img/home/cart_weixuan.png"/>
-			    <mu-chip class="demo-chip carNum">
-			    	{{carnum}}
-			  	</mu-chip>
-			  </mu-bottom-nav>
-			</mu-container>
-		</div>-->
-
   </div>
 </template>
 
@@ -185,139 +136,13 @@ export default {
       deleSearch: false, //删除弹窗
       carnum: 0, //购物车数量
       qigou: this.$store.state.qigou,
-      history: [
-        /* {
-			  title:'鸭肠'
-		  } */
-      ],
-      hothistory: [
-        /*  {
-			  title:'鱼鱼鱼'
-		  } */
-      ],
+      history: [],
+      hothistory: [],
       allPrice: 0, //总价
       checkNum: 0, //选中的条数
-      resData: [
-        //搜索下拉框
-       /*  {
-          title: "aaa"
-        } */
-      ],
-      list: [
-        /* {
-          img: require("../../../static/img/1-0_03.png"),
-          title: "BreakfastBreakfastBreakfast",
-          num: 0,
-          weight: 5,
-          price: 20
-        },
-        {
-          img: require("../../../static/img/1-0_03.png"),
-          title: "CameraCameraCamera",
-          num: 0,
-          weight: 5,
-          price: 20
-        },
-        {
-          img: require("../../../static/img/1-0_03.png"),
-          title: "CameraCameraCameraCamera",
-          num: 0,
-          weight: 5,
-          price: 20
-        },
-        {
-          img: require("../../../static/img/1-0_03.png"),
-          title: "BreakfastBreakfastBreakfast",
-          num: 0,
-          weight: 5,
-          price: 20
-        },
-        {
-          img: require("../../../static/img/1-0_03.png"),
-          title: "CameraCameraCamera",
-          num: 0,
-          weight: 5,
-          price: 20
-        },
-        {
-          img: require("../../../static/img/1-0_03.png"),
-          title: "CameraCameraCameraCamera",
-          num: 0,
-          weight: 5,
-          price: 20
-        } */
-      ],
-      menu: [
-        /* {
-          id: 1,
-          name: "热卖",
-          list: [
-            {
-              id: 1,
-              img: require("../../../static/img/1-0_03.png"), //图片
-              title: "算哈哈是111", //标题
-              num: 0, //数量
-              price: "20", //单价
-              oldPrice: "50", //旧的价格
-              inventory: "5" //库存
-            },
-            {
-              id: 2,
-              img: require("../../../static/img/1-0_03.png"), //图片
-              title: "算哈哈是", //标题
-              num: 0, //数量
-              price: "20", //单价
-              oldPrice: "50", //旧的价格
-              inventory: "5" //库存
-            }
-          ]
-        },
-        {
-          id: 2,
-          name: "热卖",
-          list: [
-            {
-              id: 1,
-              img: require("../../../static/img/1-0_03.png"), //图片
-              title: "算哈哈是1", //标题
-              num: 1, //数量
-              price: "20", //单价
-              oldPrice: "50", //旧的价格
-              inventory: "5" //库存
-            }
-          ]
-        },
-        {
-          id: 3,
-          name: "热卖",
-          list: [
-            {
-              id: 1,
-              img: require("../../../static/img/1-0_03.png"), //图片
-              title: "算哈哈是2", //标题
-              num: 0, //数量
-              price: "20", //单价
-              oldPrice: "50", //旧的价格
-              inventory: "5" //库存
-            }
-          ]
-        },
-        {
-          id: 4,
-          name: "热卖",
-          list: [
-            {
-              id: 1,
-              img: require("../../../static/img/1-0_03.png"), //图片
-              title: "算哈哈是3", //标题
-              num: 0, //数量
-              price: "20", //单价
-              oldPrice: "50", //旧的价格
-              inventory: "5" //库存
-            }
-          ]
-        } */
-      ]
+      resData: [],
+      list: [],
+      menu: []
     };
   },
   activated(){
@@ -557,21 +382,7 @@ export default {
   border-radius: 0.2rem;
   margin-right: 0.3rem;
 }
-/* .minus {
-  background: #c3c3c3;
-}
-.plus {
-  background: #f24c4c;
-}
-.mpsytl {
-  border-radius: 50%;
-  color: #fff;
-  width: 0.44rem;
-  height: 0.44rem;
-  display: inline-block;
-  font-size: 0.3rem;
-  line-height: 0.4rem;
-} */
+
 .saoma span {
   margin-left: 0.15rem;
 }

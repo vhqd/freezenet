@@ -78,9 +78,9 @@
 								<li @click="goDetail(item)">查看详情</li>
 							</ul>
 							<ul v-else-if='item.order_status == 3'>
-								<li>查看物流</li>
+								<!-- <li>查看物流</li> -->
 								<li @click="goDetail(item)">查看详情</li>
-								<li class="qrsh">确认收货</li>
+								<li class="qrsh" @click="confirmOrder(item)">确认收货</li>
 							</ul>
 							<ul v-else>
 								<li @click="openDelDialog(index,item)">删除订单</li>
@@ -116,7 +116,7 @@
 <script>
 import BackBar from "../common/BackBar.vue";
 import { mapState } from "vuex";
-import { getOrders , cancelOrder , deleteOrder } from "../../http/http.js";
+import { getOrders , cancelOrder , deleteOrder , confirmOrder } from "../../http/http.js";
 import { WXPay } from '../../common/common.js'
 import { disableShare } from '../../common/disableShare.js'
 
@@ -137,61 +137,11 @@ export default {
       nomoreorder:false,//滚动加载没有更多提示
       openJS: false, //取消弹窗
       openDel:false,//删除弹窗
+      nowstatus:null,
       index: 0,
       onerrorimg:this.$store.state.onerrorimg,
       order_status:0,
-      list: [
-         /* {
-          id: 1,
-          orderid: 545455454,
-          status: 1, //0-全部 1-待支付 2-待发货 3-已发货 4-已完成 5-已取消
-          img: require("../../../static/img/1-0_03.png"), //图片
-          title: "算哈哈是111", //标题
-          num: 0, //数量
-          price: "20", //单价
-          oldPrice: "50" //旧的价格
-        },
-        {
-          id: 2,
-          orderid: 545455454,
-          status: 2,
-          img: require("../../../static/img/1-0_03.png"), //图片
-          title: "算哈哈是111", //标题
-          num: 0, //数量
-          price: "20", //单价
-          oldPrice: "50" //旧的价格
-        },
-        {
-          id: 1,
-          orderid: 545455454,
-          status: 3, //1-待支付 2-待发货 3-已发货 4-已完成 5-已取消
-          img: require("../../../static/img/1-0_03.png"), //图片
-          title: "算哈哈是111", //标题
-          num: 0, //数量
-          price: "20", //单价
-          oldPrice: "50" //旧的价格
-        },
-        {
-          id: 2,
-          orderid: 545455454,
-          status: 4,
-          img: require("../../../static/img/1-0_03.png"), //图片
-          title: "算哈哈是111", //标题
-          num: 0, //数量
-          price: "20", //单价
-          oldPrice: "50" //旧的价格
-        },
-        {
-          id: 2,
-          orderid: 545455454,
-          status: 5,
-          img: require("../../../static/img/1-0_03.png"), //图片
-          title: "算哈哈是111", //标题
-          num: 0, //数量
-          price: "20", //单价
-          oldPrice: "50" //旧的价格
-        }  */
-      ]
+      list: []
     };
   },
   components: {
@@ -232,6 +182,7 @@ export default {
      * @param islodmore 是否是加载更多  加载更多-true，切换订单状态-false
      * */
     getOrders(order_status,isloadmore) {
+      this.nowstatus = order_status//用于确认订单更新数据
       this.loading2 = true
       //点击顶部订单初始化参数
       if(!isloadmore){
@@ -295,6 +246,14 @@ export default {
           this.nomoreorder = true
         }
     },
+    /**确认收货*/
+    confirmOrder(item){
+        confirmOrder(item.id).then(res=>{
+            getOrders(this.nowstatus,false)
+            this.$store.commit("setShowText", '已确认订单');
+            this.$store.commit("showInfo");
+        })
+    },
     /*查看详情*/
     goDetail(item) {
       this.$router.push({
@@ -315,6 +274,8 @@ export default {
       let redPacketId = this.item.red_packet_id
       cancelOrder( id , redPacketId ).then(res => {
         console.log(res);
+        this.$store.commit("setShowText", '已取消订单');
+        this.$store.commit("showInfo");
       }) 
 
     },
@@ -347,6 +308,8 @@ export default {
       let id = this.Delitem.id
       let redPacketId = this.Delitem.red_packet_id
       deleteOrder( id , redPacketId ).then(res => {
+        this.$store.commit("setShowText", '已删除订单');
+        this.$store.commit("showInfo");
         console.log(res);
       }) 
     },

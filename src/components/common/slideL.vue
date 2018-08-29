@@ -48,7 +48,7 @@
                                     </mu-paper>
                                 </div>
                             </div>
-                            <div class="delete" @click="deleteItem" :data-index='index'>删除</div>
+                            <div class="delete" @click="openCarDialog" :data-index='index'>删除</div>
                         </li>
                         <p v-show="nomore">没有数据了</p>
                     </ul>
@@ -88,6 +88,12 @@
             <img src="../../../static/img/car/img_konggouwuche.png" style="width: 3.9rem;height: 3.3rem;" />
             <p style="color: #999;">购物车还没有商品呦</p>
         </div>
+        <mu-dialog title="温馨提示" width="360" :open.sync="openCar">
+            <span class="cancelbox" @click="closeCarDialog"><img src="../../../static/img/ic_Shut .png" /></span>
+            您确认要删除该购物车商品吗?<br />
+            <mu-button slot="actions" flat color="primary" @click="deleteItem">确定</mu-button>
+            <mu-button slot="actions" flat color="secondary" @click="closeCarDialog">取消</mu-button>
+        </mu-dialog>
         <mu-dialog title="温馨提示" width="360" :open.sync="openwins">
             <span class="cancelbox" @click="cancel"><img src="../../../static/img/ic_Shut .png" /></span>
             绑定手机才可以下单呦~<br />
@@ -117,7 +123,9 @@ export default {
       qigou: this.$store.state.qigou, //起购价
       onerrorimg: this.$store.state.onerrorimg,
       loading: false,
+      openCar: false, //取消弹窗
       openwins: false,
+      thisindex:null,
       lastinde: 0,
       radioF: require("../../../static/img/car/ic_xuanzhong.png"), //选中图片
       radioT: require("../../../static/img/car/ic_weixuan.png"), //未选图片
@@ -160,6 +168,29 @@ export default {
   },
   mounted() {},
   methods: {
+    
+    //删除
+    deleteItem(e) {
+      //let index = e.currentTarget.dataset.index;
+      let index = this.thisindex
+      this.restSlide();
+      let item = this.list[index];
+      this.list.splice(index, 1);
+      this.openCar = false;
+      this.getAllPrice(this.list);
+      DeleCarShop(item.id).then(res => {});
+      this.getCarNum(this.list);
+    },
+    /*打开删除弹窗*/
+    openCarDialog(e) {
+      let index = e.currentTarget.dataset.index;
+      this.thisindex = index
+      this.openCar = true;
+    },
+    /*关闭删除弹窗*/
+    closeCarDialog() {
+      this.openCar = false;
+    },
     /**获取购物车数据*/
     getCarList(limit, page) {
       getCarList(limit, page).then(res => {
@@ -332,16 +363,6 @@ export default {
       }
     },
 
-    //删除
-    deleteItem(e) {
-      let index = e.currentTarget.dataset.index;
-      this.restSlide();
-      let item = this.list[index];
-      this.list.splice(index, 1);
-      this.getAllPrice(this.list);
-      DeleCarShop(item.id).then(res => {});
-      this.getCarNum(this.list);
-    },
 
     /**关闭弹窗*/
     closeJSDialog() {
@@ -610,7 +631,7 @@ export default {
 
 .addToCar {
   position: fixed;
-  bottom: 0.84rem;
+  bottom: 1rem;
   width: 100%;
 }
 .pricecarbox {
@@ -661,4 +682,5 @@ export default {
   font-size: 0.22rem;
   color: #999;
 }
+.mu-list{padding: 0 !important}
 </style>

@@ -408,22 +408,7 @@
 				}
 				this.payprice = this.allprice - this.yhj + this.psf;
 			},
-			/* 
-			orderdata:[{
-					'goods_id':[],//商品id
-					'single_price':[],//商品单价
-					'count':[],//商品数量
-					'sum_price':0,//商品总价
-					'use_red_packet':0,//是否使用红包 1=>使用,0=>未使用
-					'red_packet_price':0,//红包金额
-					'real_pay_price':0,//实际支付金额
-					'pay_way':0,//付款方式,1=>在线支付,0=>货到付款
-					'pay_status':0,//支付状态,1=>已经支付,0=>未支付,2=>货到付款,3=>已经失效
-					'distribution_id':0,//配送方式id
-					'red_packet_id':0,//红包id
-					'transport_id':0//配送方式id
-				}],//需要提交的订单数据
-			*/
+			
 
 			/**提交订单*/
 			toPay() {
@@ -826,5 +811,6 @@
 	.infoboxbut .mu-item-action{min-width: 50%;font-weight: bold;font-size: 13px;color:#333;}
 	.infoboxbut .mu-item-title{color: #666;}
 	.yhjtipbox{display: flex;align-items: center;justify-content: center;margin-top: 20px;}
-	.yhjtip{width: 1rem;height: .6rem;}
+    .yhjtip{width: 1rem;height: .6rem;}
+    .mu-item-after-text{right: 0px !important;}
 </style>
