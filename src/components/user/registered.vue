@@ -1,17 +1,17 @@
 <template>
-    <div class="address phonebox">
+    <div class="address">
         <mu-appbar style="width: 100%;" color="primary">
-            <mu-button icon slot="left" @click="back" v-if="backshow">
+           <!--  <mu-button icon slot="left" @click="back" v-if="backshow">
                 <img src="../../../static/img/back.png" />
-            </mu-button>
-            绑定手机号
+            </mu-button> -->
+            注册
             <!--<span v-if="isshow" style="position: absolute;right: .2rem;top: -.1rem;" @click="goEditDress">管理</span>-->
         </mu-appbar>
 
         <mu-list class="infoboxbut">
             <mu-list-item button :ripple="false">
                 <mu-list-item-title>手机号</mu-list-item-title>
-                <mu-list-item-action style="width:83%">
+                <mu-list-item-action>
                     <mu-text-field v-model="phone" type='number' placeholder="请输入手机号" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')"></mu-text-field>
                 </mu-list-item-action>
                 <div v-if="!issend&&phone != ''" class="sendyzm" @click="snedyzm">发送验证码</div>
@@ -20,26 +20,38 @@
             </mu-list-item>
             <mu-list-item button :ripple="false">
                 <mu-list-item-title>验证码</mu-list-item-title>
-                <mu-list-item-action style="width:83%">
+                <mu-list-item-action>
                     <mu-text-field v-model="yzm" v-on:blur='checkNum' placeholder="验证码" type='number' onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')"></mu-text-field>
                 </mu-list-item-action>
             </mu-list-item>
             <mu-list-item button :ripple="false">
                 <mu-list-item-title>邀请码</mu-list-item-title>
-                <mu-list-item-action style="width:83%">
+                <mu-list-item-action>
                     <mu-text-field v-model="yqm" :disabled='disyqm' placeholder="请输入邀请码"></mu-text-field>
+                </mu-list-item-action>
+            </mu-list-item>
+             <mu-list-item button :ripple="false">
+                <mu-list-item-title>密码</mu-list-item-title>
+                <mu-list-item-action>
+                    <mu-text-field v-model="password" type='password' placeholder="请输入密码"></mu-text-field>
+                </mu-list-item-action>
+            </mu-list-item>
+             <mu-list-item button :ripple="false">
+                <mu-list-item-title>重复密码</mu-list-item-title>
+                <mu-list-item-action>
+                    <mu-text-field v-model="repassword" type='password' placeholder="请重复密码"></mu-text-field>
                 </mu-list-item-action>
             </mu-list-item>
         </mu-list>
 
-        <div v-if="yqm == '' || yzm == '' || phone == ''" class="savebox saveboxhui">
+        <div v-if="yqm == '' || yzm == '' || phone == ''|| password == ''|| repassword == ''" class="savebox saveboxhui">
             <mu-flex class="flex-wrapper" align-items="center">
-                <mu-flex class="flex-demo" justify-content="center" fill>绑定</mu-flex>
+                <mu-flex class="flex-demo" justify-content="center" fill>注册</mu-flex>
             </mu-flex>
         </div>
         <div v-else class="savebox">
             <mu-flex class="flex-wrapper" align-items="center" @click='bindPone'>
-                <mu-flex class="flex-demo" justify-content="center" fill>绑定</mu-flex>
+                <mu-flex class="flex-demo" justify-content="center" fill>注册</mu-flex>
             </mu-flex>
         </div>
     </div>
@@ -55,7 +67,8 @@ import {
   getUserWXInfo,
   sendPhoneYzm,
   test1,
-  getShareConfig
+  getShareConfig,
+  registered
 } from "../../http/http.js";
 import { getTokens, getUrlParms } from "../../common/common.js";
 import { wxInit } from "../../common/share.js";
@@ -78,6 +91,8 @@ export default {
       phone: "", //手机号
       yzm: "", //验证码
       yqm: "", //邀请码,
+      password:'',
+      repassword:'',
       disyqm: false
     };
   },
@@ -97,6 +112,8 @@ export default {
     this.yqm = "";
     this.phone = "";
     this.yam = "";
+    this.password = "";
+    this.repassword = "";
     if (invate_code) {
       this.yqm = invate_code;
       this.disyqm = true;
@@ -177,7 +194,18 @@ export default {
         this.$toast.error("请输入邀请码");
         return;
       }
-
+     if (this.password == "") {
+        this.$toast.error("请输入密码");
+        return;
+      }
+      if (this.repassword == "") {
+        this.$toast.error("请输入重复密码");
+        return;
+      }
+      if (this.password != this.repassword) {
+        this.$toast.error("两次输入的密码不同");
+        return;
+      }
       this.putRegister();
     },
 
@@ -190,11 +218,13 @@ export default {
         openid: obj.name,
         code: this.yzm,
         invate_code: this.yqm,
-        phone: this.phone
+        phone: this.phone,
+        password:this.password,
+        surePassword:this.repassword
       };
       console.log("用户信息");
       console.log(data);
-      register(QS.stringify(data)).then(res => {
+      registered(QS.stringify(data)).then(res => {
         this.$store.commit("editIsBind");
         localStorage.isbind = 1; //首次注册绑定手机成功设置已经绑定手机
         let token = res.data.info.access_token;
@@ -206,7 +236,9 @@ export default {
         this.phone = "";
         this.yam = "";
         this.yzm = "";
-        this.$router.replace("/");
+        this.password = "";
+        this.repassword = "";
+        this.$router.replace("/login");
         console.log("提交用户注册信息后返回的数据");
         console.log(res);
       });
@@ -231,7 +263,7 @@ export default {
           } else {
             clearInterval(timedown);
             console.log("计时器已清");
-            that.sec = 60;
+            that.sec = 5;
             that.issend = false;
           }
         }, 1000);

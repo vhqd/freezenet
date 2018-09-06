@@ -20,7 +20,7 @@
     <div class="iddexcontent">
       <div class="adimg">
         <mu-carousel hide-controls>
-          <mu-carousel-item v-for="(item , index) in topclass" :key="index" v-if="topclass">
+          <mu-carousel-item v-for="(item , index) in topclass" :key="index">
             <img :src="item.img" @click="goClasstopDetail(item)" :onerror="onerrorimglong">
           </mu-carousel-item>
         </mu-carousel>
@@ -31,7 +31,7 @@
         <div class="inc-scroll-landscape-container">
           <div class="inc-scroll-landscape-content">
             <ul>
-              <li class="toptab" v-for="(item , index) in classlist" :key='index' @click="goClasstopDetail(item)" v-if="classlist">
+              <li class="toptab" v-for="(item , index) in classlist" :key='index' @click="goClasstopDetail(item)">
                 <p class="fqtitle">{{item.goods_type_second_name}}</p>
                 <p class="stip">{{item.goods_type_second_desc}}</p>
                 <img :src="item.img" :onerror="onerrorimg"/>
@@ -231,19 +231,19 @@ export default {
       localStorage.obj = str;
     },
 
-    initData() {
+   /*  initData() {
       let openid = this.$route.query.openid || JSON.parse(localStorage.obj).name;
       console.log(22222);
       //this.$store.dispatch("getTokens",openid);
       this.getIndexBanner();
       this.getCarList();
       this.getIndexTopClass();
-    },
+    }, */
 
     /**
      * 获取首页banner
      */
-    getIndexBanner() {
+   /*  getIndexBanner() {
       console.log(44444);
       
       getIndexBanner(4, 1).then(res => {
@@ -259,9 +259,9 @@ export default {
         }
       });
     },
-
+ */
     /**获取购物车数量显示到底部 */
-    getCarList() {
+   /*  getCarList() {
       getCarList(999, 1).then(res => {
         let data = res.data.shopInfo.data;
         for (let item in data) {
@@ -270,9 +270,9 @@ export default {
         this.$store.commit("editCarnum", parseInt(this.carnum));
       });
     },
-
+ */
     /**获取首页专区九宫格和列表数据*/
-    getIndexTopClass() {
+   /*  getIndexTopClass() {
       getIndexTopClass().then(res => {
         if (res) {
           let data = res.data.info;
@@ -280,10 +280,15 @@ export default {
           let columns = [];
           //'显示格式（1：列表，0：九宫格）'
           for (let item in data) {
-            if (data[item].show_method == 1) {
-              columns.push(data[item]);
+            data[item].img = this.host + data[item].img
+            console.log('图片地址');
+            alert(11111)
+            console.log(data[item].img );
+            
+            if (data[item].show_method == 0) {
+                grid.push(data[item]);
             } else {
-              grid.push(data[item]);
+                columns.push(data[item]);
             }
           }
           this.topclass = grid; //九宫格
@@ -293,7 +298,7 @@ export default {
           console.log(data);
         }
       });
-    },
+    }, */
 
     /*首页顶部热销榜、常购清单、领券优惠、我的订单router*/
     toplistgo(index) {

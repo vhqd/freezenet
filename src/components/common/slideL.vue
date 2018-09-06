@@ -146,8 +146,10 @@ export default {
       isbind: "isbind"
     })
   },
+  beforeMount(){
+      this.$store.commit("setLoad", true);
+  },
   activated() {
-    this.$store.commit("setLoad", true);
     this.checkAll = false;
     this.checkNum = 0;
     this.allPrice = 0;

@@ -2,6 +2,9 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import store from "../store/store.js"
 import index from '@/components/index/index'
+import login from '@/components/user/login'
+import registered from '@/components/user/registered'
+import changepaw from '@/components/user/changepaw'
 import classification from '@/components/classification/classification'
 import oftenbuy from '@/components/oftenbuy/oftenbuy'
 import car from '@/components/car/car'
@@ -23,7 +26,7 @@ import hotpot from '@/components/class/hotpot'
 import coupons from '@/components/center/coupons'
 import hot from '@/components/hot/hot'
 import getcoupons from '@/components/center/getcoupons'
-import login from '@/components/phone/phone'
+/* import login from '@/components/phone/phone' */
 import CommonProblems from '@/components/help/CommonProblems'
 import problemDetail from '@/components/help/problemDetail'
 import feedback from '@/components/help/feedback'
@@ -42,6 +45,9 @@ const router =  new Router({
   routes: [
     { path: '/', name: 'index', component: index },//首页
     { path: '/test', name: 'test', component: test },//测试
+    { path: '/login',name: 'login',component: login},//登录
+    { path: '/registered',name: 'registered',component: registered},//注册
+    { path: '/changepaw',name: 'changepaw',component: changepaw},//修改密码
     { path: '/classification', name: 'classification', component: classification },//分类
     { path: '/oftenbuy', name: 'oftenbuy', component: oftenbuy },//常购清单
     { path: '/car', name: 'car', component: car ,meta: { keepAlive: false }},//购物车组件
@@ -63,7 +69,7 @@ const router =  new Router({
     { path: '/coupons',name: 'coupons',component: coupons},//优惠券
     { path: '/hot',name: 'hot',component: hot},//热销榜
     { path: '/getcoupons',name: 'getcoupons',component: getcoupons},//领优惠券
-    { path: '/login',name: 'login',component: login},//绑定手机号
+    /* { path: '/login',name: 'login',component: login},//绑定手机号  */
     { path: '/problems',name: 'problems',component: CommonProblems},//个人中心参加问题
     { path: '/problemsdetail',name: 'problemsdetail',component: problemDetail},//个人中心参加问题
     { path: '/feedback',name: 'feedback',component: feedback}//个人中心问题反馈

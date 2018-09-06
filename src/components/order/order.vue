@@ -74,7 +74,7 @@
 						<mu-divider></mu-divider>
 						<div style="position: absolute;right: 0;bottom: 0;">
 							<div class="saoma">
-								<span>x{{item.count}}</span>
+								<span>x{{shownum}}</span>
 							</div>
 						</div>
 					</div>
@@ -271,7 +271,8 @@
       			limit: 99, //当前页面分页条数
 				active1: 0,
 				dress:null,//默认地址
-				onerrorimg:this.$store.state.onerrorimg,
+                onerrorimg:this.$store.state.onerrorimg,
+                shownum:0,
 				paydata:{
 					goods:'',
 					sum_price:0,
@@ -403,8 +404,15 @@
 
 				this.alllistlength = list.length;
 				for(let item in list){
-					this.llength += list[item].count;//总商品数
-					this.allprice += parseFloat(list[item].single_price)*list[item].count
+                    if (list[item].hasOwnProperty("num") && list[item].num != 0) {
+                        this.llength += list[item].num;//总商品数
+                        this.allprice += parseFloat(list[item].single_price)*list[item].num
+                        this.shownum = list[item].num
+                    }else{
+                        this.llength += list[item].count;//总商品数
+                        this.allprice += parseFloat(list[item].single_price)*list[item].count
+                        this.shownum = list[item].count
+                    }
 				}
 				this.payprice = this.allprice - this.yhj + this.psf;
 			},

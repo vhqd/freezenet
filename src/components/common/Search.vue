@@ -52,11 +52,11 @@
 					} */
 
 			   /* if(this.keyword != '' && reg.test(this.keyword)){ */
-				if(this.keyword != ''){
+				if(this.keyword != ''&&this.keyword != 'null'&&this.keyword!=null){
 					this.timer = setTimeout(()=>{
 						this.$emit("sendword",this.keyword);
 						clearTimeout(this.timer)
-					},1000) 
+					},200) 
 			   }else{
 				/* this.$store.commit('setShowText','请输入商品名称');
             	this.$store.commit('seterror'); */
@@ -66,10 +66,18 @@
 		},
 		watch:{
 			keyword(a,b){
-				this.sendKeyWord();
-				if(keyword != null || keyword != 'null'){
-					this.keyword = keyword
+                console.log('新旧搜索词长度');
+                
+                console.log(a.length);
+                console.log(b.length);
+                
+                if(a != null && a != 'null'){
+					this.keyword = a
 				}
+                if(a.length > b.length){
+                    
+                    this.sendKeyWord()
+                }
 				if(b!='' && a==''){
 					this.$store.commit('setShowText','请输入商品名称');
             		this.$store.commit('seterror');

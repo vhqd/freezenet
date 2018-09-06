@@ -40,6 +40,24 @@ export const getWXPayInfo = id =>{ return axios.get(host + "/wechat/pay?id="+ id
 export const register = (data) =>{ return axios.post(host + "/api/register" , data).then((res) => {return res;}).catch((error) => {return error.response})};
 
 /**
+ * 用户登录
+ * 
+ */
+export const login = (data) =>{ return axios.post(host + "/api/login" , data).then((res) => {return res;}).catch((error) => {return error.response})};
+
+/**
+ * 用户注册
+ * 
+ */
+export const registered = (data) =>{ return axios.post(host + "/api/register" , data).then((res) => {return res;}).catch((error) => {return error.response})};
+
+/**
+ * 修改密码
+ * 
+ */
+export const changepaw = (data) =>{ return axios.post(host + "/api/user/update-password" , data).then((res) => {return res;}).catch((error) => {return error.response})};
+
+/**
  * 获取用户信息
  * 
  */

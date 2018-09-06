@@ -566,6 +566,7 @@ textarea:-ms-input-placeholder {
 /* .problems-content .mu-item-action{position: absolute;top:-30px;right: 10px;} */
 .list-content .mu-list li{padding: 8px 0}
 .feedback-content .mu-button-wrapper{color: #fff !important;}
+.phonebox .mu-input{width: 100%}
 @media screen and (max-width: 325px) {
   .orderlistbox li {
     font-size: 12px;
@@ -598,3 +599,9 @@ textarea:-ms-input-placeholder {
     padding: 5px 0.16rem;
   }
 }
+@media screen and (max-width: 325px) {
+    .phonebox .mu-input{
+        width: 340px; 
+    }
+}
+

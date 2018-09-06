@@ -31,7 +31,7 @@
 					</mu-chip>
 				</mu-container>
 				<mu-divider></mu-divider>
-				<div style="position: absolute;right:0.28rem;top: 70px;color: red;">
+				<div style="position: absolute;right:0.28rem;top: 60px;color: red;">
 					<div class="saoma">
 						<span class="minus" @click="minus()" v-if="contentinfo[0].num != 0"><img src="../../../static/img/ic_jian.png" alt="" style="width:.5rem;height:.5rem;"></span>
 						<span v-show="contentinfo[0].num != 0">{{contentinfo[0].num}}</span>
@@ -178,10 +178,7 @@ export default {
         manjian: 310, //满减
 				instructions: "发货说明发货说明发货说明发货说明发货说明发货说明" */
 
-      bannerImg: [
-        { banner_image_address: require("../../../static/img/1-0_02.png") },
-        { banner_image_address: require("../../../static/img/1-0_02.png") }
-      ]
+      bannerImg: []
     };
   },
   watch: {
@@ -204,6 +201,12 @@ export default {
     getProductInfos(JSON.stringify(data)).then(res => {
       let data = res.data.data;
       data[0].goods_photo = this.host + data[0].goods_photo;
+      data[0].goods_long_photo = this.host + data[0].goods_long_photo;
+      let longimg = {
+          banner_image_address:data[0].goods_long_photo
+      }
+      this.bannerImg = []
+      this.bannerImg.push(longimg)
       data[0].num = 0;
       this.contentinfo = data;
       if (this.contentinfo[0].hasOwnProperty("specifications")) {
@@ -374,10 +377,11 @@ export default {
 
 <style scoped>
 .mu-list {
-  padding: 0;
   background: #fff;
 }
-
+.addToCar .mu-list{
+    padding: 0 !important;
+}
 .dInfobox {
   background: #fff;
 }

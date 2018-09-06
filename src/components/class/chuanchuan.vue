@@ -1,8 +1,8 @@
 <template>
   <div class="chuanchuan">
-    <BackBar dTitle='串串专区'></BackBar>
+    <BackBar :dTitle='secTitle'></BackBar>
     <div class="adimg">
-      <img src="../../../static/img/1.0_02.png" />
+      <img :src="topimg" />
     </div>
 
     <!--菜品列表-->
@@ -64,7 +64,8 @@
                     <mu-list-item avatar button :ripple="false" v-for="(ite , ind) in item.specifications" :key="ind">
                       <mu-list-item-content>
                         <mu-list-item-title>{{ite.specification*2}}斤装</mu-list-item-title>
-                        <mu-list-item-sub-title>￥{{ite.price}}</mu-list-item-sub-title>
+                        <span v-show="!isbind">绑定手机号才能查看价格</span>
+                        <mu-list-item-sub-title v-show="isbind">￥{{ite.price}}</mu-list-item-sub-title>
                       </mu-list-item-content>
                       <mu-list-item-action>
                         <div class="saoma" style="margin-right:6px;">
@@ -148,8 +149,11 @@ export default {
       limit: 10, //分页条数
       page: 1, //当前页
       nomore: false,
+      topimg:'',//专区顶部图片
+      secTitle:'',//专区名
       openwins: false,
       carnum: 0,
+      load:true,
       alldata: [
         {
           goods_id: [],
@@ -169,7 +173,7 @@ export default {
     BackBar
   },
   activated() {
-    document.title = "串串专区";
+    document.title = this.secTitle;
     this.page = 1;
     this.list = [];
     this.allPrice = 0
@@ -205,6 +209,13 @@ export default {
         .then(function(res) {
           that.page = that.page + 1;
           let data = res.data.data.data;
+          let showinfo = res.data.typeInfo
+          that.topimg = that.host + showinfo.img
+          that.secTitle =showinfo.goods_type_second_name
+          if(data.length == 0){
+              that.load = false
+              return
+          }
           for (let item in data) {
             data[item].num = 0;
             data[item].goods_photo = that.host + data[item].goods_photo;
@@ -242,8 +253,10 @@ export default {
         this.loading = true;
         setTimeout(() => {
           this.loading = false;
-          this.getListDetail(this.page);
-          console.log("成功数据");
+          if(this.load){
+            this.getListDetail(this.page);
+            console.log("成功数据");
+          }
           //this.num += 10;
         }, 1000);
       }
@@ -259,9 +272,20 @@ export default {
         let datas = [];
         console.log(2222222222222222222222222);
         for (let item in data) {
-          if (data[item].num > 0) {
-            datas.push(data[item]);
-          }
+             if(data[item].hasOwnProperty('specifications')){
+                 let secdata = data[item].specifications
+                 let goods_photo = data[item].goods_photo
+                 for(let i in secdata){
+                    if (secdata[i].num > 0) {
+                        secdata[i].goods_photo = goods_photo
+                        datas.push(secdata[i]);
+                    }
+                 }
+             }else{
+                if (data[item].num > 0) {
+                    datas.push(data[item]);
+                }
+             }
         }
         console.log(datas);
 

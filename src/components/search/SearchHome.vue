@@ -148,6 +148,7 @@ export default {
   activated(){
     document.title = '搜索';
     this.searchshow = true;
+    this.keyword = ''
     this.getSWords()
     this.resData = []
   },

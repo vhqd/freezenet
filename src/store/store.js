@@ -88,6 +88,7 @@ const store = new Vuex.Store({
 					let columns = [];
 					//'显示格式（1：列表，0：九宫格）'
 					for (let item in data) {
+                        data[item].img = state.host + data[item].img
 						if (data[item].show_method == 1) {
 							columns.push(data[item]);
 						} else {
